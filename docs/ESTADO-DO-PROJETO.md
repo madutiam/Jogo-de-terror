@@ -330,7 +330,7 @@ x medido com o jogo rodando.
 
 | x | o quê |
 |---|---|
-| 70 | passagem trancada |
+| 150 | vao aberto — leva ao corredor |
 | 520 | escada → sótão (só depois do mecanismo) |
 | 892 | xícara quebrada |
 | 968 | marca de arrasto |

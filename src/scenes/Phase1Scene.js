@@ -321,20 +321,6 @@ export class Phase1Scene extends GameplayScene {
     });
 
     this.criarInterativo({
-      x: 70,
-      y: 540,
-      raio: 120,
-      alturaMarca: 110,
-      aoInteragir: () => {
-        AudioManager.tocar('efeito.rangido');
-        this.dialogo.mostrar(
-          ['A passagem está trancada.', 'Não tem fechadura deste lado.'],
-          { rotulo: 'passagem' }
-        );
-      },
-    });
-
-    this.criarInterativo({
       x: this.portaX,
       y: 540,
       raio: 130,
