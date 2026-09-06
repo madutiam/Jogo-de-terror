@@ -4,15 +4,25 @@
  * Liga a Fase 1 a Fase 2. Vinte segundos. A Alice acaba de pegar o relogio
  * quebrado, e ele volta a andar.
  *
- * Uma decisao que vale explicar: nao existe desenho de porta ABERTA, e o
- * roteiro proibe inventar. Entao a porta nao se abre com animacao falsa — o que
- * abre e uma FRESTA DE LUZ no meio dela, que vai crescendo e revelando a
- * floresta atras. Som de porta antiga por cima. O desenho dela continua
- * intacto, e a leitura e a mesma.
+ * A CENA VEM DESENHADA, e nao montada aqui.
  *
- * A Fase 2 ainda nao existe. A cena vai ate a Alice atravessar — que e onde o
- * roteiro manda cortar — e ai mostra o cartao de fim. Quando a floresta
- * existir, e so trocar o ultimo passo.
+ * Antes esta cena colava as pecas na mao — um pedaco do quarto de fundo, a
+ * porta por cima, a Alice na frente, e a floresta aparecendo por um RETANGULO
+ * aberto no meio da porta. O retangulo era o problema: um vao reto atras de um
+ * arco curvo, com a beirada dura aparecendo. E o fundo era o desenho cru do
+ * quarto esticado, que nao e a parede que a Fase 1 mostra.
+ *
+ * Agora sao dez quadros compostos por ela: arco, porta, Alice e o que esta
+ * atras, ja resolvidos juntos em cada um. A cena aqui so troca quadro e cuida
+ * do som. Nao ha nada para mascarar, e o que se ve e o desenho dela inteiro.
+ *
+ * A revelacao da floresta (§32, 12-15 s) e a troca do MESMO quadro entre as
+ * duas versoes: primeiro com escuridao atras da porta, depois com a floresta.
+ * Como a pose nao muda, o que o olho ve e o fundo mudando — que e exatamente o
+ * que o roteiro descreve.
+ *
+ * A Fase 2 ainda nao existe. A cena vai ate a porta se fechar atras dela, e ai
+ * mostra o cartao de fim. Quando a floresta existir, e so trocar o ultimo passo.
  */
 
 import { SCENES } from '../core/constants.js';
@@ -21,7 +31,6 @@ import { CORES, HEX, FONTE } from '../ui/theme.js';
 import { AudioManager } from '../core/AudioManager.js';
 import { SaveManager } from '../core/SaveManager.js';
 import { Cinematica } from '../core/Cinematica.js';
-import { preencherBuracos } from '../core/texturas.js';
 
 export class Highsfield02Scene extends Phaser.Scene {
   constructor() {
@@ -32,10 +41,6 @@ export class Highsfield02Scene extends Phaser.Scene {
     this.tela = dimensoes(this);
     this.cameras.main.setBackgroundColor(CORES.preto);
     this.cameras.main.fadeIn(1400, 0, 0, 0);
-
-    preencherBuracos(this, 'porta', 'porta/recorte', {
-      x: 28, y: 37, largura: 352, altura: 573,
-    });
 
     this.montarCena();
 
@@ -48,93 +53,58 @@ export class Highsfield02Scene extends Phaser.Scene {
   // -------------------------------------------------------------------- cena
 
   montarCena() {
-    const { largura, altura, meioX } = this.tela;
+    const { meioX, meioY, altura } = this.tela;
 
-    // A parede: um pedaco do proprio quarto, escuro.
-    this.add
-      .image(meioX, altura * 0.5, 'fase1-quarto')
-      .setScale(Math.max(largura / 960, altura / 640) * 1.2)
-      .setTint(0x5a6070);
+    // O quadro e retrato (322x406) e a tela e paisagem: ele fica centrado, alto
+    // quase toda a altura, com o escuro da sala em volta. Nao e tarja — e o
+    // resto do quarto, que na Fase 1 tambem some no preto a essa distancia.
+    this.escala = (altura * 0.94) / 406;
 
-    const baseDaPorta = altura * 0.86;
-    this.escalaDaPorta = (altura * 0.66) / 573;
-
-    this.centroDaPorta = meioX;
-    this.topoDaPorta = baseDaPorta - 573 * this.escalaDaPorta;
-    this.baseDaPorta = baseDaPorta;
-    this.larguraDaFresta = 0;
-
-    // A porta fechada. Ela nunca e deformada nem redesenhada: o que abre e a
-    // fresta de luz por cima dela.
-    this.porta = this.add
-      .image(meioX, baseDaPorta, 'porta/recorte')
-      .setOrigin(0.5, 1)
-      .setScale(this.escalaDaPorta)
+    // Dois quadros empilhados, para uma troca poder ser um DISSOLVER e nao um
+    // corte: `atras` recebe o proximo, `frente` some por cima dele.
+    this.atras = this.add
+      .image(meioX, meioY, 'porta/escura-0')
+      .setScale(this.escala)
       .setDepth(10);
 
-    // A fresta e um retangulo que cresce. Ela nao aparece em cena — serve so de
-    // recorte para o que esta atras da porta. Um Graphics usado como mascara
-    // CONTINUA se desenhando se ninguem o esconder; foi o que pintou uma barra
-    // branca no meio da porta na primeira tentativa.
-    this.fresta = this.add.graphics().setVisible(false);
-    const recorte = this.fresta.createGeometryMask();
+    this.frente = this.add
+      .image(meioX, meioY, 'porta/escura-0')
+      .setScale(this.escala)
+      .setDepth(11);
 
-    // Atras da porta, primeiro, so escuridao (roteiro, 9-12 s).
-    this.vao = this.add
-      .rectangle(meioX, baseDaPorta - (573 * this.escalaDaPorta) / 2,
-        largura, 573 * this.escalaDaPorta, CORES.preto)
-      .setDepth(11)
-      .setMask(recorte);
-
-    // Depois a floresta aparece nela (12-15 s).
-    this.floresta = this.add
-      .image(meioX, baseDaPorta - (573 * this.escalaDaPorta) / 2, 'fase2-floresta')
-      .setScale(Math.max(1, (573 * this.escalaDaPorta) / 640) * 1.1)
-      .setAlpha(0)
-      .setDepth(12)
-      .setMask(recorte);
-
-    // A Alice, de costas, diante da porta. E o desenho de costas dela —
-    // a camera acompanha por tras, como o roteiro pede.
-    this.alice = this.add
-      .image(meioX, altura * 0.98, 'alice/costas-0')
-      .setOrigin(0.5, 1)
-      .setScale((altura * 0.30) / 253)
-      .setDepth(20);
-
-    // O close do relogio, que entra por cima quando a camera aproxima.
+    // O close do relogio de bolso, que entra aos 6 s. E o mesmo desenho da
+    // HIGHSFIELD 01.
     this.close = this.add
-      .image(meioX, altura * 0.46, 'relogio-bolso-aberto')
-      .setScale(Math.min(0.9, (altura * 0.52) / 428))
+      .image(meioX, meioY, 'relogio-bolso-aberto')
       .setAlpha(0)
       .setDepth(500);
-
-    this.escurecer = this.add
-      .rectangle(0, 0, largura * 2, altura * 2, CORES.preto, 0)
-      .setOrigin(0, 0)
-      .setDepth(900);
+    this.close.setScale(Math.min(0.82, (altura * 0.58) / this.close.height));
   }
 
-  /** Redesenha a fresta de luz no meio da porta, com a largura atual. */
-  desenharFresta() {
-    const alturaPorta = this.baseDaPorta - this.topoDaPorta;
-    this.fresta.clear();
-    this.fresta.fillStyle(0xffffff);
-    this.fresta.fillRect(
-      this.centroDaPorta - this.larguraDaFresta / 2,
-      this.topoDaPorta + alturaPorta * 0.16,
-      this.larguraDaFresta,
-      alturaPorta * 0.78
-    );
-  }
+  /**
+   * Troca o quadro visivel. Com `ms`, dissolve; sem, corta seco.
+   *
+   * Dissolver e o que faz a floresta APARECER atras da porta em vez de piscar.
+   * Cortar seco e o certo quando a pose muda — dissolver um passo da outro
+   * borra a Alice em duas posicoes ao mesmo tempo.
+   */
+  trocarQuadro(chave, ms = 0) {
+    if (!ms) {
+      this.frente.setTexture(chave);
+      this.atras.setTexture(chave);
+      this.frente.setAlpha(1);
+      return;
+    }
 
-  abrirFresta(ate, ms) {
+    this.atras.setTexture(chave);
     this.tweens.add({
-      targets: this,
-      larguraDaFresta: ate,
+      targets: this.frente,
+      alpha: 0,
       duration: ms,
-      ease: 'Sine.easeInOut',
-      onUpdate: () => this.desenharFresta(),
+      onComplete: () => {
+        this.frente.setTexture(chave);
+        this.frente.setAlpha(1);
+      },
     });
   }
 
@@ -142,14 +112,10 @@ export class Highsfield02Scene extends Phaser.Scene {
 
   montarLinhaDoTempo() {
     const c = new Cinematica(this);
-    const larguraMaxima = 352 * this.escalaDaPorta * 0.62;
 
-    // 0-3 s — a Alice diante da porta que estava bloqueada. Ela tem o relogio,
-    // e olha para ele.
-    this.tweens.add({
-      targets: this.alice, y: this.tela.altura * 0.94, duration: 2600,
-      ease: 'Sine.easeOut',
-    });
+    // 0-3 s — a Alice diante da porta que estava bloqueada. Quadro 1: ela so
+    // esta ali, de costas, com o relogio.
+    this.trocarQuadro('porta/escura-0');
 
     // 3-6 s — o relogio comeca a fazer tic-tac. Mesmo quebrado.
     c.em(3000, () => {
@@ -158,57 +124,48 @@ export class Highsfield02Scene extends Phaser.Scene {
     });
 
     // 6-9 s — a camera aproxima do relogio. Ela olha para a porta.
-    c.em(6000, () => {
-      this.tweens.add({ targets: this.close, alpha: 1, duration: 1100 });
-    });
-    c.em(8400, () => {
-      this.tweens.add({ targets: this.close, alpha: 0, duration: 800 });
-    });
+    c.em(6000, () => this.tweens.add({ targets: this.close, alpha: 1, duration: 1100 }));
+    c.em(8200, () => this.tweens.add({ targets: this.close, alpha: 0, duration: 800 }));
 
-    // 9-12 s — a porta comeca a abrir. Atras dela, so escuridao.
-    c.em(9200, () => {
+    // 9-12 s — ela levanta a mao, pega a argola e puxa. A porta cede, e atras
+    // dela so existe escuridao.
+    c.em(9000, () => this.trocarQuadro('porta/escura-1'));
+    c.em(9700, () => this.trocarQuadro('porta/escura-2'));
+    c.em(10400, () => {
+      this.trocarQuadro('porta/escura-3');
       AudioManager.tocar('efeito.porta');
-      this.abrirFresta(larguraMaxima * 0.35, 2400);
     });
+    c.em(11200, () => this.trocarQuadro('porta/escura-4'));
 
-    // 12-15 s — a abertura revela a floresta. Frio, galhos, um pouco de luz
-    // distante. A Alice nao entra ainda.
-    c.em(12000, () => {
-      this.tweens.add({ targets: this.floresta, alpha: 1, duration: 1800 });
-      this.abrirFresta(larguraMaxima, 2600);
-      AudioManager.tocarAmbiente('ambiente.galhos', 2000);
+    // 12-15 s — a abertura revela a floresta. MESMO quadro, outra versao: a
+    // pose nao muda, so o que esta atras da porta. Dissolvido, para o olho ler
+    // como a escuridao virando mata.
+    c.em(12200, () => {
+      this.trocarQuadro('porta/floresta-4', 1700);
+      AudioManager.tocarAmbiente('ambiente.galhos', 2200);
     });
 
     // 15-18 s — ela da alguns passos, para, respira, e atravessa.
     c.em(15200, () => {
-      this.tweens.add({
-        targets: this.alice,
-        y: this.tela.altura * 0.80,
-        scale: this.alice.scale * 0.86,
-        duration: 1500, ease: 'Sine.easeInOut',
-      });
+      this.trocarQuadro('porta/floresta-5');
       AudioManager.iniciarLoop('passos.madeira');
     });
-    c.em(16700, () => {
+    c.em(16100, () => this.trocarQuadro('porta/floresta-6'));
+    c.em(16900, () => {
+      this.trocarQuadro('porta/floresta-7');
       AudioManager.pararLoop('passos.madeira');
       AudioManager.tocar('alice.respiracao');
     });
-    c.em(17600, () => {
-      this.tweens.add({
-        targets: this.alice,
-        y: this.topoDaPorta + (this.baseDaPorta - this.topoDaPorta) * 0.72,
-        scale: this.alice.scale * 0.55,
-        alpha: 0,
-        duration: 1900, ease: 'Sine.easeIn',
-      });
-    });
+    c.em(17800, () => this.trocarQuadro('porta/floresta-8'));
 
-    // 18-20 s — corte para a floresta.
+    // 18-20 s — a porta se fecha atras dela, e corta.
     c.em(19000, () => {
-      this.tweens.add({ targets: this.escurecer, fillAlpha: 1, duration: 1400 });
+      this.trocarQuadro('porta/floresta-9', 900);
+      AudioManager.tocar('efeito.rangido');
     });
+    c.em(20000, () => this.cameras.main.fadeOut(1200, 0, 0, 0));
 
-    c.aoFim(20600, () => {
+    c.aoFim(21400, () => {
       SaveManager.salvarCheckpoint(1, 'fase1-concluida');
       SaveManager.registrarItem('viu-highsfield-02');
       this.mostrarFim();

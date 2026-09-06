@@ -61,6 +61,19 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('relogio-bolso', 'assets/objects/relogio/relogio-bolso-0.png');
     this.load.image('relogio-bolso-aberto', 'assets/objects/relogio/relogio-bolso-aberto-0.png');
 
+    // A HIGHSFIELD 02 vem DESENHADA, quadro a quadro: arco, porta, Alice e o
+    // que esta atras, tudo junto em cada um. Duas versoes do mesmo movimento —
+    // com escuridao atras da porta, e com a floresta — para a revelacao ser uma
+    // troca de quadro e nao um recorte.
+    for (let i = 0; i < 10; i++) {
+      for (const versao of ['escura', 'floresta']) {
+        this.load.image(
+          'porta/' + versao + '-' + i,
+          'assets/scenarios/porta-hs02/porta-' + versao + '-' + i + '.png'
+        );
+      }
+    }
+
     // Rastros: o que sobrou de quem foi levado.
     for (const r of ['poca-grande', 'poca-media', 'respingos',
                      'arrasto', 'tufo-pelo', 'pegada']) {
