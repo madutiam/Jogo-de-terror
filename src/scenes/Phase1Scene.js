@@ -378,7 +378,9 @@ export class Phase1Scene extends GameplayScene {
   montarEscadaDoSotao() {
     if (!SaveManager.temItem('mecanismo')) return;
 
-    const x = this.paraSala(210);
+    // Longe da marca de arrasto (x 968): com os dois juntos, os raios de
+    // interacao se cobriam e um escondia o outro.
+    const x = 520;
     const chao = 560;
 
     this.escada = this.add
