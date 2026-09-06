@@ -109,7 +109,9 @@ class Audio {
       );
       this.recomecarSeMudo(
         this.ambienteAtual,
-        (id) => { this.pararAmbiente(0); this.tocarAmbiente(id, 900); }
+        // O volume vai junto: sem ele, o ambiente que estava abafado por ser
+        // de uma sala fechada voltaria no peso cheio do catalogo.
+        (id, volume) => { this.pararAmbiente(0); this.tocarAmbiente(id, 900, { volume }); }
       );
 
       for (const evento of ['pointerdown', 'keydown', 'touchstart'])
@@ -124,7 +126,7 @@ class Audio {
   recomecarSeMudo(som, refazer) {
     if (!som || som.isPlaying) return;
     const id = som.__id;
-    if (id) refazer(id);
+    if (id) refazer(id, som.__volumeBase);
   }
 
   // ------------------------------------------------------------------ volumes
@@ -269,11 +271,28 @@ class Audio {
 
   // ------------------------------------------------------------------ ambiente
 
-  tocarAmbiente(id, fadeMs = 1200) {
+  /**
+   * `volume` sobrescreve o volume do catalogo.
+   *
+   * Existe porque o mesmo clipe serve a comodos diferentes com pesos
+   * diferentes: o silencio tenso e a linha de base no quarto, mas na despensa
+   * — comodo fechado e entulhado — ele precisa vir abafado. Um clipe, varias
+   * salas, sem duplicar entrada no catalogo.
+   */
+  tocarAmbiente(id, fadeMs = 1200, { volume } = {}) {
     const clipe = this.clipe(id);
     if (!clipe || !this.game) return null;
 
+    const volumeBase = volume ?? clipe.volume ?? 1;
+
     if (this.ambienteAtual && this.ambienteAtual.__id === id && this.ambienteAtual.isPlaying) {
+      // Mesmo clipe, ja soando: nao recomeca do zero. Mas se a sala nova pediu
+      // outro peso, ele desliza ate la — atravessar uma porta nao pode cortar
+      // o som no meio.
+      if (this.ambienteAtual.__volumeBase !== volumeBase) {
+        this.ambienteAtual.__volumeBase = volumeBase;
+        this.esmaecer(this.ambienteAtual, this.volumeDe('ambiente', volumeBase), fadeMs);
+      }
       return this.ambienteAtual;
     }
 
@@ -281,7 +300,7 @@ class Audio {
 
     const som = this.criarSom(clipe, { loop: true, volume: 0 });
     som.__id = id;
-    som.__volumeBase = clipe.volume ?? 1;
+    som.__volumeBase = volumeBase;
     this.iniciar(som);
 
     this.esmaecer(som, this.volumeDe('ambiente', som.__volumeBase), fadeMs);

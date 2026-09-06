@@ -167,6 +167,50 @@ Briefings prontos para pedir arte: [BRIEFING-COELHO.md](BRIEFING-COELHO.md),
 
 ---
 
+## A DICA MAIS IMPORTANTE — como testar sem se enganar
+
+Foi aqui que se perdeu mais tempo, e não em escrever código. Leia antes de
+concluir que alguma coisa "não funciona".
+
+**O painel do navegador pausa o Phaser quando fica oculto.** O jogo para de
+atualizar, mas o `game.loop.time` continua andando se você o empurrar à mão.
+O sintoma é traiçoeiro: `scene.time.now` fica em **0**, o `update` da cena nunca
+roda, e tudo parece quebrado quando na verdade está só congelado.
+
+O que fazer:
+
+1. **Tire um screenshot primeiro.** Isso acorda o painel. Só depois meça.
+2. Se precisar de um relógio, use um leve —
+   `setInterval(() => { t += 33.3; game.loop.step(t) }, 40)`. Passos grandes
+   demais travam o desenho da página e o screenshot expira.
+3. **`cena.update(t, dt)` chamado à mão NÃO move a física.** O corpo da Alice só
+   anda no passo real do mundo Arcade. Se ela não sai do lugar num teste
+   automatizado, é a bancada, não o jogo.
+4. **Prefira medir estado a olhar a tela**: `alice.tamanho.id`, `alice.pisoAtual`,
+   `alice.texturaAtual`, `obstaculos.getChildren()`, `sound.sounds`. É mais
+   rápido e não mente.
+5. Para conferir cor e brilho de verdade, leia o framebuffer com
+   `gl.readPixels` — foi assim que se descobriu que o chão estava uma vez e
+   meia mais claro que a parede, e que a música tocava em **volume zero**.
+
+**E dois hábitos que evitaram estragos:**
+
+**Nunca recorte arquivo por marcador de texto.** Foi assim que o
+`atravessarAPorta` sumiu junto com um bloco vizinho, e o jogo passou a travar
+na porta. Depois de qualquer cirurgia grande, rode a varredura de método
+fantasma — ela pega isso em segundos:
+
+```
+node -e '…confere que todo this.x() tem um metodo x…'
+```
+(o comando completo está no histórico do commit "O jogo travava na porta")
+
+**Não use heredoc do bash para escrever JavaScript.** Ele come as barras
+invertidas e corrompe o arquivo em silêncio. O caminho confiável neste projeto:
+escrever um script Python no scratchpad com a ferramenta Write, e rodá-lo.
+
+---
+
 ## Armadilhas técnicas já pagas
 
 Cada uma custou tempo. Não repetir.
@@ -229,9 +273,22 @@ Repositório: `https://github.com/madutiam/Jogo-de-terror` — **privado**.
 Identidade presa **localmente** a este repositório (nada global foi tocado):
 `Maria Eduarda Bedetti <100002186+madutiam@users.noreply.github.com>`.
 
-**10 commits locais ainda não enviados.** O push precisa que a conta ativa do
-`gh` seja a `madutiam` (hoje é a `EduardaBedetti`), e isso é configuração da
-máquina — pedir autorização antes.
+**Tudo enviado.** `main` está sincronizada com `origin/main`.
+
+**Como enviar de novo.** A conta ativa do `gh` na máquina é a `EduardaBedetti`,
+mas este repositório é da `madutiam`. O caminho já testado, que não deixa
+resíduo nenhum:
+
+```
+gh auth switch --user madutiam
+git push
+gh auth switch --user EduardaBedetti
+```
+
+Trocar a conta ativa é **configuração da máquina** — a regra 10 manda avisar
+antes. Ela já autorizou este vaivém uma vez; peça de novo mesmo assim, e sempre
+devolva a conta ao final. O `user.name`, o `user.email` e o credential helper
+**globais** nunca foram tocados e não devem ser.
 
 A **arte original** (45 PNGs e os áudios, ~42 MB) mora na pasta de fora e
 **não está versionada**. Decisão pendente: mover para dentro do repositório ou
