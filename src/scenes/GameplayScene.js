@@ -244,9 +244,28 @@ export class GameplayScene extends Phaser.Scene {
       if (!topo) continue;
 
       const corpo = obstaculo.body;
+
+      // TOLERANCIA NA PROFUNDIDADE — sem ela o parkour e inescalavel.
+      //
+      // O teste exigia que a pegada da Alice se SOBREPUSESSE a da peca. Mas o
+      // proprio colisor a impede de entrar nessa faixa enquanto ela esta no
+      // chao, e as unicas profundidades que ela alcanca sao a de encostar na
+      // frente da peca (corpo dela comecando exatamente onde o da peca acaba)
+      // e a de passar por tras. Nenhuma das duas se sobrepoe: `pisoAtual`
+      // nunca subia, e ela nunca pousava em cima de nada.
+      //
+      // MEDIDO na despensa: encostada, o topo do corpo dela cai em 588 e o
+      // fundo do caixote tambem em 588 — empate, e o teste e estritamente
+      // menor. Zero pixel de folga.
+      //
+      // 20 px fazem quem esta ENCOSTADA contar como em cima. O que decide se
+      // ela sobe de verdade continua sendo a altura do pulo, logo abaixo: a
+      // tolerancia abre a porta, o pulo e que passa por ela.
+      const FOLGA_DE_PROFUNDIDADE = 20;
       const encosta =
         pes.right > corpo.left && pes.left < corpo.right &&
-        pes.bottom > corpo.top && pes.top < corpo.bottom;
+        pes.bottom > corpo.top - FOLGA_DE_PROFUNDIDADE &&
+        pes.top < corpo.bottom + FOLGA_DE_PROFUNDIDADE;
 
       // Folga de pouso. MEDIDO: o pulo alcanca 128 px e o topo da comoda esta a
       // 120 — com 6 px de tolerancia, errar por um quadro fazia a Alice
