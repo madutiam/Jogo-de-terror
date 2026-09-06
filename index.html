@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#07080b">
+  <title>Alice Terror</title>
+  <!-- O icone e um recorte da cabeca do Coelho: a medalha inteira vira um
+       borrao em 32px, mas o X no olho sobrevive ao tamanho da aba. -->
+  <link rel="icon" type="image/png" href="assets/ui/icone.png">
+  <style>
+    :root { color-scheme: dark; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #07080b;
+      overflow: hidden;
+      /* Impede o "puxar para atualizar" e o zoom de duplo toque no celular */
+      overscroll-behavior: none;
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      user-select: none;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    /* Bloco simples, nao flex. No modo EXPAND o Phaser MEDE este elemento para
+       se dimensionar; com display:flex o pai encolhe junto com o canvas e os
+       dois travam em zero. */
+    #jogo {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: hidden;
+    }
+
+    #jogo canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Aviso de orientacao: o jogo e desenhado em 3:2 deitado */
+    #girar {
+      position: fixed;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: #07080b;
+      color: #b9b2a4;
+      text-align: center;
+      padding: 32px;
+      z-index: 10;
+    }
+
+    #girar .icone {
+      font-size: 46px;
+      opacity: .55;
+      animation: inclinar 2.6s ease-in-out infinite;
+    }
+
+    #girar p { margin: 0; font-size: 17px; letter-spacing: .06em; line-height: 1.6; }
+
+    @keyframes inclinar {
+      0%, 45%, 100% { transform: rotate(0deg); }
+      65%, 85%      { transform: rotate(-90deg); }
+    }
+
+    /* So aparece em tela pequena e em pe (celular no retrato) */
+    @media (orientation: portrait) and (max-width: 900px) {
+      #girar { display: flex; }
+      #jogo  { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="jogo"></div>
+
+  <div id="girar">
+    <div class="icone">&#9634;</div>
+    <p>Vire o aparelho.</p>
+  </div>
+
+  <!-- Phaser 3 pela CDN: nao exige instalar nada.
+       Para trabalhar offline, baixe o arquivo para vendor/phaser.min.js
+       e troque o src abaixo por "vendor/phaser.min.js". -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

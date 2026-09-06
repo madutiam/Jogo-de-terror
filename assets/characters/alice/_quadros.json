@@ -1,0 +1,1469 @@
+﻿[
+    {
+        "arquivo":  "anda-dir-0.png",
+        "chave":  "anda-dir",
+        "indice":  0,
+        "larguraUtil":  122,
+        "alturaUtil":  216,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-dir-1.png",
+        "chave":  "anda-dir",
+        "indice":  1,
+        "larguraUtil":  119,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-dir-2.png",
+        "chave":  "anda-dir",
+        "indice":  2,
+        "larguraUtil":  117,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-dir-3.png",
+        "chave":  "anda-dir",
+        "indice":  3,
+        "larguraUtil":  120,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-dir-4.png",
+        "chave":  "anda-dir",
+        "indice":  4,
+        "larguraUtil":  115,
+        "alturaUtil":  225,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-dir-5.png",
+        "chave":  "anda-dir",
+        "indice":  5,
+        "larguraUtil":  120,
+        "alturaUtil":  227,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-dir-6.png",
+        "chave":  "anda-dir",
+        "indice":  6,
+        "larguraUtil":  131,
+        "alturaUtil":  225,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-dir-7.png",
+        "chave":  "anda-dir",
+        "indice":  7,
+        "larguraUtil":  131,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-dir-8.png",
+        "chave":  "anda-dir",
+        "indice":  8,
+        "larguraUtil":  119,
+        "alturaUtil":  225,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-dir-9.png",
+        "chave":  "anda-dir",
+        "indice":  9,
+        "larguraUtil":  119,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-dir-10.png",
+        "chave":  "anda-dir",
+        "indice":  10,
+        "larguraUtil":  119,
+        "alturaUtil":  225,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-esq-0.png",
+        "chave":  "anda-esq",
+        "indice":  0,
+        "larguraUtil":  115,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-esq-1.png",
+        "chave":  "anda-esq",
+        "indice":  1,
+        "larguraUtil":  117,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-esq-2.png",
+        "chave":  "anda-esq",
+        "indice":  2,
+        "larguraUtil":  115,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-esq-3.png",
+        "chave":  "anda-esq",
+        "indice":  3,
+        "larguraUtil":  131,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-esq-4.png",
+        "chave":  "anda-esq",
+        "indice":  4,
+        "larguraUtil":  126,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-esq-5.png",
+        "chave":  "anda-esq",
+        "indice":  5,
+        "larguraUtil":  122,
+        "alturaUtil":  225,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-esq-6.png",
+        "chave":  "anda-esq",
+        "indice":  6,
+        "larguraUtil":  115,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-esq-7.png",
+        "chave":  "anda-esq",
+        "indice":  7,
+        "larguraUtil":  117,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-esq-8.png",
+        "chave":  "anda-esq",
+        "indice":  8,
+        "larguraUtil":  117,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-esq-9.png",
+        "chave":  "anda-esq",
+        "indice":  9,
+        "larguraUtil":  117,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-esq-10.png",
+        "chave":  "anda-esq",
+        "indice":  10,
+        "larguraUtil":  117,
+        "alturaUtil":  220,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pula-dir-0.png",
+        "chave":  "pula-dir",
+        "indice":  0,
+        "larguraUtil":  127,
+        "alturaUtil":  169,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pula-dir-1.png",
+        "chave":  "pula-dir",
+        "indice":  1,
+        "larguraUtil":  119,
+        "alturaUtil":  215,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pula-dir-2.png",
+        "chave":  "pula-dir",
+        "indice":  2,
+        "larguraUtil":  113,
+        "alturaUtil":  211,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pula-dir-3.png",
+        "chave":  "pula-dir",
+        "indice":  3,
+        "larguraUtil":  117,
+        "alturaUtil":  216,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pula-dir-4.png",
+        "chave":  "pula-dir",
+        "indice":  4,
+        "larguraUtil":  127,
+        "alturaUtil":  166,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pula-esq-0.png",
+        "chave":  "pula-esq",
+        "indice":  0,
+        "larguraUtil":  127,
+        "alturaUtil":  166,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pula-esq-1.png",
+        "chave":  "pula-esq",
+        "indice":  1,
+        "larguraUtil":  117,
+        "alturaUtil":  218,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pula-esq-2.png",
+        "chave":  "pula-esq",
+        "indice":  2,
+        "larguraUtil":  112,
+        "alturaUtil":  213,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pula-esq-3.png",
+        "chave":  "pula-esq",
+        "indice":  3,
+        "larguraUtil":  117,
+        "alturaUtil":  213,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pula-esq-4.png",
+        "chave":  "pula-esq",
+        "indice":  4,
+        "larguraUtil":  126,
+        "alturaUtil":  169,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "cai-dir-0.png",
+        "chave":  "cai-dir",
+        "indice":  0,
+        "larguraUtil":  115,
+        "alturaUtil":  204,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "cai-dir-1.png",
+        "chave":  "cai-dir",
+        "indice":  1,
+        "larguraUtil":  117,
+        "alturaUtil":  169,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "cai-dir-2.png",
+        "chave":  "cai-dir",
+        "indice":  2,
+        "larguraUtil":  127,
+        "alturaUtil":  154,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "cai-dir-3.png",
+        "chave":  "cai-dir",
+        "indice":  3,
+        "larguraUtil":  173,
+        "alturaUtil":  94,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "cai-dir-4.png",
+        "chave":  "cai-dir",
+        "indice":  4,
+        "larguraUtil":  120,
+        "alturaUtil":  154,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "cai-dir-5.png",
+        "chave":  "cai-dir",
+        "indice":  5,
+        "larguraUtil":  113,
+        "alturaUtil":  218,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "cai-esq-0.png",
+        "chave":  "cai-esq",
+        "indice":  0,
+        "larguraUtil":  113,
+        "alturaUtil":  216,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "cai-esq-1.png",
+        "chave":  "cai-esq",
+        "indice":  1,
+        "larguraUtil":  119,
+        "alturaUtil":  155,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "cai-esq-2.png",
+        "chave":  "cai-esq",
+        "indice":  2,
+        "larguraUtil":  173,
+        "alturaUtil":  96,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "cai-esq-3.png",
+        "chave":  "cai-esq",
+        "indice":  3,
+        "larguraUtil":  127,
+        "alturaUtil":  154,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "cai-esq-4.png",
+        "chave":  "cai-esq",
+        "indice":  4,
+        "larguraUtil":  117,
+        "alturaUtil":  168,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "cai-esq-5.png",
+        "chave":  "cai-esq",
+        "indice":  5,
+        "larguraUtil":  113,
+        "alturaUtil":  206,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pega-dir-0.png",
+        "chave":  "pega-dir",
+        "indice":  0,
+        "larguraUtil":  120,
+        "alturaUtil":  218,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pega-dir-1.png",
+        "chave":  "pega-dir",
+        "indice":  1,
+        "larguraUtil":  117,
+        "alturaUtil":  211,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pega-dir-2.png",
+        "chave":  "pega-dir",
+        "indice":  2,
+        "larguraUtil":  136,
+        "alturaUtil":  148,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pega-dir-3.png",
+        "chave":  "pega-dir",
+        "indice":  3,
+        "larguraUtil":  131,
+        "alturaUtil":  190,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pega-dir-4.png",
+        "chave":  "pega-dir",
+        "indice":  4,
+        "larguraUtil":  113,
+        "alturaUtil":  227,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pega-dir-5.png",
+        "chave":  "pega-dir",
+        "indice":  5,
+        "larguraUtil":  119,
+        "alturaUtil":  227,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pega-esq-0.png",
+        "chave":  "pega-esq",
+        "indice":  0,
+        "larguraUtil":  119,
+        "alturaUtil":  227,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pega-esq-1.png",
+        "chave":  "pega-esq",
+        "indice":  1,
+        "larguraUtil":  113,
+        "alturaUtil":  227,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pega-esq-2.png",
+        "chave":  "pega-esq",
+        "indice":  2,
+        "larguraUtil":  131,
+        "alturaUtil":  190,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pega-esq-3.png",
+        "chave":  "pega-esq",
+        "indice":  3,
+        "larguraUtil":  134,
+        "alturaUtil":  148,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pega-esq-4.png",
+        "chave":  "pega-esq",
+        "indice":  4,
+        "larguraUtil":  115,
+        "alturaUtil":  206,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pega-esq-5.png",
+        "chave":  "pega-esq",
+        "indice":  5,
+        "larguraUtil":  120,
+        "alturaUtil":  215,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-parada-0.png",
+        "chave":  "grande-parada",
+        "indice":  0,
+        "larguraUtil":  140,
+        "alturaUtil":  250,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-parada-1.png",
+        "chave":  "grande-parada",
+        "indice":  1,
+        "larguraUtil":  136,
+        "alturaUtil":  246,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-parada-2.png",
+        "chave":  "grande-parada",
+        "indice":  2,
+        "larguraUtil":  133,
+        "alturaUtil":  256,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-parada-3.png",
+        "chave":  "grande-parada",
+        "indice":  3,
+        "larguraUtil":  127,
+        "alturaUtil":  260,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-anda-0.png",
+        "chave":  "grande-anda",
+        "indice":  0,
+        "larguraUtil":  131,
+        "alturaUtil":  230,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-anda-1.png",
+        "chave":  "grande-anda",
+        "indice":  1,
+        "larguraUtil":  122,
+        "alturaUtil":  230,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-anda-2.png",
+        "chave":  "grande-anda",
+        "indice":  2,
+        "larguraUtil":  129,
+        "alturaUtil":  229,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-anda-3.png",
+        "chave":  "grande-anda",
+        "indice":  3,
+        "larguraUtil":  133,
+        "alturaUtil":  225,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-anda-4.png",
+        "chave":  "grande-anda",
+        "indice":  4,
+        "larguraUtil":  141,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-anda-5.png",
+        "chave":  "grande-anda",
+        "indice":  5,
+        "larguraUtil":  140,
+        "alturaUtil":  225,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-pula-0.png",
+        "chave":  "grande-pula",
+        "indice":  0,
+        "larguraUtil":  131,
+        "alturaUtil":  293,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-pula-1.png",
+        "chave":  "grande-pula",
+        "indice":  1,
+        "larguraUtil":  133,
+        "alturaUtil":  258,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-pula-2.png",
+        "chave":  "grande-pula",
+        "indice":  2,
+        "larguraUtil":  124,
+        "alturaUtil":  229,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-pula-3.png",
+        "chave":  "grande-pula",
+        "indice":  3,
+        "larguraUtil":  120,
+        "alturaUtil":  225,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-pula-4.png",
+        "chave":  "grande-pula",
+        "indice":  4,
+        "larguraUtil":  117,
+        "alturaUtil":  187,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-pula-5.png",
+        "chave":  "grande-pula",
+        "indice":  5,
+        "larguraUtil":  115,
+        "alturaUtil":  176,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-cai-0.png",
+        "chave":  "grande-cai",
+        "indice":  0,
+        "larguraUtil":  127,
+        "alturaUtil":  206,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-cai-1.png",
+        "chave":  "grande-cai",
+        "indice":  1,
+        "larguraUtil":  126,
+        "alturaUtil":  164,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-cai-2.png",
+        "chave":  "grande-cai",
+        "indice":  2,
+        "larguraUtil":  122,
+        "alturaUtil":  161,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-cai-3.png",
+        "chave":  "grande-cai",
+        "indice":  3,
+        "larguraUtil":  190,
+        "alturaUtil":  91,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-cai-4.png",
+        "chave":  "grande-cai",
+        "indice":  4,
+        "larguraUtil":  127,
+        "alturaUtil":  199,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-pega-0.png",
+        "chave":  "grande-pega",
+        "indice":  0,
+        "larguraUtil":  129,
+        "alturaUtil":  220,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-pega-1.png",
+        "chave":  "grande-pega",
+        "indice":  1,
+        "larguraUtil":  136,
+        "alturaUtil":  211,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-pega-2.png",
+        "chave":  "grande-pega",
+        "indice":  2,
+        "larguraUtil":  138,
+        "alturaUtil":  152,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-pega-3.png",
+        "chave":  "grande-pega",
+        "indice":  3,
+        "larguraUtil":  122,
+        "alturaUtil":  215,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "grande-pega-4.png",
+        "chave":  "grande-pega",
+        "indice":  4,
+        "larguraUtil":  129,
+        "alturaUtil":  222,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-parada-0.png",
+        "chave":  "pequena-parada",
+        "indice":  0,
+        "larguraUtil":  75,
+        "alturaUtil":  131,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-parada-1.png",
+        "chave":  "pequena-parada",
+        "indice":  1,
+        "larguraUtil":  73,
+        "alturaUtil":  131,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-parada-2.png",
+        "chave":  "pequena-parada",
+        "indice":  2,
+        "larguraUtil":  77,
+        "alturaUtil":  129,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-parada-3.png",
+        "chave":  "pequena-parada",
+        "indice":  3,
+        "larguraUtil":  77,
+        "alturaUtil":  131,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-0.png",
+        "chave":  "pequena-anda",
+        "indice":  0,
+        "larguraUtil":  72,
+        "alturaUtil":  122,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-1.png",
+        "chave":  "pequena-anda",
+        "indice":  1,
+        "larguraUtil":  75,
+        "alturaUtil":  124,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-2.png",
+        "chave":  "pequena-anda",
+        "indice":  2,
+        "larguraUtil":  73,
+        "alturaUtil":  124,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-3.png",
+        "chave":  "pequena-anda",
+        "indice":  3,
+        "larguraUtil":  73,
+        "alturaUtil":  124,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-4.png",
+        "chave":  "pequena-anda",
+        "indice":  4,
+        "larguraUtil":  70,
+        "alturaUtil":  122,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-5.png",
+        "chave":  "pequena-anda",
+        "indice":  5,
+        "larguraUtil":  70,
+        "alturaUtil":  124,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-6.png",
+        "chave":  "pequena-anda",
+        "indice":  6,
+        "larguraUtil":  72,
+        "alturaUtil":  124,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pula-0.png",
+        "chave":  "pequena-pula",
+        "indice":  0,
+        "larguraUtil":  75,
+        "alturaUtil":  119,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pula-1.png",
+        "chave":  "pequena-pula",
+        "indice":  1,
+        "larguraUtil":  77,
+        "alturaUtil":  143,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pula-2.png",
+        "chave":  "pequena-pula",
+        "indice":  2,
+        "larguraUtil":  79,
+        "alturaUtil":  152,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pula-3.png",
+        "chave":  "pequena-pula",
+        "indice":  3,
+        "larguraUtil":  77,
+        "alturaUtil":  145,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pula-4.png",
+        "chave":  "pequena-pula",
+        "indice":  4,
+        "larguraUtil":  70,
+        "alturaUtil":  120,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pula-5.png",
+        "chave":  "pequena-pula",
+        "indice":  5,
+        "larguraUtil":  72,
+        "alturaUtil":  113,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-0.png",
+        "chave":  "pequena-cai",
+        "indice":  0,
+        "larguraUtil":  75,
+        "alturaUtil":  126,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-1.png",
+        "chave":  "pequena-cai",
+        "indice":  1,
+        "larguraUtil":  77,
+        "alturaUtil":  108,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-2.png",
+        "chave":  "pequena-cai",
+        "indice":  2,
+        "larguraUtil":  75,
+        "alturaUtil":  103,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-3.png",
+        "chave":  "pequena-cai",
+        "indice":  3,
+        "larguraUtil":  127,
+        "alturaUtil":  63,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-4.png",
+        "chave":  "pequena-cai",
+        "indice":  4,
+        "larguraUtil":  79,
+        "alturaUtil":  126,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pega-0.png",
+        "chave":  "pequena-pega",
+        "indice":  0,
+        "larguraUtil":  77,
+        "alturaUtil":  134,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pega-1.png",
+        "chave":  "pequena-pega",
+        "indice":  1,
+        "larguraUtil":  80,
+        "alturaUtil":  127,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pega-2.png",
+        "chave":  "pequena-pega",
+        "indice":  2,
+        "larguraUtil":  94,
+        "alturaUtil":  98,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pega-3.png",
+        "chave":  "pequena-pega",
+        "indice":  3,
+        "larguraUtil":  82,
+        "alturaUtil":  136,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pega-4.png",
+        "chave":  "pequena-pega",
+        "indice":  4,
+        "larguraUtil":  87,
+        "alturaUtil":  148,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "transicao-0.png",
+        "chave":  "transicao",
+        "indice":  0,
+        "larguraUtil":  134,
+        "alturaUtil":  255,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "transicao-1.png",
+        "chave":  "transicao",
+        "indice":  1,
+        "larguraUtil":  127,
+        "alturaUtil":  239,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "transicao-2.png",
+        "chave":  "transicao",
+        "indice":  2,
+        "larguraUtil":  113,
+        "alturaUtil":  215,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "transicao-3.png",
+        "chave":  "transicao",
+        "indice":  3,
+        "larguraUtil":  110,
+        "alturaUtil":  202,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "transicao-4.png",
+        "chave":  "transicao",
+        "indice":  4,
+        "larguraUtil":  94,
+        "alturaUtil":  180,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "transicao-5.png",
+        "chave":  "transicao",
+        "indice":  5,
+        "larguraUtil":  89,
+        "alturaUtil":  152,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "transicao-6.png",
+        "chave":  "transicao",
+        "indice":  6,
+        "larguraUtil":  79,
+        "alturaUtil":  131,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "transicao-7.png",
+        "chave":  "transicao",
+        "indice":  7,
+        "larguraUtil":  70,
+        "alturaUtil":  117,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-dir-0.png",
+        "chave":  "corre-dir",
+        "indice":  0,
+        "larguraUtil":  137,
+        "alturaUtil":  228,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-dir-1.png",
+        "chave":  "corre-dir",
+        "indice":  1,
+        "larguraUtil":  166,
+        "alturaUtil":  226,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-dir-2.png",
+        "chave":  "corre-dir",
+        "indice":  2,
+        "larguraUtil":  177,
+        "alturaUtil":  228,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-dir-3.png",
+        "chave":  "corre-dir",
+        "indice":  3,
+        "larguraUtil":  198,
+        "alturaUtil":  226,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-dir-4.png",
+        "chave":  "corre-dir",
+        "indice":  4,
+        "larguraUtil":  177,
+        "alturaUtil":  222,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-dir-5.png",
+        "chave":  "corre-dir",
+        "indice":  5,
+        "larguraUtil":  128,
+        "alturaUtil":  231,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-esq-0.png",
+        "chave":  "corre-esq",
+        "indice":  0,
+        "larguraUtil":  129,
+        "alturaUtil":  226,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-esq-1.png",
+        "chave":  "corre-esq",
+        "indice":  1,
+        "larguraUtil":  168,
+        "alturaUtil":  226,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-esq-2.png",
+        "chave":  "corre-esq",
+        "indice":  2,
+        "larguraUtil":  193,
+        "alturaUtil":  225,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-esq-3.png",
+        "chave":  "corre-esq",
+        "indice":  3,
+        "larguraUtil":  188,
+        "alturaUtil":  225,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-esq-4.png",
+        "chave":  "corre-esq",
+        "indice":  4,
+        "larguraUtil":  176,
+        "alturaUtil":  226,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-esq-5.png",
+        "chave":  "corre-esq",
+        "indice":  5,
+        "larguraUtil":  137,
+        "alturaUtil":  231,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-frente-0.png",
+        "chave":  "anda-frente",
+        "indice":  0,
+        "larguraUtil":  129,
+        "alturaUtil":  246,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-frente-1.png",
+        "chave":  "anda-frente",
+        "indice":  1,
+        "larguraUtil":  130,
+        "alturaUtil":  251,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-frente-2.png",
+        "chave":  "anda-frente",
+        "indice":  2,
+        "larguraUtil":  131,
+        "alturaUtil":  254,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-frente-3.png",
+        "chave":  "anda-frente",
+        "indice":  3,
+        "larguraUtil":  129,
+        "alturaUtil":  255,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-frente-4.png",
+        "chave":  "anda-frente",
+        "indice":  4,
+        "larguraUtil":  130,
+        "alturaUtil":  258,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-frente-5.png",
+        "chave":  "anda-frente",
+        "indice":  5,
+        "larguraUtil":  128,
+        "alturaUtil":  254,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-pulo-0.png",
+        "chave":  "costas-pulo",
+        "indice":  0,
+        "larguraUtil":  142,
+        "alturaUtil":  253,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-pulo-1.png",
+        "chave":  "costas-pulo",
+        "indice":  1,
+        "larguraUtil":  148,
+        "alturaUtil":  260,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-pulo-2.png",
+        "chave":  "costas-pulo",
+        "indice":  2,
+        "larguraUtil":  154,
+        "alturaUtil":  275,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-pulo-3.png",
+        "chave":  "costas-pulo",
+        "indice":  3,
+        "larguraUtil":  156,
+        "alturaUtil":  272,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-pulo-4.png",
+        "chave":  "costas-pulo",
+        "indice":  4,
+        "larguraUtil":  156,
+        "alturaUtil":  259,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-corre-0.png",
+        "chave":  "costas-corre",
+        "indice":  0,
+        "larguraUtil":  141,
+        "alturaUtil":  262,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-corre-1.png",
+        "chave":  "costas-corre",
+        "indice":  1,
+        "larguraUtil":  141,
+        "alturaUtil":  262,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-corre-2.png",
+        "chave":  "costas-corre",
+        "indice":  2,
+        "larguraUtil":  139,
+        "alturaUtil":  262,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-corre-3.png",
+        "chave":  "costas-corre",
+        "indice":  3,
+        "larguraUtil":  137,
+        "alturaUtil":  260,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-corre-4.png",
+        "chave":  "costas-corre",
+        "indice":  4,
+        "larguraUtil":  139,
+        "alturaUtil":  262,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-corre-5.png",
+        "chave":  "costas-corre",
+        "indice":  5,
+        "larguraUtil":  137,
+        "alturaUtil":  260,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-pega-item-0.png",
+        "chave":  "costas-pega-item",
+        "indice":  0,
+        "larguraUtil":  139,
+        "alturaUtil":  260,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-pega-item-1.png",
+        "chave":  "costas-pega-item",
+        "indice":  1,
+        "larguraUtil":  150,
+        "alturaUtil":  191,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-pega-item-2.png",
+        "chave":  "costas-pega-item",
+        "indice":  2,
+        "larguraUtil":  150,
+        "alturaUtil":  165,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-pega-item-3.png",
+        "chave":  "costas-pega-item",
+        "indice":  3,
+        "larguraUtil":  137,
+        "alturaUtil":  255,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "ofegante-0.png",
+        "chave":  "ofegante",
+        "indice":  0,
+        "larguraUtil":  133,
+        "alturaUtil":  256,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "ofegante-1.png",
+        "chave":  "ofegante",
+        "indice":  1,
+        "larguraUtil":  161,
+        "alturaUtil":  225,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "ofegante-2.png",
+        "chave":  "ofegante",
+        "indice":  2,
+        "larguraUtil":  178,
+        "alturaUtil":  216,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "ofegante-3.png",
+        "chave":  "ofegante",
+        "indice":  3,
+        "larguraUtil":  173,
+        "alturaUtil":  201,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "dano-dir-0.png",
+        "chave":  "dano-dir",
+        "indice":  0,
+        "larguraUtil":  130,
+        "alturaUtil":  252,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "dano-dir-1.png",
+        "chave":  "dano-dir",
+        "indice":  1,
+        "larguraUtil":  164,
+        "alturaUtil":  198,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "dano-esq-0.png",
+        "chave":  "dano-esq",
+        "indice":  0,
+        "larguraUtil":  154,
+        "alturaUtil":  234,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "dano-esq-1.png",
+        "chave":  "dano-esq",
+        "indice":  1,
+        "larguraUtil":  149,
+        "alturaUtil":  191,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-0.png",
+        "chave":  "costas",
+        "indice":  0,
+        "larguraUtil":  127,
+        "alturaUtil":  253,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-1.png",
+        "chave":  "costas",
+        "indice":  1,
+        "larguraUtil":  123,
+        "alturaUtil":  253,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-2.png",
+        "chave":  "costas",
+        "indice":  2,
+        "larguraUtil":  124,
+        "alturaUtil":  253,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-3.png",
+        "chave":  "costas",
+        "indice":  3,
+        "larguraUtil":  123,
+        "alturaUtil":  253,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "costas-4.png",
+        "chave":  "costas",
+        "indice":  4,
+        "larguraUtil":  124,
+        "alturaUtil":  253,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    }
+]

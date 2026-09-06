@@ -1,0 +1,383 @@
+{
+  "folhas": [
+    {
+      "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Atlas de Sprites da Alice Pixel Art.png",
+      "fundo": "transparente",
+      "corDeFundo": [
+        0,
+        0,
+        0
+      ],
+      "tolerancia": 40,
+      "linhas": [
+        {
+          "chave": "anda-dir",
+          "x1": 36,
+          "y1": 42,
+          "x2": 1463,
+          "y2": 187,
+          "quadros": 11,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "anda-esq",
+          "x1": 57,
+          "y1": 235,
+          "x2": 1493,
+          "y2": 378,
+          "quadros": 11,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "pula-dir",
+          "x1": 48,
+          "y1": 426,
+          "x2": 699,
+          "y2": 598,
+          "quadros": 5,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "pula-esq",
+          "x1": 838,
+          "y1": 426,
+          "x2": 1487,
+          "y2": 598,
+          "quadros": 5,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "cai-dir",
+          "x1": 42,
+          "y1": 646,
+          "x2": 710,
+          "y2": 782,
+          "quadros": 6,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "cai-esq",
+          "x1": 826,
+          "y1": 646,
+          "x2": 1495,
+          "y2": 782,
+          "quadros": 6,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "pega-dir",
+          "x1": 37,
+          "y1": 837,
+          "x2": 707,
+          "y2": 985,
+          "quadros": 6,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "pega-esq",
+          "x1": 831,
+          "y1": 837,
+          "x2": 1498,
+          "y2": 985,
+          "quadros": 6,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        }
+      ]
+    },
+    {
+      "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/grande e pequena para quando comer os biscoitos.png",
+      "fundo": "transparente",
+      "corDeFundo": [
+        0,
+        0,
+        0
+      ],
+      "tolerancia": 40,
+      "linhas": [
+        {
+          "chave": "grande-parada",
+          "x1": 132,
+          "y1": 46,
+          "x2": 680,
+          "y2": 200,
+          "quadros": 4,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "grande-anda",
+          "x1": 132,
+          "y1": 200,
+          "x2": 808,
+          "y2": 335,
+          "quadros": 6,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "grande-pula",
+          "x1": 132,
+          "y1": 337,
+          "x2": 810,
+          "y2": 505,
+          "quadros": 6,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "grande-cai",
+          "x1": 132,
+          "y1": 495,
+          "x2": 745,
+          "y2": 618,
+          "quadros": 5,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "grande-pega",
+          "x1": 132,
+          "y1": 618,
+          "x2": 790,
+          "y2": 755,
+          "quadros": 5,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "pequena-parada",
+          "x1": 960,
+          "y1": 95,
+          "x2": 1400,
+          "y2": 190,
+          "quadros": 4,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "pequena-anda",
+          "x1": 960,
+          "y1": 225,
+          "x2": 1510,
+          "y2": 315,
+          "quadros": 7,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "pequena-pula",
+          "x1": 960,
+          "y1": 358,
+          "x2": 1505,
+          "y2": 482,
+          "quadros": 6,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "pequena-cai",
+          "x1": 960,
+          "y1": 525,
+          "x2": 1500,
+          "y2": 622,
+          "quadros": 5,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "pequena-pega",
+          "x1": 960,
+          "y1": 645,
+          "x2": 1495,
+          "y2": 755,
+          "quadros": 5,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        },
+        {
+          "chave": "transicao",
+          "x1": 525,
+          "y1": 818,
+          "x2": 1400,
+          "y2": 980,
+          "quadros": 8,
+          "ancora": "vestido",
+          "escala": 1.7448,
+          "limparAnotacoes": false
+        }
+      ]
+    },
+    {
+      "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/1 e 2.png",
+      "fundo": "chapado",
+      "corDeFundo": [
+        3,
+        3,
+        3
+      ],
+      "tolerancia": 30,
+      "linhas": [
+        {
+          "chave": "corre-dir",
+          "x1": 128,
+          "y1": 121,
+          "x2": 1400,
+          "y2": 312,
+          "quadros": 6,
+          "ancora": "vestido",
+          "escala": 1.2758,
+          "limparAnotacoes": true
+        },
+        {
+          "chave": "corre-esq",
+          "x1": 138,
+          "y1": 403,
+          "x2": 1416,
+          "y2": 598,
+          "quadros": 6,
+          "ancora": "vestido",
+          "escala": 1.2758,
+          "limparAnotacoes": true
+        },
+        {
+          "chave": "anda-frente",
+          "x1": 136,
+          "y1": 728,
+          "x2": 1394,
+          "y2": 954,
+          "quadros": 6,
+          "ancora": "vestido",
+          "escala": 1.2758,
+          "limparAnotacoes": true
+        }
+      ]
+    },
+    {
+      "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/4-5-6.png",
+      "fundo": "chapado",
+      "corDeFundo": [
+        3,
+        3,
+        3
+      ],
+      "tolerancia": 30,
+      "linhas": [
+        {
+          "chave": "costas-pulo",
+          "x1": 44,
+          "y1": 105,
+          "x2": 538,
+          "y2": 302,
+          "quadros": 5,
+          "ancora": "vestido",
+          "escala": 1.8741,
+          "limparAnotacoes": true
+        },
+        {
+          "chave": "costas-corre",
+          "x1": 572,
+          "y1": 105,
+          "x2": 1092,
+          "y2": 302,
+          "quadros": 6,
+          "ancora": "vestido",
+          "escala": 1.8741,
+          "limparAnotacoes": true
+        },
+        {
+          "chave": "costas-pega-item",
+          "x1": 1118,
+          "y1": 105,
+          "x2": 1496,
+          "y2": 302,
+          "quadros": 4,
+          "ancora": "vestido",
+          "escala": 1.8741,
+          "limparAnotacoes": true
+        },
+        {
+          "chave": "ofegante",
+          "x1": 210,
+          "y1": 435,
+          "x2": 1120,
+          "y2": 626,
+          "quadros": 4,
+          "ancora": "vestido",
+          "escala": 1.4795,
+          "limparAnotacoes": true
+        },
+        {
+          "chave": "dano-dir",
+          "x1": 180,
+          "y1": 763,
+          "x2": 560,
+          "y2": 949,
+          "quadros": 2,
+          "ancora": "vestido",
+          "escala": 1.4795,
+          "limparAnotacoes": true
+        },
+        {
+          "chave": "dano-esq",
+          "x1": 700,
+          "y1": 763,
+          "x2": 1100,
+          "y2": 949,
+          "quadros": 2,
+          "ancora": "vestido",
+          "escala": 1.4795,
+          "limparAnotacoes": true
+        }
+      ]
+    },
+    {
+      "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/alice de costas.png",
+      "fundo": "transparente",
+      "corDeFundo": [
+        0,
+        0,
+        0
+      ],
+      "tolerancia": 40,
+      "linhas": [
+        {
+          "chave": "costas",
+          "x1": 210,
+          "y1": 180,
+          "x2": 1916,
+          "y2": 612,
+          "quadros": 5,
+          "ancora": "vestido",
+          "escala": 0.5981,
+          "limparAnotacoes": false
+        }
+      ]
+    }
+  ]
+}

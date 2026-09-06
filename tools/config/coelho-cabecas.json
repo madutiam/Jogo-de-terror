@@ -1,0 +1,13 @@
+{
+  "folhas": [{
+    "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Folha de Expressões do Coelho Terrorífico.png",
+    "fundo": "chapado",
+    "corDeFundo": [3, 3, 3],
+    "tolerancia": 30,
+    "linhas": [
+      { "chave": "coelho-relogio-rosto",  "x1": 20,   "y1": 496, "x2": 490,  "y2": 712, "quadros": 3, "ancora": "massa", "limparAnotacoes": true },
+      { "chave": "coelho-alice-rosto",    "x1": 530,  "y1": 496, "x2": 1010, "y2": 712, "quadros": 3, "ancora": "massa", "limparAnotacoes": true },
+      { "chave": "coelho-estranha-rosto", "x1": 1040, "y1": 496, "x2": 1525, "y2": 712, "quadros": 3, "ancora": "massa", "limparAnotacoes": true }
+    ]
+  }]
+}

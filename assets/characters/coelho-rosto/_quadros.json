@@ -1,0 +1,83 @@
+﻿[
+    {
+        "arquivo":  "coelho-relogio-rosto-0.png",
+        "chave":  "coelho-relogio-rosto",
+        "indice":  0,
+        "larguraUtil":  136,
+        "alturaUtil":  200,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-relogio-rosto-1.png",
+        "chave":  "coelho-relogio-rosto",
+        "indice":  1,
+        "larguraUtil":  139,
+        "alturaUtil":  204,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-relogio-rosto-2.png",
+        "chave":  "coelho-relogio-rosto",
+        "indice":  2,
+        "larguraUtil":  135,
+        "alturaUtil":  200,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-alice-rosto-0.png",
+        "chave":  "coelho-alice-rosto",
+        "indice":  0,
+        "larguraUtil":  127,
+        "alturaUtil":  201,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-alice-rosto-1.png",
+        "chave":  "coelho-alice-rosto",
+        "indice":  1,
+        "larguraUtil":  140,
+        "alturaUtil":  201,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-alice-rosto-2.png",
+        "chave":  "coelho-alice-rosto",
+        "indice":  2,
+        "larguraUtil":  139,
+        "alturaUtil":  201,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-estranha-rosto-0.png",
+        "chave":  "coelho-estranha-rosto",
+        "indice":  0,
+        "larguraUtil":  143,
+        "alturaUtil":  204,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-estranha-rosto-1.png",
+        "chave":  "coelho-estranha-rosto",
+        "indice":  1,
+        "larguraUtil":  142,
+        "alturaUtil":  201,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-estranha-rosto-2.png",
+        "chave":  "coelho-estranha-rosto",
+        "indice":  2,
+        "larguraUtil":  151,
+        "alturaUtil":  204,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    }
+]

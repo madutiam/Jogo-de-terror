@@ -1,0 +1,14 @@
+{
+  "name": "alice-terror",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Jogo de terror em pixel art. Tres fases. HTML5 + Phaser 3.",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node tools/dev-server.js",
+    "start": "node tools/dev-server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
