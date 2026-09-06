@@ -66,6 +66,21 @@ export const SALAS = {
     ambiente: { clipe: 'ambiente.galhos', volume: 0.40 },
   },
 
+  /**
+   * PROVISORIO: a clareira do espelho. E a unica tela da floresta com LUZ
+   * propria — a claridade que cai no centro sem vir de lugar nenhum. Por isso
+   * ela tem `luzes`, e as outras duas nao.
+   */
+  espelho: {
+    imagem: 'fase2-espelho',
+    linhaDoChao: 429,
+    terreno: 'floresta',
+    nome: 'a clareira',
+    luzes: [{ x: 0.52, y: 0.30, raio: 300, forca: 0.30 }],
+    saidas: [],
+    ambiente: { clipe: 'ambiente.sussurros', volume: 0.26 },
+  },
+
   corredor: {
     imagem: 'sala-corredor',
     linhaDoChao: 620,
