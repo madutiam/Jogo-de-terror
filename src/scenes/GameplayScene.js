@@ -262,7 +262,19 @@ export class GameplayScene extends Phaser.Scene {
       // 20 px fazem quem esta ENCOSTADA contar como em cima. O que decide se
       // ela sobe de verdade continua sendo a altura do pulo, logo abaixo: a
       // tolerancia abre a porta, o pulo e que passa por ela.
-      const FOLGA_DE_PROFUNDIDADE = 20;
+      // 4, e nao 20.
+      //
+      // A folga existe para DESEMPATAR o toque, nao para deixar andar para fora
+      // da peca. O colisor impede a Alice de entrar na pegada dela, entao
+      // encostada o topo do corpo dela cai exatamente onde o fundo da peca
+      // acaba — 588 contra 588 — e o teste e estritamente menor. Sem nenhuma
+      // folga ela nunca pousa.
+      //
+      // Com 20, porem, ela ficava ate 19 px A FRENTE da peca ainda recebendo
+      // chao: nessa posicao os pes dela caem 58 px abaixo do topo do caixote na
+      // tela, e o que se ve e ela flutuando na frente dele. 4 desempata o toque
+      // e mais nada — dar um passo para a frente derruba, que e o certo.
+      const FOLGA_DE_PROFUNDIDADE = 4;
 
       // EM X, O QUE VALE E O CENTRO DELA — nao a ponta do pe.
       //
