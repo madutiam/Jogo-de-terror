@@ -262,8 +262,22 @@ export class GameplayScene extends Phaser.Scene {
       // ela sobe de verdade continua sendo a altura do pulo, logo abaixo: a
       // tolerancia abre a porta, o pulo e que passa por ela.
       const FOLGA_DE_PROFUNDIDADE = 20;
+
+      // EM X, O QUE VALE E O CENTRO DELA — nao a ponta do pe.
+      //
+      // `pes.right > corpo.left` aceita UM pixel de sobreposicao. Com o corpo
+      // dela em 58 de largura, isso deixava a Alice ganhar chao boiando quase
+      // meia largura ao lado da peca: na tela ela ficava parada no ar, com a
+      // tabua comecando so depois dos pes dela. Enquanto ninguem conseguia
+      // pousar em nada, o defeito nunca aparecia.
+      //
+      // A BEIRADA e a gentileza que sobra: da para parar na pontinha da viga,
+      // mas nao a meio corpo dela.
+      const BEIRADA = 14;
+      const centro = (pes.left + pes.right) / 2;
+
       const encosta =
-        pes.right > corpo.left && pes.left < corpo.right &&
+        centro > corpo.left - BEIRADA && centro < corpo.right + BEIRADA &&
         pes.bottom > corpo.top - FOLGA_DE_PROFUNDIDADE &&
         pes.top < corpo.bottom + FOLGA_DE_PROFUNDIDADE;
 
