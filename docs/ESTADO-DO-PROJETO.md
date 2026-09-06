@@ -50,10 +50,11 @@ Resumo do que mais custou até aqui. O texto completo está no ROTEIRO.
 
 ## O que existe hoje
 
-**Código:** 33 arquivos, 8.502 linhas, em `src/`.
+**Código:** 36 arquivos, 9.140 linhas, em `src/`.
 
 **Cenas:** Boot · Preload · Menu · História · Tutorial · Configurações ·
-Créditos · Phase1 (o quarto) · Sala (as outras quatro salas da Fase 1).
+Créditos · **Highsfield01** · Phase1 (o quarto) · Sala (as outras quatro salas)
+· **Highsfield02**.
 
 **Assets no jogo:**
 
