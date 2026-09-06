@@ -189,23 +189,44 @@ class Audio {
     return c.volumeGeral * base * volumeClipe * duck;
   }
 
+  /**
+   * Um fade em curso manda no volume daquele som ate terminar. Mexer no slider
+   * no meio dele nao adiantava: `aplicarVolumes` ajustava, e no quadro seguinte
+   * o fade puxava de volta para o alvo ANTIGO. Quem abre as configuracoes
+   * enquanto a musica do menu ainda esta entrando via o controle nao pegar.
+   *
+   * Em vez de brigar com o fade, reaponta ele: a transicao continua suave e
+   * termina no volume novo.
+   */
+  reapontarFade(som, alvo) {
+    const f = this.fades?.find((x) => x.som === som);
+    if (!f) return false;
+    f.para = alvo;
+    return true;
+  }
+
+  /** Aplica o volume respeitando um fade em curso. */
+  ajustarVolume(som, alvo) {
+    if (!this.reapontarFade(som, alvo)) this.definirVolume(som, alvo);
+  }
+
   /** Reaplica volumes em tudo que ja esta tocando (chamado pelas configuracoes). */
   aplicarVolumes() {
     if (!this.game) return;
 
     if (this.musicaAtual && this.musicaAtual.isPlaying) {
-      this.definirVolume(
+      this.ajustarVolume(
         this.musicaAtual, this.volumeDe('musica', this.musicaAtual.__volumeBase)
       );
     }
     if (this.ambienteAtual && this.ambienteAtual.isPlaying) {
-      this.definirVolume(
+      this.ajustarVolume(
         this.ambienteAtual, this.volumeDe('ambiente', this.ambienteAtual.__volumeBase)
       );
     }
     for (const som of this.loops.values()) {
       if (som.isPlaying) {
-        this.definirVolume(som, this.volumeDe('efeito', som.__volumeBase));
+        this.ajustarVolume(som, this.volumeDe('efeito', som.__volumeBase));
       }
     }
   }
