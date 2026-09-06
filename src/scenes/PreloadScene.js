@@ -7,7 +7,7 @@ import { SCENES } from '../core/constants.js';
 import { dimensoes, escalaParaCaber } from '../core/tela.js';
 import { CORES, HEX, FONTE } from '../ui/theme.js';
 import { AUDIO_ARQUIVOS } from '../data/audio.js';
-import { prepararTexturasDaAlice } from '../core/Alice.js';
+import { carregarQuadrosDaAlice } from '../core/Alice.js';
 import { recortarTextura } from '../core/texturas.js';
 
 export class PreloadScene extends Phaser.Scene {
@@ -19,13 +19,11 @@ export class PreloadScene extends Phaser.Scene {
     this.desenharBarra();
 
     // ---- personagens ----
-    this.load.image('alice-idle-frente', 'assets/characters/alice-idle-frente.png');
-    this.load.image('alice-anda-direita', 'assets/characters/alice-anda-direita.png');
-    this.load.image('alice-anda-esquerda', 'assets/characters/alice-anda-esquerda.png');
-    // Andando para o fundo da cena: 0 parada, 1 a 4 o ciclo de caminhada.
-    for (let i = 0; i < 5; i++) {
-      this.load.image('alice-costas-' + i, 'assets/characters/alice-costas-' + i + '.png');
-    }
+    // Os 163 quadros da Alice, ja fatiados e normalizados: parada, andar,
+    // correr, pular, cair, pegar item, levar dano, ofegante — de perfil, de
+    // frente e de costas — mais o conjunto INTEIRO da Alice pequena e os 8
+    // quadros de encolher.
+    carregarQuadrosDaAlice(this);
     this.load.image('alice-demon', 'assets/characters/alice-demon.png');
     this.load.image('coelho', 'assets/characters/coelho.png');
     this.load.image('coelho-morto', 'assets/characters/coelho-morto.png');
@@ -62,9 +60,6 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   create() {
-    // Recorta os PNGs da Alice para o tamanho util, ja na escala de jogo.
-    prepararTexturasDaAlice(this);
-
     this.scene.start(SCENES.MENU);
   }
 

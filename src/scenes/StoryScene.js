@@ -26,25 +26,30 @@ const ESPACO_PARAGRAFO = 14;
  * Quem aparece, e em qual trecho.
  * `indice` e a posicao do paragrafo no texto de HISTORIA.
  * `altura` e a altura desejada em pixels de tela (a escala sai dai).
+ *
+ * `x` e uma FRACAO da largura da tela, nao um pixel. Antes eram pixels fixos,
+ * medidos numa tela de 960 — em tela larga as figuras ficavam amontoadas do
+ * lado esquerdo enquanto o texto centralizava no meio de verdade, e a cena
+ * parecia desmontada.
  */
 const APARICOES = [
   // "— Coelho?" — a pergunta sem resposta.
-  { chave: 'coelho', indice: 8, x: 252, altura: 358, opacidade: 0.26 },
+  { chave: 'coelho', indice: 8, x: 0.26, altura: 358, opacidade: 0.26 },
 
   // "Uma respiracao." — alguma coisa atras dela. O Chapeleiro so observa.
-  { chave: 'chapeleiro', indice: 22, x: 726, altura: 384, opacidade: 0.24 },
+  { chave: 'chapeleiro', indice: 22, x: 0.76, altura: 384, opacidade: 0.24 },
 
   // "Quase infantil. Quase familiar." — o sussurro.
   // Esta imagem e preta com os olhos e os dentes acesos. Desenhada em modo
   // ADD, o preto some por completo e so o brilho aparece: o sorriso nasce da
   // escuridao em vez de ficar colado por cima dela.
-  { chave: 'gato-sorriso', indice: 34, x: 480, largura: 840, opacidade: 0.6, brilho: true },
+  { chave: 'gato-sorriso', indice: 34, x: 0.5, largura: 0.88, opacidade: 0.6, brilho: true },
 
   // "Os rastros." — quem passou por ali.
-  { chave: 'soldado-cartas', indice: 44, x: 236, altura: 372, opacidade: 0.2 },
+  { chave: 'soldado-cartas', indice: 44, x: 0.25, altura: 372, opacidade: 0.2 },
 
   // "E algumas historias..." — o que ainda esta por vir.
-  { chave: 'alice-demon', indice: 52, x: 700, altura: 408, opacidade: 0.19 },
+  { chave: 'alice-demon', indice: 52, x: 0.73, altura: 408, opacidade: 0.19 },
 ];
 
 /** O quanto as figuras acompanham a rolagem. Menor = mais longe. */
@@ -133,7 +138,9 @@ export class StoryScene extends Phaser.Scene {
         continue;
       }
 
-      const imagem = this.add.image(config.x, 0, config.chave).setAlpha(0);
+      const imagem = this.add
+        .image(config.x * this.tela.largura, 0, config.chave)
+        .setAlpha(0);
 
       // `brilho` serve para imagens de fundo preto: em modo ADD o preto nao
       // soma nada e some, sobrando so a luz.
@@ -142,7 +149,7 @@ export class StoryScene extends Phaser.Scene {
       // Escala pela altura ou pela largura desejada, sem distorcer:
       // os dois eixos recebem o mesmo fator.
       const fator = config.largura
-        ? config.largura / imagem.width
+        ? (config.largura * this.tela.largura) / imagem.width
         : config.altura / imagem.height;
       imagem.setScale(fator);
 

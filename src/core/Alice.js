@@ -16,24 +16,33 @@
  *   `this.visual`  — o desenho, posicionado acima dos pes
  *   `this.sombra`  — a sombra no chao, que da o peso e mostra onde ela vai cair
  *
+ * ---------------------------------------------------------------------------
+ * OS DOIS TAMANHOS (roteiro, secao 7)
+ *
+ * A Alice pequena NAO e a Alice normal reduzida. Ela tem desenho proprio, feito
+ * na mesma folha da normal, ja na proporcao certa — 52% da altura. Encolher
+ * troca o CONJUNTO DE QUADROS, a pegada dos pes e a forca do pulo. Nenhum
+ * desenho e esticado em momento nenhum.
+ *
+ * A consequencia de jogo e a que o roteiro pede: pequena passa onde a normal
+ * nao cabe, e normal alcanca onde a pequena nao chega.
+ * ---------------------------------------------------------------------------
+ *
  * Regras que este arquivo faz cumprir:
  *  27/52 — nada de deslizar, flutuar ou olhar para o lado errado
- *     28 — a textura vem do sprite direcional certo. Sem flip, sem rotacao
- *      3 — sem a pose, usa o frame existente mais proximo SEM deformar, e
+ *     28 — a textura vem do sprite direcional certo; so espelha onde a artista
+ *          nao desenhou o outro lado, e nunca contra o sentido do movimento
+ *      3 — sem a pose, usa o quadro existente mais proximo SEM deformar, e
  *          registra o pedido em MissingAssets
- *
- * Desenhos que existem hoje: de frente (parada), andando para a direita,
- * andando para a esquerda, e o ciclo completo de COSTAS (parada + 4 quadros),
- * usado quando ela caminha para o fundo da cena.
  */
 
 import {
   PHYSICS,
-  ALICE_FONTE,
-  ALICE_COSTAS,
-  ALICE_ESCALA,
+  ALICE_ANIM,
+  ALICE_QUADROS,
+  ALICE_TAMANHO,
+  ALICE_TRANSICAO_MS,
   ALICE_SPRITE,
-  ALICE_PES,
   ALICE_STATE,
   IDLE_FRONT_DELAY,
   IFRAMES,
@@ -42,51 +51,49 @@ import {
 } from './constants.js';
 import { pedirAsset } from './MissingAssets.js';
 import { AudioManager } from './AudioManager.js';
-import { recortarTextura } from './texturas.js';
 
-const TEX = {
-  frente: ALICE_FONTE.frames.idle.destino,
-  direita: ALICE_FONTE.frames.right.destino,
-  esquerda: ALICE_FONTE.frames.left.destino,
-};
+/** Nome da textura de um quadro. */
+export function quadro(linha, indice) {
+  return 'alice/' + linha + '-' + indice;
+}
 
 export class Alice extends Phaser.Physics.Arcade.Sprite {
   /**
    * @param {Phaser.Scene} cena
    * @param {number} x
    * @param {number} y  ponto do chao onde ela pisa
-   * @param {{terreno?: string}} opcoes
+   * @param {{terreno?: string, tamanho?: string}} opcoes
    */
   constructor(cena, x, y, opcoes = {}) {
-    super(cena, x, y, TEX.frente);
+    super(cena, x, y, quadro('grande-parada', 0));
 
     cena.add.existing(this);
     cena.physics.add.existing(this);
 
+    this.tamanho = ALICE_TAMANHO[opcoes.tamanho || 'normal'];
+
     // O colisor e so a pegada: invisivel e do tamanho dos pes.
     this.setVisible(false);
     this.setOrigin(0.5, 0.5);
-    this.body.setSize(ALICE_PES.W, ALICE_PES.H);
-    this.body.setOffset(
-      (ALICE_SPRITE.W - ALICE_PES.W) / 2,
-      ALICE_SPRITE.H - ALICE_PES.H / 2 - ALICE_SPRITE.H / 2
-    );
     this.body.setDragX(PHYSICS.DRAG);
     this.body.setDragY(PHYSICS.DRAG);
     this.setCollideWorldBounds(true);
+    this.aplicarPegada();
 
     // Sombra: elipse escura no chao. Nao e um personagem inventado, e
     // iluminacao — e sem ela ninguem entende onde a Alice esta pisando.
-    this.sombra = cena.add.ellipse(x, y, ALICE_PES.W + 14, ALICE_PES.H + 6, 0x000000, 0.42);
+    this.sombra = cena.add.ellipse(x, y, 1, 1, 0x000000, 0.42);
 
     // O desenho, apoiado nos pes.
-    this.visual = cena.add.image(x, y, TEX.frente).setOrigin(0.5, 1);
+    this.visual = cena.add
+      .image(x, y, quadro('grande-parada', 0))
+      .setOrigin(0.5, 1);
 
     /** 'madeira' | 'floresta' | 'xadrez' — decide o som dos passos. */
     this.terreno = opcoes.terreno || 'madeira';
 
     this.estado = ALICE_STATE.IDLE;
-    this.texturaAtual = TEX.frente;
+    this.texturaAtual = null;
     /** Ultima direcao com componente horizontal: 1 direita, -1 esquerda. */
     this.olhandoPara = 1;
     /** Ultima direcao andada, como vetor. */
@@ -97,6 +104,8 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
     this.velocidadeAltura = 0;
     /** Altura do chao sob os pes (0 = piso; mais que isso = em cima de algo). */
     this.pisoAtual = 0;
+    /** Altura que o pulo em curso vai atingir. Escolhe o quadro no ar. */
+    this.apiceDoPulo = 1;
 
     this.paradaDesde = 0;
     this.puloPedidoEm = -9999;
@@ -107,43 +116,185 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
     this.controlavel = true;
     this.ofegante = false;
 
+    /** Animacao de uma vez so em curso (pegar, dano, mudar de tamanho). */
+    this.gesto = null;
     this.passosTocando = null;
 
     this.atualizarVisual();
   }
 
-  // ------------------------------------------------------------------ texturas
+  // ------------------------------------------------------------------ tamanho
 
-  /** Troca a textura sem nunca espelhar nem deformar o desenho. */
-  usarTextura(chave) {
-    if (this.texturaAtual === chave) return;
-    this.texturaAtual = chave;
-    this.visual.setTexture(chave);
+  get pequena() {
+    return this.tamanho.id === 'pequena';
+  }
+
+  /** Conjunto de animacoes do tamanho atual. */
+  get anims() {
+    return ALICE_ANIM[this.tamanho.id];
   }
 
   /**
-   * Escolhe o desenho pela direcao andada.
-   * O eixo dominante manda: andando mais para os lados usa o perfil; indo para
-   * o fundo usa o ciclo de costas; vindo para a frente usa o desenho de frente.
+   * A colisao acompanha o tamanho. Sem isto, a Alice pequena continuaria com a
+   * pegada da grande e nao passaria por baixo de nada — a mecanica inteira
+   * seria so um desenho menor.
    */
-  texturaParaDirecao(dx, dy, andando = true) {
-    if (Math.abs(dx) >= Math.abs(dy)) {
-      return dx < 0 ? TEX.esquerda : TEX.direita;
-    }
-
-    if (dy < 0) {
-      // Indo para o fundo: o unico ciclo de caminhada completo que existe.
-      return andando ? this.quadroDeCostas() : ALICE_COSTAS.parada;
-    }
-
-    return TEX.frente;
+  aplicarPegada() {
+    const pes = this.tamanho.pes;
+    this.body.setSize(pes.W, pes.H);
+    this.body.setOffset(
+      (ALICE_SPRITE.W - pes.W) / 2,
+      ALICE_SPRITE.H - pes.H / 2 - ALICE_SPRITE.H / 2
+    );
   }
 
-  /** Avanca o ciclo de costas pelo relogio, nao pelo numero de quadros. */
-  quadroDeCostas() {
-    const agora = this.scene.time.now;
-    const passo = Math.floor(agora / ALICE_COSTAS.msPorQuadro) % ALICE_COSTAS.ciclo.length;
-    return ALICE_COSTAS.ciclo[passo];
+  /**
+   * Come um biscoito. `alvo` e 'normal' ou 'pequena'.
+   *
+   * O controle sai da mao do jogador enquanto a transicao roda — sao 8 quadros
+   * desenhados para isso, e crescer e a mesma sequencia de tras para a frente.
+   * Devolve uma Promise que fecha quando ela termina de mudar.
+   */
+  mudarTamanho(alvo) {
+    const novo = ALICE_TAMANHO[alvo];
+    if (!novo || novo.id === this.tamanho.id) return Promise.resolve(false);
+
+    const encolhendo = novo.id === 'pequena';
+    const anim = ALICE_ANIM.transicao;
+
+    this.controlavel = false;
+    this.estado = ALICE_STATE.TAMANHO;
+    this.body.setVelocity(0, 0);
+    this.body.setAcceleration(0, 0);
+    this.pararPassos();
+    AudioManager.tocar('efeito.item');
+
+    return new Promise((resolver) => {
+      this.gesto = {
+        anim,
+        total: ALICE_QUADROS[anim.linha],
+        inicio: this.scene.time.now,
+        duracao: ALICE_TRANSICAO_MS,
+        invertido: !encolhendo,
+        aoTerminar: () => {
+          this.tamanho = novo;
+          this.aplicarPegada();
+          this.controlavel = true;
+          resolver(true);
+        },
+      };
+    });
+  }
+
+  // ------------------------------------------------------------------ texturas
+
+  /** Troca a textura. Espelha apenas quando a animacao pede. */
+  usarQuadro(chave, espelhar) {
+    if (this.texturaAtual !== chave) {
+      this.texturaAtual = chave;
+      this.visual.setTexture(chave);
+    }
+    this.visual.setFlipX(!!espelhar);
+  }
+
+  /**
+   * Escolhe a animacao pela direcao andada.
+   * O eixo dominante manda: andando mais para os lados usa o perfil; indo para
+   * o fundo usa o ciclo de costas; vindo para a frente usa o desenho de frente.
+   *
+   * @param {string} prefixo 'anda' | 'corre' | 'pula' | 'pega'
+   */
+  animacaoDirecional(prefixo, dx, dy) {
+    const a = this.anims;
+    if (Math.abs(dx) >= Math.abs(dy)) {
+      return dx < 0 ? a[prefixo + 'Esq'] : a[prefixo + 'Dir'];
+    }
+    return dy < 0 ? a[prefixo + 'Costas'] : a[prefixo + 'Frente'];
+  }
+
+  /** Quantos quadros uma animacao tem. */
+  totalDe(anim) {
+    return anim.quadros ? anim.quadros.length : ALICE_QUADROS[anim.linha];
+  }
+
+  registrarFalta(anim) {
+    if (anim.falta) {
+      pedirAsset('Alice', anim.falta, anim.falta, 'quadro existente mais proximo');
+    }
+  }
+
+  /** Aplica uma animacao ciclica, avancando pelo relogio. */
+  tocarCiclo(anim) {
+    if (!anim) return;
+    this.registrarFalta(anim);
+
+    const total = this.totalDe(anim);
+    const passo = Math.floor(this.scene.time.now / (anim.ms || 120)) % total;
+    const indice = anim.quadros ? anim.quadros[passo] : passo;
+
+    this.usarQuadro(quadro(anim.linha, indice), anim.espelhar);
+  }
+
+  /**
+   * Aplica uma animacao de PULO: o quadro sai da altura, nao do relogio.
+   * Subindo mostra os primeiros quadros; caindo, os ultimos. E o que faz o
+   * salto parecer ter peso em vez de rodar um laco no ar.
+   */
+  tocarPorAltura(anim) {
+    if (!anim) return;
+    this.registrarFalta(anim);
+
+    const total = this.totalDe(anim);
+    const acima = Math.max(0, this.altura - this.pisoAtual);
+    const t = Phaser.Math.Clamp(acima / Math.max(1, this.apiceDoPulo), 0, 1);
+
+    const passo = this.velocidadeAltura >= 0
+      ? Math.round(t * (total - 1) * 0.5)
+      : Math.round((total - 1) * (1 - t * 0.5));
+    const limitado = Phaser.Math.Clamp(passo, 0, total - 1);
+    const indice = anim.quadros ? anim.quadros[limitado] : limitado;
+
+    this.usarQuadro(quadro(anim.linha, indice), anim.espelhar);
+  }
+
+  /** Avanca um gesto de uma vez so. Devolve true enquanto ele durar. */
+  avancarGesto(tempo) {
+    const g = this.gesto;
+    if (!g) return false;
+
+    const t = Phaser.Math.Clamp((tempo - g.inicio) / g.duracao, 0, 1);
+    const passo = Phaser.Math.Clamp(Math.floor(t * g.total), 0, g.total - 1);
+    const ordem = g.invertido ? g.total - 1 - passo : passo;
+    const indice = g.anim.quadros ? g.anim.quadros[ordem] : ordem;
+
+    this.usarQuadro(quadro(g.anim.linha, indice), g.anim.espelhar);
+
+    if (t < 1) return true;
+
+    this.gesto = null;
+    if (g.aoTerminar) g.aoTerminar();
+    return false;
+  }
+
+  /** Toca a animacao de pegar item, na direcao em que ela esta olhando. */
+  pegarItem() {
+    const anim = this.animacaoDirecional('pega', this.direcao.x, this.direcao.y);
+    if (!anim) return Promise.resolve();
+
+    this.controlavel = false;
+    this.body.setVelocity(0, 0);
+    const total = this.totalDe(anim);
+
+    return new Promise((resolver) => {
+      this.gesto = {
+        anim,
+        total,
+        inicio: this.scene.time.now,
+        duracao: (anim.ms || 110) * total,
+        invertido: false,
+        aoTerminar: () => { this.controlavel = true; resolver(); },
+      };
+    });
   }
 
   get noChao() {
@@ -158,6 +309,15 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
    */
   controlar(input, tempo) {
     const corpo = this.body;
+
+    // Gesto em curso (pegar, dano, encolher) manda em tudo.
+    if (this.avancarGesto(tempo)) {
+      corpo.setAcceleration(0, 0);
+      this.atualizarAltura(tempo);
+      this.atualizarPassos(0, 0, false);
+      this.atualizarVisual();
+      return;
+    }
 
     if (!this.controlavel) {
       corpo.setAcceleration(0, 0);
@@ -179,7 +339,8 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
     if (andando) {
       // Normaliza para a diagonal nao ser mais rapida que a linha reta.
       const direcao = new Phaser.Math.Vector2(eixoX, eixoY).normalize();
-      const velocidade = (correndo ? PHYSICS.RUN_SPEED : PHYSICS.WALK_SPEED) * intensidade;
+      const base = correndo ? PHYSICS.RUN_SPEED : PHYSICS.WALK_SPEED;
+      const velocidade = base * intensidade * this.tamanho.passo;
 
       corpo.setAcceleration(
         direcao.x * PHYSICS.ACCELERATION,
@@ -213,14 +374,13 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
   }
 
   pular(tempo) {
-    this.velocidadeAltura = PHYSICS.IMPULSO_PULO;
+    const impulso = PHYSICS.IMPULSO_PULO * this.tamanho.impulso;
+    this.velocidadeAltura = impulso;
     this.puloPedidoEm = -9999;
 
-    pedirAsset(
-      'Alice', 'JUMP',
-      'Alice no ar subindo, de perfil e de frente, 1 a 2 frames.',
-      'frame de caminhada da direcao atual'
-    );
+    // Altura que este pulo vai atingir, para o quadro no ar sair certo.
+    this.apiceDoPulo = (impulso * impulso) / (2 * PHYSICS.GRAVIDADE_PULO);
+
     AudioManager.tocar('efeito.pulo');
   }
 
@@ -246,11 +406,6 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
 
   aoAterrissar(tempo) {
     this.aterrissouEm = tempo;
-    pedirAsset(
-      'Alice', 'LAND',
-      'Alice tocando o chao, joelhos levemente dobrados. 1 frame.',
-      'frame da direcao atual'
-    );
     AudioManager.tocar('efeito.aterrissagem');
   }
 
@@ -261,42 +416,29 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
 
     if (!this.noChao) {
       this.estado = this.velocidadeAltura > 0 ? ALICE_STATE.JUMP : ALICE_STATE.FALL;
-      if (this.estado === ALICE_STATE.FALL) {
-        pedirAsset(
-          'Alice', 'FALL',
-          'Alice caindo, cabelo e saia puxados para cima. 1 a 2 frames.',
-          'frame da direcao atual'
-        );
-      }
-      this.usarTextura(this.texturaParaDirecao(this.direcao.x, this.direcao.y, false));
-      return;
-    }
-
-    if (tempo - this.aterrissouEm < 130) {
-      this.estado = ALICE_STATE.LAND;
+      this.tocarPorAltura(
+        this.animacaoDirecional('pula', this.direcao.x, this.direcao.y)
+      );
       return;
     }
 
     if (andando) {
       this.paradaDesde = 0;
       this.estado = correndo ? ALICE_STATE.RUN : ALICE_STATE.WALK;
-
-      pedirAsset(
-        'Alice', correndo ? 'RUN' : 'WALK',
-        correndo
-          ? 'Ciclo de corrida, 4 a 6 frames por direcao. Essencial na perseguicao da Fase 2.'
-          : 'Ciclo de caminhada, 4 a 6 frames por direcao (hoje existe 1 frame por lado).',
-        'frame unico'
+      this.tocarCiclo(
+        this.animacaoDirecional(correndo ? 'corre' : 'anda', eixoX, eixoY)
       );
-
-      this.usarTextura(this.texturaParaDirecao(eixoX, eixoY));
       return;
     }
 
-    // Parada.
+    // ---- parada ----
     this.estado = this.ofegante ? ALICE_STATE.BREATHLESS : ALICE_STATE.IDLE;
-
     if (this.paradaDesde === 0) this.paradaDesde = tempo;
+
+    if (this.ofegante) {
+      this.tocarCiclo(this.anims.ofegante);
+      return;
+    }
 
     // Parada olhando para o fundo: existe desenho para isso, entao ela FICA
     // de costas. Virar para a camera aqui seria ela girar sozinha.
@@ -304,24 +446,20 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
       this.direcao.y < 0 && Math.abs(this.direcao.y) > Math.abs(this.direcao.x);
 
     if (olhandoParaOFundo) {
-      this.usarTextura(ALICE_COSTAS.parada);
-    } else if (tempo - this.paradaDesde >= IDLE_FRONT_DELAY) {
-      // De perfil ainda nao existe parada. Depois de um instante ela vira para
-      // a camera — e o unico desenho de "parada" que serve, e nao inventa pose.
-      this.usarTextura(TEX.frente);
-      pedirAsset(
-        'Alice', 'IDLE de perfil',
-        'Alice parada vista de lado, 2 a 4 frames de respiracao. ' +
-        'De frente e de costas ja existem.',
-        'alice-idle-frente (ela vira para a camera ao parar)'
-      );
+      this.tocarCiclo(this.anims.paradaCostas);
+      return;
     }
 
-    if (this.ofegante) {
+    // De perfil ainda nao existe parada propria. Depois de um instante ela vira
+    // para a camera — e o unico desenho de parada que serve, e nao inventa
+    // pose. Antes disso, fica no ultimo quadro de caminhada.
+    if (tempo - this.paradaDesde >= IDLE_FRONT_DELAY) {
+      this.tocarCiclo(this.anims.paradaFrente);
       pedirAsset(
-        'Alice', 'BREATHLESS',
-        'Alice ofegante depois da perseguicao: ombros subindo e descendo, 2 a 4 frames.',
-        'parada normal'
+        'Alice', 'IDLE de perfil',
+        'Alice parada vista de lado, 2 a 4 quadros de respiracao. ' +
+        'De frente e de costas ja existem.',
+        'parada de frente (ela vira para a camera ao parar)'
       );
     }
   }
@@ -336,9 +474,10 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
     this.visual.setScale(escala);
     this.visual.setDepth(profundidadeDeDesenho(this.y));
 
-    // A sombra fica no chao e encolhe conforme a Alice sobe: e assim que o
-    // jogador enxerga a altura do pulo.
+    // A sombra segue a PEGADA, entao ela encolhe junto com a Alice pequena.
+    const pes = this.tamanho.pes;
     const encolhe = Phaser.Math.Clamp(1 - this.altura / 260, 0.55, 1);
+    this.sombra.setSize(pes.W + 14, pes.H + 6);
     this.sombra.setPosition(this.x, this.y);
     this.sombra.setScale(escala * encolhe);
     this.sombra.setAlpha(0.42 * encolhe);
@@ -354,15 +493,7 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
 
     let desejado = null;
     if (movendo) {
-      if (correndo) {
-        desejado = 'passos.corrida';
-      } else if (this.terreno === 'madeira') {
-        desejado = 'passos.madeira';
-      } else {
-        // Nao existe passo de floresta nem de xadrez: fica em silencio ate o
-        // asset chegar, em vez de usar o som errado.
-        desejado = 'passos.' + this.terreno;
-      }
+      desejado = correndo ? 'passos.corrida' : 'passos.' + this.terreno;
     }
 
     if (desejado === this.passosTocando) return;
@@ -392,11 +523,18 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
     this.invulneravelAte = this.scene.time.now + IFRAMES;
     this.estado = ALICE_STATE.DAMAGE;
 
-    pedirAsset(
-      'Alice', 'DAMAGE',
-      'Alice levando dano: corpo recuando. 1 a 2 frames.',
-      'frame atual, apenas piscando'
-    );
+    const anim = this.olhandoPara < 0 ? this.anims.danoEsq : this.anims.danoDir;
+    if (anim) {
+      this.gesto = {
+        anim,
+        total: this.totalDe(anim),
+        inicio: this.scene.time.now,
+        duracao: 300,
+        invertido: false,
+        aoTerminar: null,
+      };
+    }
+
     AudioManager.tocar('efeito.dano');
 
     // Piscar mexendo so na opacidade. Nao usar tint: mudaria as cores dela.
@@ -422,7 +560,7 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
     this.body.setAcceleration(0, 0);
     this.body.setVelocity(0, 0);
     this.pararPassos();
-    this.usarTextura(TEX.frente);
+    this.tocarCiclo(this.anims.paradaFrente);
   }
 
   descongelar() {
@@ -438,6 +576,7 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
     this.pisoAtual = 0;
     this.paradaDesde = 0;
     this.estavaNoChao = true;
+    this.gesto = null;
     this.visual.setAlpha(1);
     this.atualizarVisual();
   }
@@ -451,24 +590,19 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
 }
 
 /**
- * Recorta os tres desenhos da Alice para o tamanho util.
- * Chamar uma vez no preload. Depois disso a origem e a colisao ficam exatas,
- * sem depender do vazio que existe dentro dos PNGs de 500x500.
+ * Carrega os quadros da Alice. Chamar no preload da cena de carregamento.
  *
- * Nao altera nenhum arquivo em disco — as texturas nascem so na memoria.
+ * Sao 163 PNGs, todos ja recortados e normalizados por tools/fatiar-alice.ps1 —
+ * mesma tela, pes na base, corpo no centro. Nada e recortado em tempo de
+ * execucao e nenhum arquivo em disco e alterado.
  */
-export function prepararTexturasDaAlice(cena) {
-  const { LARGURA, ALTURA, TOPO, frames } = ALICE_FONTE;
-
-  for (const nome of Object.keys(frames)) {
-    const frame = frames[nome];
-
-    recortarTextura(cena, frame.origem, frame.destino, {
-      x: frame.cx - LARGURA / 2,
-      y: TOPO,
-      largura: LARGURA,
-      altura: ALTURA,
-      escala: ALICE_ESCALA,
-    });
+export function carregarQuadrosDaAlice(cena) {
+  for (const linha of Object.keys(ALICE_QUADROS)) {
+    for (let i = 0; i < ALICE_QUADROS[linha]; i++) {
+      cena.load.image(
+        quadro(linha, i),
+        'assets/characters/alice/' + linha + '-' + i + '.png'
+      );
+    }
   }
 }
