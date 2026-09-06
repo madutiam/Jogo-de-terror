@@ -737,6 +737,17 @@ export class GameplayScene extends Phaser.Scene {
     const margem = Math.max(40, tela.meioX - 330);
     let y = 54;
 
+    // Onde a coluna dos COMANDOS comeca. E calculada aqui, antes de qualquer
+    // texto, porque e ela que define ate onde a coluna da esquerda pode
+    // quebrar linha — senao a descricao de um item passa por baixo das teclas.
+    this.colunaComandos = tela.largura >= 900
+      ? Math.min(tela.largura - 300, margem + 470)
+      : null;
+
+    const larguraTexto = this.colunaComandos
+      ? this.colunaComandos - margem - 34
+      : Math.min(620, tela.largura - margem * 2 - 14);
+
     const titulo = (texto) => {
       partes.push(this.add
         .text(margem, y, texto, { fontFamily: FONTE, fontSize: '13px', color: HEX.dourado })
@@ -752,7 +763,7 @@ export class GameplayScene extends Phaser.Scene {
       partes.push(this.add
         .text(margem + 14, y, texto, {
           fontFamily: FONTE, fontSize: '15px', color: HEX.ossoApagado,
-          wordWrap: { width: Math.min(620, tela.largura - margem * 2 - 14) },
+          wordWrap: { width: larguraTexto },
         })
         .setScrollFactor(0));
       y += 46;
@@ -778,6 +789,8 @@ export class GameplayScene extends Phaser.Scene {
     if (pistas.length) pistas.forEach((id) => linha(PISTAS[id].nome, PISTAS[id].texto));
     else vazio('Ela ainda não parou para olhar nada.');
 
+    this.montarComandos(partes, tela, margem, y);
+
     const voltar = this.add
       .text(tela.meioX, tela.altura - 40, 'VOLTAR', comSombra(ESTILO.menu))
       .setOrigin(0.5)
@@ -793,6 +806,75 @@ export class GameplayScene extends Phaser.Scene {
 
     this.painelInventario.add(partes);
     for (const parte of partes) parte.setScrollFactor(0);
+  }
+
+  /**
+   * OS COMANDOS, ESCRITOS
+   *
+   * A dica que aparecia no comeco da fase some sozinha, e nunca falou de Q nem
+   * de Y. Quem chegou depois dela, ou piscou, tinha que adivinhar — e adivinhar
+   * comando nao e o mesmo que interpretar pista: o §43 pede que o jogador
+   * descubra o MUNDO, nao a interface.
+   *
+   * Mora aqui porque esta e a tela que ele ja sabe abrir, e a unica que da para
+   * consultar no meio do jogo sem perder nada.
+   *
+   * A lista muda com o aparelho: no celular nao adianta falar de espaco e
+   * shift, e no computador nao adianta desenhar botao. Quem manda e o mesmo
+   * `toque.ativo` que decide se os controles de toque existem.
+   */
+  montarComandos(partes, tela, margem, yListas) {
+    const noToque = !!this.toque?.ativo;
+
+    const teclado = [
+      ['A D  ← →', 'andar'],
+      ['W S  ↑ ↓', 'fundo e frente'],
+      ['espaço', 'pular'],
+      ['shift', 'correr'],
+      ['E', 'observar'],
+      ['Q', 'comer o biscoito'],
+      ['Y', 'esta tela'],
+      ['esc', 'pausa'],
+    ];
+
+    const toque = [
+      ['analógico', 'andar em qualquer direção'],
+      ['⌃', 'pular'],
+      ['◇', 'observar'],
+      ['»', 'correr — se estiver ligado'],
+      ['☰', 'esta tela'],
+    ];
+
+    const lista = noToque ? toque : teclado;
+
+    // Coluna a direita quando cabe (decidido em `montarInventario`, que precisa
+    // do numero antes para saber onde quebrar o texto); embaixo das listas
+    // quando nao cabe. E melhor empilhar do que as duas colunas se encostarem.
+    const x = this.colunaComandos ?? margem;
+    let y = this.colunaComandos ? 54 : yListas + 16;
+
+    partes.push(this.add
+      .text(x, y, 'COMANDOS', { fontFamily: FONTE, fontSize: '13px', color: HEX.dourado })
+      .setScrollFactor(0));
+    y += 30;
+
+    for (const [tecla, oQue] of lista) {
+      partes.push(this.add
+        .text(x, y, tecla, comSombra({ fontFamily: FONTE, fontSize: '16px', color: HEX.osso }))
+        .setScrollFactor(0));
+      partes.push(this.add
+        .text(x + 108, y, oQue, { fontFamily: FONTE, fontSize: '15px', color: HEX.ossoApagado })
+        .setScrollFactor(0));
+      y += 27;
+    }
+
+    if (!noToque) {
+      partes.push(this.add
+        .text(x, y + 8, 'F11 deixa em tela cheia.', {
+          fontFamily: FONTE, fontSize: '13px', color: HEX.ossoApagado, fontStyle: 'italic',
+        })
+        .setScrollFactor(0));
+    }
   }
 
   alternarPausa(forcar) {
