@@ -271,7 +271,13 @@ export class GameplayScene extends Phaser.Scene {
     // De longe da para PERCEBER que ali tem alguma coisa; so de perto da para
     // usar. Perceber nao e o mesmo que ser levado pela mao — o jogo continua
     // sem dizer para onde ir, mas para de esconder o que existe.
-    const raioAviso = config.raioAviso ?? raio * 2.4;
+    //
+    // Era 2,4x, e isso dava 264 px de aviso num quarto de 2400: a marca so
+    // acendia quando ela ja estava praticamente em cima. Procurar no escuro
+    // deixava de ser tensao e virava varredura — andar de ponta a ponta
+    // raspando a parede. 4,5x acende de longe sem dizer O QUE e: continua
+    // sendo ela quem decide se vale chegar perto (§43).
+    const raioAviso = config.raioAviso ?? raio * 4.5;
 
     const marca = this.add
       .text(config.x, config.y - (config.alturaMarca ?? 40), '◆', {
@@ -330,8 +336,13 @@ export class GameplayScene extends Phaser.Scene {
         alvo = 0.95;                                    // ao alcance
       } else if (item.distancia < item.raioAviso) {
         // Vai aparecendo conforme ela chega perto.
+        //
+        // O teto era 0,34, e contra a escuridao do quarto isso e quase nada:
+        // um ponto que o olho perde. O dourado a 0,55 ainda e um brilho fraco
+        // no escuro, nao um icone de HUD — da para nao ver se nao estiver
+        // olhando, que e o ponto.
         const t = 1 - (item.distancia - item.raio) / (item.raioAviso - item.raio);
-        alvo = Phaser.Math.Clamp(t, 0, 1) * 0.34;
+        alvo = Phaser.Math.Clamp(t, 0, 1) * 0.55;
       }
 
       if (Math.abs(item.marca.alpha - alvo) > 0.02) {
