@@ -97,11 +97,20 @@ class Audio {
       if (contexto?.state === 'suspended') contexto.resume();
       this.game?.sound?.unlock?.();
 
-      // Recomeca o que tinha sido pedido enquanto estava travado.
-      const musica = this.musicaAtual?.__id;
-      const ambiente = this.ambienteAtual?.__id;
-      if (musica) { this.musicaAtual = null; this.tocarMusica(musica, 600); }
-      if (ambiente) { this.ambienteAtual = null; this.tocarAmbiente(ambiente, 900); }
+      // Recomeca APENAS o que ficou mudo por causa da trava.
+      //
+      // A primeira versao disto zerava a referencia e chamava de novo — e
+      // assim a antiga continuava tocando por baixo da nova. Duas musicas ao
+      // mesmo tempo na tela de historia. Agora a antiga e parada de verdade
+      // antes, e o que ja estiver soando fica como esta.
+      this.recomecarSeMudo(
+        this.musicaAtual,
+        (id) => { this.pararMusica(0); this.tocarMusica(id, 600); }
+      );
+      this.recomecarSeMudo(
+        this.ambienteAtual,
+        (id) => { this.pararAmbiente(0); this.tocarAmbiente(id, 900); }
+      );
 
       for (const evento of ['pointerdown', 'keydown', 'touchstart'])
         window.removeEventListener(evento, destravar, true);
@@ -109,6 +118,13 @@ class Audio {
 
     for (const evento of ['pointerdown', 'keydown', 'touchstart'])
       window.addEventListener(evento, destravar, true);
+  }
+
+  /** Se o som existe mas nao esta soando, refaz. Se ja esta soando, nao mexe. */
+  recomecarSeMudo(som, refazer) {
+    if (!som || som.isPlaying) return;
+    const id = som.__id;
+    if (id) refazer(id);
   }
 
   // ------------------------------------------------------------------ volumes
