@@ -1609,5 +1609,815 @@
         "alturaUtil":  220,
         "ancoraOrigem":  "vestido",
         "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-dir-0.png",
+        "chave":  "pequena-anda-dir",
+        "indice":  0,
+        "larguraUtil":  63,
+        "alturaUtil":  105,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-dir-1.png",
+        "chave":  "pequena-anda-dir",
+        "indice":  1,
+        "larguraUtil":  69,
+        "alturaUtil":  105,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-dir-2.png",
+        "chave":  "pequena-anda-dir",
+        "indice":  2,
+        "larguraUtil":  75,
+        "alturaUtil":  106,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-dir-3.png",
+        "chave":  "pequena-anda-dir",
+        "indice":  3,
+        "larguraUtil":  77,
+        "alturaUtil":  105,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-dir-4.png",
+        "chave":  "pequena-anda-dir",
+        "indice":  4,
+        "larguraUtil":  77,
+        "alturaUtil":  105,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-dir-5.png",
+        "chave":  "pequena-anda-dir",
+        "indice":  5,
+        "larguraUtil":  63,
+        "alturaUtil":  108,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-esq-0.png",
+        "chave":  "pequena-anda-esq",
+        "indice":  0,
+        "larguraUtil":  62,
+        "alturaUtil":  107,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-esq-1.png",
+        "chave":  "pequena-anda-esq",
+        "indice":  1,
+        "larguraUtil":  77,
+        "alturaUtil":  103,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-esq-2.png",
+        "chave":  "pequena-anda-esq",
+        "indice":  2,
+        "larguraUtil":  73,
+        "alturaUtil":  108,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-esq-3.png",
+        "chave":  "pequena-anda-esq",
+        "indice":  3,
+        "larguraUtil":  75,
+        "alturaUtil":  107,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-esq-4.png",
+        "chave":  "pequena-anda-esq",
+        "indice":  4,
+        "larguraUtil":  70,
+        "alturaUtil":  108,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-esq-5.png",
+        "chave":  "pequena-anda-esq",
+        "indice":  5,
+        "larguraUtil":  64,
+        "alturaUtil":  109,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pula-dir-0.png",
+        "chave":  "pequena-pula-dir",
+        "indice":  0,
+        "larguraUtil":  69,
+        "alturaUtil":  77,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pula-dir-1.png",
+        "chave":  "pequena-pula-dir",
+        "indice":  1,
+        "larguraUtil":  70,
+        "alturaUtil":  95,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pula-dir-2.png",
+        "chave":  "pequena-pula-dir",
+        "indice":  2,
+        "larguraUtil":  72,
+        "alturaUtil":  80,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pula-dir-3.png",
+        "chave":  "pequena-pula-dir",
+        "indice":  3,
+        "larguraUtil":  81,
+        "alturaUtil":  83,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pula-esq-0.png",
+        "chave":  "pequena-pula-esq",
+        "indice":  0,
+        "larguraUtil":  71,
+        "alturaUtil":  81,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pula-esq-1.png",
+        "chave":  "pequena-pula-esq",
+        "indice":  1,
+        "larguraUtil":  70,
+        "alturaUtil":  94,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pula-esq-2.png",
+        "chave":  "pequena-pula-esq",
+        "indice":  2,
+        "larguraUtil":  71,
+        "alturaUtil":  86,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pula-esq-3.png",
+        "chave":  "pequena-pula-esq",
+        "indice":  3,
+        "larguraUtil":  73,
+        "alturaUtil":  85,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pega-dir-0.png",
+        "chave":  "pequena-pega-dir",
+        "indice":  0,
+        "larguraUtil":  66,
+        "alturaUtil":  92,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pega-dir-1.png",
+        "chave":  "pequena-pega-dir",
+        "indice":  1,
+        "larguraUtil":  87,
+        "alturaUtil":  71,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pega-dir-2.png",
+        "chave":  "pequena-pega-dir",
+        "indice":  2,
+        "larguraUtil":  63,
+        "alturaUtil":  101,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pega-dir-3.png",
+        "chave":  "pequena-pega-dir",
+        "indice":  3,
+        "larguraUtil":  60,
+        "alturaUtil":  106,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-costas-0.png",
+        "chave":  "pequena-costas",
+        "indice":  0,
+        "larguraUtil":  58,
+        "alturaUtil":  115,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-costas-1.png",
+        "chave":  "pequena-costas",
+        "indice":  1,
+        "larguraUtil":  58,
+        "alturaUtil":  116,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-costas-2.png",
+        "chave":  "pequena-costas",
+        "indice":  2,
+        "larguraUtil":  58,
+        "alturaUtil":  117,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-costas-3.png",
+        "chave":  "pequena-costas",
+        "indice":  3,
+        "larguraUtil":  59,
+        "alturaUtil":  117,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-costas-4.png",
+        "chave":  "pequena-costas",
+        "indice":  4,
+        "larguraUtil":  59,
+        "alturaUtil":  117,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-dir-0.png",
+        "chave":  "pequena-cai-dir",
+        "indice":  0,
+        "larguraUtil":  61,
+        "alturaUtil":  98,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-dir-1.png",
+        "chave":  "pequena-cai-dir",
+        "indice":  1,
+        "larguraUtil":  73,
+        "alturaUtil":  87,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-dir-2.png",
+        "chave":  "pequena-cai-dir",
+        "indice":  2,
+        "larguraUtil":  88,
+        "alturaUtil":  61,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-dir-3.png",
+        "chave":  "pequena-cai-dir",
+        "indice":  3,
+        "larguraUtil":  89,
+        "alturaUtil":  61,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-dir-4.png",
+        "chave":  "pequena-cai-dir",
+        "indice":  4,
+        "larguraUtil":  64,
+        "alturaUtil":  96,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-esq-0.png",
+        "chave":  "pequena-cai-esq",
+        "indice":  0,
+        "larguraUtil":  62,
+        "alturaUtil":  99,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-esq-1.png",
+        "chave":  "pequena-cai-esq",
+        "indice":  1,
+        "larguraUtil":  74,
+        "alturaUtil":  90,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-esq-2.png",
+        "chave":  "pequena-cai-esq",
+        "indice":  2,
+        "larguraUtil":  89,
+        "alturaUtil":  62,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-esq-3.png",
+        "chave":  "pequena-cai-esq",
+        "indice":  3,
+        "larguraUtil":  88,
+        "alturaUtil":  60,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-cai-esq-4.png",
+        "chave":  "pequena-cai-esq",
+        "indice":  4,
+        "larguraUtil":  62,
+        "alturaUtil":  101,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pega-esq-0.png",
+        "chave":  "pequena-pega-esq",
+        "indice":  0,
+        "larguraUtil":  63,
+        "alturaUtil":  97,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pega-esq-1.png",
+        "chave":  "pequena-pega-esq",
+        "indice":  1,
+        "larguraUtil":  89,
+        "alturaUtil":  75,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pega-esq-2.png",
+        "chave":  "pequena-pega-esq",
+        "indice":  2,
+        "larguraUtil":  65,
+        "alturaUtil":  109,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-pega-esq-3.png",
+        "chave":  "pequena-pega-esq",
+        "indice":  3,
+        "larguraUtil":  59,
+        "alturaUtil":  108,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-corre-dir-0.png",
+        "chave":  "pequena-corre-dir",
+        "indice":  0,
+        "larguraUtil":  76,
+        "alturaUtil":  102,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-corre-dir-1.png",
+        "chave":  "pequena-corre-dir",
+        "indice":  1,
+        "larguraUtil":  75,
+        "alturaUtil":  102,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-corre-dir-2.png",
+        "chave":  "pequena-corre-dir",
+        "indice":  2,
+        "larguraUtil":  81,
+        "alturaUtil":  105,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-corre-dir-3.png",
+        "chave":  "pequena-corre-dir",
+        "indice":  3,
+        "larguraUtil":  82,
+        "alturaUtil":  105,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-corre-dir-4.png",
+        "chave":  "pequena-corre-dir",
+        "indice":  4,
+        "larguraUtil":  75,
+        "alturaUtil":  99,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-corre-dir-5.png",
+        "chave":  "pequena-corre-dir",
+        "indice":  5,
+        "larguraUtil":  73,
+        "alturaUtil":  100,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-corre-esq-0.png",
+        "chave":  "pequena-corre-esq",
+        "indice":  0,
+        "larguraUtil":  72,
+        "alturaUtil":  98,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-corre-esq-1.png",
+        "chave":  "pequena-corre-esq",
+        "indice":  1,
+        "larguraUtil":  74,
+        "alturaUtil":  97,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-corre-esq-2.png",
+        "chave":  "pequena-corre-esq",
+        "indice":  2,
+        "larguraUtil":  82,
+        "alturaUtil":  106,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-corre-esq-3.png",
+        "chave":  "pequena-corre-esq",
+        "indice":  3,
+        "larguraUtil":  78,
+        "alturaUtil":  105,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-corre-esq-4.png",
+        "chave":  "pequena-corre-esq",
+        "indice":  4,
+        "larguraUtil":  76,
+        "alturaUtil":  100,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-corre-esq-5.png",
+        "chave":  "pequena-corre-esq",
+        "indice":  5,
+        "larguraUtil":  76,
+        "alturaUtil":  99,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-frente-0.png",
+        "chave":  "pequena-anda-frente",
+        "indice":  0,
+        "larguraUtil":  81,
+        "alturaUtil":  135,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-frente-1.png",
+        "chave":  "pequena-anda-frente",
+        "indice":  1,
+        "larguraUtil":  82,
+        "alturaUtil":  133,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-frente-2.png",
+        "chave":  "pequena-anda-frente",
+        "indice":  2,
+        "larguraUtil":  80,
+        "alturaUtil":  134,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-frente-3.png",
+        "chave":  "pequena-anda-frente",
+        "indice":  3,
+        "larguraUtil":  82,
+        "alturaUtil":  132,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-frente-4.png",
+        "chave":  "pequena-anda-frente",
+        "indice":  4,
+        "larguraUtil":  81,
+        "alturaUtil":  132,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-frente-5.png",
+        "chave":  "pequena-anda-frente",
+        "indice":  5,
+        "larguraUtil":  83,
+        "alturaUtil":  135,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-anda-frente-6.png",
+        "chave":  "pequena-anda-frente",
+        "indice":  6,
+        "larguraUtil":  82,
+        "alturaUtil":  134,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-shrink-0.png",
+        "chave":  "pequena-come-shrink",
+        "indice":  0,
+        "larguraUtil":  64,
+        "alturaUtil":  105,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-shrink-1.png",
+        "chave":  "pequena-come-shrink",
+        "indice":  1,
+        "larguraUtil":  64,
+        "alturaUtil":  104,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-shrink-2.png",
+        "chave":  "pequena-come-shrink",
+        "indice":  2,
+        "larguraUtil":  64,
+        "alturaUtil":  104,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-shrink-3.png",
+        "chave":  "pequena-come-shrink",
+        "indice":  3,
+        "larguraUtil":  63,
+        "alturaUtil":  104,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-shrink-4.png",
+        "chave":  "pequena-come-shrink",
+        "indice":  4,
+        "larguraUtil":  63,
+        "alturaUtil":  104,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-shrink-5.png",
+        "chave":  "pequena-come-shrink",
+        "indice":  5,
+        "larguraUtil":  63,
+        "alturaUtil":  103,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-shrink-6.png",
+        "chave":  "pequena-come-shrink",
+        "indice":  6,
+        "larguraUtil":  65,
+        "alturaUtil":  104,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-shrink-7.png",
+        "chave":  "pequena-come-shrink",
+        "indice":  7,
+        "larguraUtil":  64,
+        "alturaUtil":  104,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-grow-0.png",
+        "chave":  "pequena-come-grow",
+        "indice":  0,
+        "larguraUtil":  63,
+        "alturaUtil":  105,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-grow-1.png",
+        "chave":  "pequena-come-grow",
+        "indice":  1,
+        "larguraUtil":  63,
+        "alturaUtil":  105,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-grow-2.png",
+        "chave":  "pequena-come-grow",
+        "indice":  2,
+        "larguraUtil":  62,
+        "alturaUtil":  105,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-grow-3.png",
+        "chave":  "pequena-come-grow",
+        "indice":  3,
+        "larguraUtil":  63,
+        "alturaUtil":  104,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-grow-4.png",
+        "chave":  "pequena-come-grow",
+        "indice":  4,
+        "larguraUtil":  63,
+        "alturaUtil":  104,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-grow-5.png",
+        "chave":  "pequena-come-grow",
+        "indice":  5,
+        "larguraUtil":  62,
+        "alturaUtil":  104,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-grow-6.png",
+        "chave":  "pequena-come-grow",
+        "indice":  6,
+        "larguraUtil":  62,
+        "alturaUtil":  104,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-come-grow-7.png",
+        "chave":  "pequena-come-grow",
+        "indice":  7,
+        "larguraUtil":  63,
+        "alturaUtil":  105,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-dano-dir-0.png",
+        "chave":  "pequena-dano-dir",
+        "indice":  0,
+        "larguraUtil":  79,
+        "alturaUtil":  103,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-dano-dir-1.png",
+        "chave":  "pequena-dano-dir",
+        "indice":  1,
+        "larguraUtil":  81,
+        "alturaUtil":  81,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-dano-dir-2.png",
+        "chave":  "pequena-dano-dir",
+        "indice":  2,
+        "larguraUtil":  93,
+        "alturaUtil":  69,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-dano-dir-3.png",
+        "chave":  "pequena-dano-dir",
+        "indice":  3,
+        "larguraUtil":  64,
+        "alturaUtil":  78,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-dano-esq-0.png",
+        "chave":  "pequena-dano-esq",
+        "indice":  0,
+        "larguraUtil":  70,
+        "alturaUtil":  105,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-dano-esq-1.png",
+        "chave":  "pequena-dano-esq",
+        "indice":  1,
+        "larguraUtil":  74,
+        "alturaUtil":  89,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-dano-esq-2.png",
+        "chave":  "pequena-dano-esq",
+        "indice":  2,
+        "larguraUtil":  85,
+        "alturaUtil":  84,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-dano-esq-3.png",
+        "chave":  "pequena-dano-esq",
+        "indice":  3,
+        "larguraUtil":  62,
+        "alturaUtil":  100,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-ofegante-0.png",
+        "chave":  "pequena-ofegante",
+        "indice":  0,
+        "larguraUtil":  86,
+        "alturaUtil":  113,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-ofegante-1.png",
+        "chave":  "pequena-ofegante",
+        "indice":  1,
+        "larguraUtil":  90,
+        "alturaUtil":  110,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-ofegante-2.png",
+        "chave":  "pequena-ofegante",
+        "indice":  2,
+        "larguraUtil":  87,
+        "alturaUtil":  113,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "pequena-ofegante-3.png",
+        "chave":  "pequena-ofegante",
+        "indice":  3,
+        "larguraUtil":  69,
+        "alturaUtil":  124,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
     }
 ]

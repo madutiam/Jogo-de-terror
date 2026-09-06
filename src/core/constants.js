@@ -107,6 +107,24 @@ export const ALICE_QUADROS = {
   'grande-cai': 5,    'grande-pega': 5,
   'pequena-parada': 4, 'pequena-anda': 7, 'pequena-pula': 6,
   'pequena-cai': 5,    'pequena-pega': 5,
+
+  // AS FOLHAS NOVAS DA PEQUENA — com os DOIS lados desenhados.
+  //
+  // Ate aqui a pequena existia so olhando para a direita e o jogo espelhava
+  // para a esquerda. Agora ha desenho proprio de cada lado, e a regra do
+  // projeto e clara: onde existe o desenho certo, espelhar sai.
+  'pequena-anda-dir': 6, 'pequena-anda-esq': 6,
+  'pequena-pula-dir': 4, 'pequena-pula-esq': 4,
+  'pequena-cai-dir': 5,  'pequena-cai-esq': 5,
+  'pequena-pega-dir': 4, 'pequena-pega-esq': 4,
+  'pequena-costas': 5,   'pequena-anda-frente': 7,
+
+  // E o que faltava por ultimo: correr, apanhar, recuperar o folego, e comer o
+  // biscoito no tamanho pequeno. `AliceAssetsFaltando` da pequena esvaziou.
+  'pequena-corre-dir': 6, 'pequena-corre-esq': 6,
+  'pequena-dano-dir': 4,  'pequena-dano-esq': 4,
+  'pequena-ofegante': 4,
+  'pequena-come-shrink': 8, 'pequena-come-grow': 8,
   'transicao': 8,
 
   // Corrida de perfil e caminhada vindo para a camera.
@@ -231,62 +249,60 @@ export const ALICE_ANIM = {
     tomboEsq: { linha: 'cai-esq', ms: 130, umaVez: true },
 
     ofegante: { linha: 'ofegante', ms: 260 },
+
+    /**
+     * Comer. Vem ANTES da transicao, e cada vidro tem a sua: no SHRINK ela
+     * encolhe os ombros ao engolir, no GROW ela se estica. Desenhos
+     * diferentes, nao o mesmo espelhado.
+     */
+    comeShrink: { linha: 'come-shrink', ms: 120 },
+    comeGrow:   { linha: 'come-grow',   ms: 120 },
   },
 
   pequena: {
-    // Desenhada so olhando para a direita: para a esquerda, o mesmo quadro
-    // virado. Nao ha outro caminho sem inventar pose.
+    // Os dois lados sao DESENHADOS. Nada de espelhar aqui: onde existe o
+    // desenho certo, ele e sempre preferido — e agora ele existe para tudo.
     paradaFrente: { linha: 'pequena-parada', ms: 520 },
-    paradaCostas: { linha: 'pequena-parada', quadros: [0],
-                    falta: 'Alice PEQUENA de costas, parada e andando' },
+    paradaCostas: { linha: 'pequena-costas', quadros: [0] },
 
-    andaDir:    { linha: 'pequena-anda', ms: 85 },
-    andaEsq:    { linha: 'pequena-anda', ms: 85, espelhar: true },
-    andaFrente: { linha: 'pequena-anda', ms: 95,
-                  falta: 'Alice PEQUENA andando de frente' },
-    andaCostas: { linha: 'pequena-anda', ms: 95,
-                  falta: 'Alice PEQUENA andando de costas' },
+    andaDir:    { linha: 'pequena-anda-dir', ms: 85 },
+    andaEsq:    { linha: 'pequena-anda-esq', ms: 85 },
+    andaFrente: { linha: 'pequena-anda-frente', ms: 95 },
+    andaCostas: { linha: 'pequena-costas', quadros: [1, 2, 3, 4], ms: 130 },
 
-    correDir:    { linha: 'pequena-anda', ms: 62,
-                   falta: 'Alice PEQUENA correndo' },
-    correEsq:    { linha: 'pequena-anda', ms: 62, espelhar: true,
-                   falta: 'Alice PEQUENA correndo' },
-    correFrente: { linha: 'pequena-anda', ms: 62,
-                   falta: 'Alice PEQUENA correndo' },
-    correCostas: { linha: 'pequena-anda', ms: 62,
-                   falta: 'Alice PEQUENA correndo' },
+    correDir:    { linha: 'pequena-corre-dir', ms: 72 },
+    correEsq:    { linha: 'pequena-corre-esq', ms: 72 },
+    correFrente: { linha: 'pequena-anda-frente', ms: 62 },
+    correCostas: { linha: 'pequena-costas', quadros: [1, 2, 3, 4], ms: 90 },
 
-    pulaDir:    { linha: 'pequena-pula', porAltura: true },
-    pulaEsq:    { linha: 'pequena-pula', porAltura: true, espelhar: true },
-    pulaFrente: { linha: 'pequena-pula', porAltura: true },
-    pulaCostas: { linha: 'pequena-pula', porAltura: true },
+    pulaDir:    { linha: 'pequena-pula-dir', porAltura: true },
+    pulaEsq:    { linha: 'pequena-pula-esq', porAltura: true },
+    pulaFrente: { linha: 'pequena-pula-dir', porAltura: true },
+    pulaCostas: { linha: 'pequena-pula-dir', porAltura: true,
+                  falta: 'Alice PEQUENA pulando de costas' },
 
-    pegaDir:    { linha: 'pequena-pega', ms: 110, umaVez: true },
-    pegaEsq:    { linha: 'pequena-pega', ms: 110, umaVez: true, espelhar: true },
-    pegaCostas: { linha: 'pequena-pega', ms: 110, umaVez: true },
+    pegaDir:    { linha: 'pequena-pega-dir', ms: 110, umaVez: true },
+    pegaEsq:    { linha: 'pequena-pega-esq', ms: 110, umaVez: true },
+    pegaCostas: { linha: 'pequena-pega-dir', ms: 110, umaVez: true,
+                  falta: 'Alice PEQUENA pegando item de costas' },
 
-    danoDir: { linha: 'pequena-cai', quadros: [0, 1], ms: 140, umaVez: true,
-               falta: 'Alice PEQUENA levando dano' },
-    danoEsq: { linha: 'pequena-cai', quadros: [0, 1], ms: 140, umaVez: true,
-               espelhar: true, falta: 'Alice PEQUENA levando dano' },
+    danoDir: { linha: 'pequena-dano-dir', ms: 140, umaVez: true },
+    danoEsq: { linha: 'pequena-dano-esq', ms: 140, umaVez: true },
 
-    tomboDir: { linha: 'pequena-cai', ms: 130, umaVez: true },
-    tomboEsq: { linha: 'pequena-cai', ms: 130, umaVez: true, espelhar: true },
+    tomboDir: { linha: 'pequena-cai-dir', ms: 130, umaVez: true },
+    tomboEsq: { linha: 'pequena-cai-esq', ms: 130, umaVez: true },
 
-    ofegante: { linha: 'pequena-parada', ms: 300,
-                falta: 'Alice PEQUENA ofegante' },
+    ofegante: { linha: 'pequena-ofegante', ms: 300 },
+
+    // Comer no tamanho pequeno. So o GROW acontece de verdade — quem ja esta
+    // pequena nao encolhe de novo — mas os dois existem desenhados.
+    comeShrink: { linha: 'pequena-come-shrink', ms: 120 },
+    comeGrow:   { linha: 'pequena-come-grow', ms: 120 },
   },
 
   /** Encolher. Para crescer, a mesma sequencia toca de tras para a frente. */
   transicao: { linha: 'transicao', ms: 90 },
 
-  /**
-   * Comer. Vem ANTES da transicao, e cada vidro tem a sua: no SHRINK ela
-   * encolhe os ombros ao engolir, no GROW ela se estica. Sao desenhos
-   * diferentes, nao o mesmo espelhado.
-   */
-  comeShrink: { linha: 'come-shrink', ms: 120 },
-  comeGrow:   { linha: 'come-grow',   ms: 120 },
 };
 
 /** Estados de animacao previstos na especificacao (regra 27). */

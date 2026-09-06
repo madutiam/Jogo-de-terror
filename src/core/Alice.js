@@ -178,7 +178,12 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
     const novo = ALICE_TAMANHO[alvo];
     if (!novo || novo.id === this.tamanho.id) return Promise.resolve(false);
 
-    const anim = novo.id === 'pequena' ? ALICE_ANIM.comeShrink : ALICE_ANIM.comeGrow;
+    // O conjunto e o do tamanho ATUAL, nao o do alvo: ela ainda esta do
+    // tamanho que estava quando leva o biscoito a boca. Escolher pelo alvo
+    // fazia a Alice PEQUENA comer o GROW com os desenhos da grande.
+    const anim = novo.id === 'pequena'
+      ? this.animacoes.comeShrink
+      : this.animacoes.comeGrow;
 
     this.controlavel = false;
     this.estado = ALICE_STATE.TAMANHO;
