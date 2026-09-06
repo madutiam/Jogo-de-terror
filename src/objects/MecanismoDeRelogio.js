@@ -26,6 +26,12 @@ import { dimensoes } from '../core/tela.js';
 /** A hora que destranca. Vem do relogio parado do quarto principal. */
 export const HORA_CERTA = { hora: 3, minuto: 17 };
 
+/** Quanto a tecla precisa ficar presa antes de o ponteiro engrenar. */
+const ESPERA_PARA_ENGRENAR = 300;
+/** Ritmo do primeiro passo depois de engrenar, e o mais rapido que ele chega. */
+const GIRO_INICIAL = 130;
+const GIRO_MAIS_RAPIDO = 42;
+
 export class MecanismoDeRelogio {
   /**
    * @param {Phaser.Scene} cena
@@ -123,8 +129,8 @@ export class MecanismoDeRelogio {
       if (!this.aberto) return;
       const t = evento.key;
 
-      if (t === 'ArrowLeft' || t === 'a' || t === 'A') this.girar(-1);
-      else if (t === 'ArrowRight' || t === 'd' || t === 'D') this.girar(1);
+      if (t === 'ArrowLeft' || t === 'a' || t === 'A') this.comecarAGirar(-1);
+      else if (t === 'ArrowRight' || t === 'd' || t === 'D') this.comecarAGirar(1);
       else if (t === 'ArrowUp' || t === 'ArrowDown' || t === 'w' || t === 's' ||
                t === 'W' || t === 'S' || t === 'Tab') {
         this.selecionado = this.selecionado === 'hora' ? 'minuto' : 'hora';
@@ -135,7 +141,57 @@ export class MecanismoDeRelogio {
 
       evento.preventDefault?.();
     };
+    this.aoSoltar = (evento) => {
+      const t = evento.key;
+      if (t === 'ArrowLeft' || t === 'ArrowRight' ||
+          t === 'a' || t === 'A' || t === 'd' || t === 'D') this.pararDeGirar();
+    };
+
     teclado.on('keydown', this.aoTeclar);
+    teclado.on('keyup', this.aoSoltar);
+  }
+
+  /**
+   * GIRO CONTINUO, QUE ACELERA
+   *
+   * Marcar 17 minutos custava dezessete toques, e o auto-repeat do sistema nao
+   * ajudava: ele espera meio segundo para comecar e depois vai num ritmo fixo
+   * que o jogo nao escolhe. Aqui o primeiro passo sai na hora — quem quer UM
+   * minuto continua dando um toque — e so depois de `ESPERA` o ponteiro
+   * engrena, acelerando de 130 ms ate 42 ms por passo.
+   *
+   * A aceleracao e o ponto: no comeco da para parar em cima do numero, e
+   * depois de uma volta inteira ele desliza. Ajustar o relogio deixa de ser
+   * digitacao e vira um movimento so.
+   */
+  comecarAGirar(sentido) {
+    if (this.giro && this.giro.sentido === sentido) return;   // ja engrenado
+    this.pararDeGirar();
+    this.girar(sentido);
+    this.giro = { sentido, passos: 0, evento: null };
+    this.agendarGiro(ESPERA_PARA_ENGRENAR);
+  }
+
+  agendarGiro(ms) {
+    if (!this.giro) return;
+    this.giro.evento = this.cena.time.addEvent({
+      delay: ms,
+      callback: () => {
+        if (!this.aberto || !this.giro) return;
+        this.girar(this.giro.sentido);
+        this.giro.passos += 1;
+        this.agendarGiro(Math.max(
+          GIRO_MAIS_RAPIDO,
+          GIRO_INICIAL - this.giro.passos * 9
+        ));
+      },
+    });
+  }
+
+  pararDeGirar() {
+    this.giro?.evento?.remove();
+    this.giro = null;
+    this.ultimoClac = 0;
   }
 
   girar(sentido) {
@@ -144,7 +200,13 @@ export class MecanismoDeRelogio {
     } else {
       this.minuto = (this.minuto + sentido + 60) % 60;
     }
-    AudioManager.tocarClac?.();
+    // Um clac por passo vira metralhadora a 42 ms. O som marca o movimento,
+    // nao cada dente: no maximo um a cada 90 ms.
+    const agora = this.cena.time.now;
+    if (agora - (this.ultimoClac ?? 0) >= 90) {
+      this.ultimoClac = agora;
+      AudioManager.tocarClac?.();
+    }
     this.atualizar();
   }
 
@@ -221,6 +283,12 @@ export class MecanismoDeRelogio {
   }
 
   fechar() {
+    this.pararDeGirar();
+    if (this.aoSoltar) {
+      this.cena.input.keyboard.off('keyup', this.aoSoltar);
+      this.aoSoltar = null;
+    }
+
     if (!this.aberto) return;
     this.aberto = false;
     this.cena.input.keyboard.off('keydown', this.aoTeclar);
