@@ -11,14 +11,17 @@
  * salas novas vieram inteiras.
  */
 
-import { SCENES, PROFUNDIDADE, ALICE_TAMANHO } from '../core/constants.js';
+import {
+  SCENES, PROFUNDIDADE, ALICE_TAMANHO, profundidadeDeDesenho,
+} from '../core/constants.js';
 import { dimensoes } from '../core/tela.js';
 import { GameplayScene } from './GameplayScene.js';
 import { SalaDesenhada } from '../objects/SalaDesenhada.js';
-import { SALAS, ENTRADAS } from '../data/salas.js';
+import { SALAS, ENTRADAS, MEDIDA_DA_PECA } from '../data/salas.js';
 import { AudioManager } from '../core/AudioManager.js';
 import { SaveManager } from '../core/SaveManager.js';
 import { HEX, FONTE } from '../ui/theme.js';
+import { MecanismoDeRelogio } from '../objects/MecanismoDeRelogio.js';
 
 /**
  * Onde acaba a sala e comeca a proxima.
@@ -95,10 +98,53 @@ export class SalaScene extends GameplayScene {
 
   montarConteudo() {
     const d = this.dados;
+    if (d.plataformas) for (const p of d.plataformas) this.montarPlataforma(p);
     if (d.observacoes) for (const o of d.observacoes) this.montarObservacao(o);
-    if (d.biscoitos) for (const b of d.biscoitos) this.montarBiscoito(b);
+    if (d.biscoitos) this.montarBiscoitos(d.biscoitos);
     if (d.passagemBaixa) this.montarPassagemBaixa(d.passagemBaixa);
     if (d.relogioDePendulo) this.montarRelogioDePendulo(d.relogioDePendulo);
+    if (d.mecanismo) this.montarMecanismo(d.mecanismo);
+    if (d.buraco) this.montarBuraco(d.buraco);
+    if (d.relogioDeBolso) this.montarRelogioDeBolso(d.relogioDeBolso);
+    if (d.saidasPorPonto) for (const p of d.saidasPorPonto) this.montarSaidaPorPonto(p);
+  }
+
+  /**
+   * Uma peca que da para subir.
+   *
+   * O desenho e a colisao saem do MESMO numero: a altura util da peca, medida
+   * no PNG. Se cada um usasse a sua conta, a Alice pisaria no ar ou afundaria
+   * na madeira.
+   */
+  montarPlataforma(p) {
+    const medida = MEDIDA_DA_PECA[p.chave][p.variante];
+    const larguraArte = medida[0] * p.escala;
+    const alturaArte = medida[1] * p.escala;
+
+    const x = p.x * this.sala.largura;
+    const chaoDaPeca = PROFUNDIDADE.FUNDO + 92;   // um pouco a frente da parede
+    const base = p.sobre ?? 0;
+
+    // `apoio` fica no chao (ou em cima de outra peca) e a altura vem do desenho.
+    // `saliencia` esta presa na parede, com o topo na altura pedida.
+    const topo = p.tipo === 'saliencia' ? p.topo : base + alturaArte;
+    const yDoDesenho = p.tipo === 'saliencia'
+      ? chaoDaPeca - p.topo + alturaArte
+      : chaoDaPeca - base;
+
+    this.add
+      .image(x, yDoDesenho, 'peca/' + p.chave + '-' + p.variante)
+      .setOrigin(0.5, 1)
+      .setScale(p.escala)
+      .setDepth(profundidadeDeDesenho(chaoDaPeca) - 0.2);
+
+    this.criarObstaculo({
+      x,
+      y: chaoDaPeca,
+      largura: larguraArte * 0.82,
+      profundidade: 52,
+      alturaTopo: Math.round(topo),
+    });
   }
 
   montarObservacao(o) {
@@ -117,51 +163,70 @@ export class SalaScene extends GameplayScene {
   }
 
   /**
-   * Um biscoito, no vidro dele. Comer troca o tamanho da Alice.
-   * A prateleira e alta de proposito: sozinha ela nao alcanca, e essa e a
-   * primeira vez que o jogo pede parkour.
+   * Os dois vidros. Ela precisa estar EM CIMA da prateleira para alcancar —
+   * do chao a resposta e que nao da, e o jogador tira dai a propria conclusao.
    */
-  montarBiscoito(b) {
+  montarBiscoitos(b) {
+    if (SaveManager.temItem('biscoitos')) return;
     const x = b.x * this.sala.largura;
 
-    const ponto = this.criarInterativo({
+    this.pontoDosBiscoitos = this.criarInterativo({
       x,
-      y: PROFUNDIDADE.FUNDO + 70,
-      raio: 120,
-      alturaMarca: b.altura + 40,
+      y: PROFUNDIDADE.FUNDO + 92,
+      raio: 130,
+      alturaMarca: b.altura + 30,
       aoInteragir: () => {
         if (this.alice.altura < b.altura - 40) {
           this.dialogo.mostrar(
-            ['O vidro esta la em cima.', 'Daqui eu nao alcanco.'],
+            ['Os vidros estao la em cima.', 'Daqui eu nao alcanco.'],
             { rotulo: 'Alice' }
           );
           return;
         }
-        this.comerBiscoito(b, ponto);
+        this.pegarOsBiscoitos();
       },
     });
   }
 
-  comerBiscoito(b, ponto) {
-    if (this.alice.tamanho.id === b.vira) {
-      this.dialogo.mostrar(
-        ['Ja estou assim.'],
-        { rotulo: 'Alice' }
-      );
-      return;
-    }
+  pegarOsBiscoitos() {
+    if (SaveManager.temItem('biscoitos')) return;
 
     this.entrarEmCinematica();
-    SaveManager.registrarItem('biscoito-' + b.id);
+    this.pontoDosBiscoitos.usado = true;
+    this.pontoDosBiscoitos.umaVez = true;
+    this.pontoDosBiscoitos.marca.destroy();
 
-    this.alice.pegarItem().then(() => this.alice.mudarTamanho(b.vira)).then(() => {
-      this.sairDeCinematica();
+    this.alice.pegarItem().then(() => {
+      SaveManager.registrarItem('biscoitos');
+      AudioManager.tocar('efeito.descoberta');
+      this.marcarCheckpoint(this.alice.x, this.alice.y, 'biscoitos');
+
       this.dialogo.mostrar(
-        b.vira === 'pequena'
-          ? ['O chao ficou longe.', 'E o resto do mundo, enorme.']
-          : ['Voltei.', 'Ou o mundo voltou. Nao da para saber daqui.'],
-        { rotulo: 'Alice' }
+        [
+          'Dois vidros. SHRINK num, GROW no outro.',
+          'Alguem deixou os dois aqui em cima, longe de quem nao devesse subir.',
+          'Cabem no bolso.',
+        ],
+        { rotulo: 'Alice', aoFechar: () => { this.sairDeCinematica(); this.ensinarTamanho(); } }
       );
+    });
+  }
+
+  /** A unica vez em que o jogo diz uma tecla. Depois disso, nunca mais. */
+  ensinarTamanho() {
+    const dica = this.add
+      .text(this.tela.largura / 2, this.tela.altura - 52,
+        this.toque?.ativo ? 'toque no vidro para comer um biscoito' : 'Q come um biscoito', {
+          fontFamily: FONTE, fontSize: '15px', color: HEX.dourado,
+        })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(1300)
+      .setAlpha(0);
+
+    this.tweens.add({
+      targets: dica, alpha: 0.85, duration: 700, yoyo: true, hold: 4200,
+      onComplete: () => dica.destroy(),
     });
   }
 
@@ -188,6 +253,76 @@ export class SalaScene extends GameplayScene {
     });
   }
 
+  /**
+   * O mecanismo na parede. Fica visivel de longe — nao e escondido, e dificil:
+   * o jogador ve o mostrador vazio e nao sabe que hora por nele.
+   */
+  montarMecanismo(m) {
+    const x = m.x * this.sala.largura;
+    const chao = PROFUNDIDADE.FUNDO + 92;
+    const medida = MEDIDA_DA_PECA.mecanismo[0];
+    const jaResolvido = SaveManager.temItem('mecanismo');
+
+    this.desenhoDoMecanismo = this.add
+      .image(x, chao - m.altura + medida[1] * m.escala, 'peca/mecanismo-' + (jaResolvido ? 3 : 0))
+      .setOrigin(0.5, 1)
+      .setScale(m.escala)
+      .setDepth(profundidadeDeDesenho(chao) - 0.3);
+
+    if (jaResolvido) {
+      this.iluminacaoDoMecanismo();
+      return;
+    }
+
+    this.puzzle = new MecanismoDeRelogio(this, () => {
+      SaveManager.registrarItem('mecanismo');
+      this.desenhoDoMecanismo.setTexture('peca/mecanismo-3');
+      this.iluminacaoDoMecanismo();
+      this.marcarCheckpoint(this.alice.x, this.alice.y, 'mecanismo');
+
+      this.dialogo.mostrar(
+        [
+          'Alguma coisa cedeu, longe daqui.',
+          'Madeira batendo no chao. Do lado do quarto.',
+        ],
+        { rotulo: 'Alice' }
+      );
+    });
+
+    this.criarInterativo({
+      x,
+      y: chao,
+      raio: m.raio ?? 150,
+      alturaMarca: m.altura + 20,
+      aoInteragir: () => {
+        if (SaveManager.temItem('mecanismo')) {
+          this.dialogo.mostrar(
+            ['Ja parou de girar.'],
+            { rotulo: 'Alice' }
+          );
+          return;
+        }
+        this.entrarEmCinematica();
+        this.puzzle.abrir();
+        // O controle so volta quando o painel fecha.
+        const vigia = this.time.addEvent({
+          delay: 120, loop: true,
+          callback: () => {
+            if (this.puzzle.aberto) return;
+            vigia.remove();
+            this.sairDeCinematica();
+          },
+        });
+      },
+    });
+  }
+
+  /** Depois de resolvido ele fica aceso: e o unico ponto de luz da sala. */
+  iluminacaoDoMecanismo() {
+    const x = this.dados.mecanismo.x * this.sala.largura;
+    this.sala.iluminacao.adicionar(x, PROFUNDIDADE.FUNDO + 40, 260, 0.45);
+  }
+
   montarRelogioDePendulo(r) {
     this.criarInterativo({
       x: r.x * this.sala.largura,
@@ -201,6 +336,128 @@ export class SalaScene extends GameplayScene {
           aoFechar: () => SaveManager.registrarPista('relogio-0318'),
         });
       },
+    });
+  }
+
+  /**
+   * Uma saida que nao e uma borda: uma fresta, uma escada, um alcapao.
+   *
+   * Existe porque nem toda sala se liga pelas laterais. A sala lateral so tem a
+   * fresta; o sotao so tem a escada. Sem isto, entrar nelas era entrar e ficar.
+   */
+  montarSaidaPorPonto(p) {
+    this.criarInterativo({
+      x: p.x * this.sala.largura,
+      y: PROFUNDIDADE.FUNDO + 70,
+      raio: p.raio ?? 130,
+      alturaMarca: p.altura ?? 90,
+      aoInteragir: () => {
+        if (p.exigeTamanho && this.alice.tamanho.id !== p.exigeTamanho) {
+          this.dialogo.mostrar(p.textoBloqueado, { rotulo: 'Alice' });
+          return;
+        }
+        if (p.texto) {
+          this.dialogo.mostrar(p.texto, {
+            rotulo: 'Alice',
+            aoFechar: () => this.irPara(p.para, p.entrada),
+          });
+          return;
+        }
+        this.irPara(p.para, p.entrada);
+      },
+    });
+  }
+
+  /**
+   * O buraco no assoalho. So machuca quem estiver no chao — passar por cima
+   * pela viga e seguro, e e essa a graca.
+   */
+  montarBuraco(b) {
+    this.criarPerigo({
+      x: b.x * this.sala.largura,
+      y: PROFUNDIDADE.FUNDO + 150,
+      largura: b.largura,
+      profundidade: 190,
+    });
+  }
+
+  /**
+   * O RELOGIO DE BOLSO DO COELHO
+   *
+   * Roteiro, secao 9, na ordem exata: som de item, pequena pausa, tic-tac,
+   * reacao da Alice, novo evento narrativo. E secao 10: e AQUI que o progresso
+   * fica salvo, porque foi conquista de verdade — ela atravessou tres salas,
+   * resolveu o mecanismo e subiu ate o fim do sotao.
+   */
+  montarRelogioDeBolso(r) {
+    if (SaveManager.temItem('relogio-de-bolso')) return;
+
+    const x = r.x * this.sala.largura;
+    const chao = PROFUNDIDADE.FUNDO + 92;
+
+    this.relogio = this.add
+      .image(x, chao - r.altura, 'relogio-bolso')
+      .setOrigin(0.5, 1)
+      .setScale(0.26)
+      .setDepth(profundidadeDeDesenho(chao) + 0.5);
+
+    // Latao velho ainda pega luz no escuro.
+    this.tweens.add({
+      targets: this.relogio, alpha: { from: 0.72, to: 1 },
+      duration: 2200, yoyo: true, repeat: -1, ease: 'Sine.easeInOut',
+    });
+
+    this.pontoDoRelogio = this.criarInterativo({
+      x,
+      y: chao,
+      raio: 120,
+      alturaMarca: r.altura + 34,
+      aoInteragir: () => {
+        if (this.alice.altura < r.altura - 40) {
+          this.dialogo.mostrar(
+            ['Tem alguma coisa la em cima.', 'Daqui eu nao alcanco.'],
+            { rotulo: 'Alice' }
+          );
+          return;
+        }
+        this.pegarORelogio();
+      },
+    });
+  }
+
+  pegarORelogio() {
+    if (this.temORelogio) return;
+    this.temORelogio = true;
+
+    this.entrarEmCinematica();
+    this.pontoDoRelogio.usado = true;
+    this.pontoDoRelogio.umaVez = true;
+    this.pontoDoRelogio.marca.destroy();
+
+    AudioManager.tocar('efeito.item');
+    this.tweens.add({
+      targets: this.relogio, alpha: 0, y: this.relogio.y - 26, duration: 700,
+      onComplete: () => this.relogio.destroy(),
+    });
+
+    SaveManager.registrarItem('relogio-de-bolso');
+    this.marcarCheckpoint(this.alice.x, this.alice.y, 'relogio-de-bolso');
+
+    // A pausa. O silencio da fase inteira para antes de o tic-tac comecar.
+    AudioManager.pararAmbiente(500);
+
+    this.time.delayedCall(1900, () => {
+      AudioManager.tocarAmbiente('ambiente.tictac', 1500);
+      this.time.delayedCall(1300, () => {
+        this.dialogo.mostrar(
+          [
+            'E o relogio dele.',
+            'O vidro esta quebrado e os ponteiros pararam em tres e dezessete.',
+            'Mas esta andando. Esta andando de novo.',
+          ],
+          { rotulo: 'Alice', aoFechar: () => this.sairDeCinematica() }
+        );
+      });
     });
   }
 

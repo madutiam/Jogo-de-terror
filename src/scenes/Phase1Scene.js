@@ -53,16 +53,6 @@ function sombraSuave(cena) {
   return chave;
 }
 
-/**
- * Onde o relogio de bolso do Coelho espera.
- *
- * Roteiro, secao 9: "No final dessa progressao esta o relogio quebrado do
- * Coelho." Ele fica EM CIMA da comoda — a Alice precisa subir para alcancar.
- * Nao existe texto mandando pular: quem tentar pegar do chao ouve que esta
- * alto demais, e isso basta.
- */
-const RELOGIO = { movel: 'comoda', escala: 0.30 };
-
 const SALA = {
   largura: 2400,
   profundidade: PROFUNDIDADE.FRENTE,
@@ -96,6 +86,8 @@ export class Phase1Scene extends GameplayScene {
 
   create() {
     this.tela = dimensoes(this);
+    // Com o relogio no bolso, a porta de pedra cede (roteiro, secao 11).
+    this.portaCedeu = SaveManager.temItem('relogio-de-bolso');
     this.cameras.main.setBackgroundColor(CORES.preto);
 
     // ---- sala ----
@@ -124,7 +116,7 @@ export class Phase1Scene extends GameplayScene {
 
     this.montarObstaculos();
     this.montarObservacoes();
-    this.montarRelogioDeBolso();
+    this.montarEscadaDoSotao();
 
     // ---- audio (regra 34: ambiente e passos, sem musica por cima) ----
     AudioManager.pararMusica(400);
@@ -326,153 +318,68 @@ export class Phase1Scene extends GameplayScene {
   }
 
   /**
-   * O relogio de bolso do Coelho, em cima da comoda.
+   * O relogio de bolso NAO fica mais aqui.
    *
-   * O jogador ve a marca dourada de longe e, ao chegar, descobre que ela esta
-   * acima da cabeca dele. A conclusao — preciso subir — e dele. O roteiro pede
-   * exatamente isso na secao 9: o parkour faz parte da investigacao.
+   * Ele estava em cima da comoda deste quarto porque, quando eu fechei a fase
+   * pela primeira vez, o sotao nao existia. Existe agora — e o roteiro e claro
+   * na secao 9: o relogio esta no FIM de uma progressao de parkour, nao no
+   * primeiro movel do primeiro comodo. Ver SalaScene.montarRelogioDeBolso.
+   *
+   * O que sobrou aqui e a consequencia: com o relogio no bolso, a porta cede.
    */
-  montarRelogioDeBolso() {
-    if (SaveManager.temItem('relogio-de-bolso')) {
-      this.temORelogio = true;
-      this.portaCedeu = true;
-      return;
-    }
-
-    const movel = this.quarto.movel(RELOGIO.movel);
-    const emCima = movel.y - movel.topo;
-
-    this.relogioDeBolso = this.add
-      .image(movel.x, emCima + 4, 'relogio-bolso')
-      .setOrigin(0.5, 1)
-      .setScale(RELOGIO.escala)
-      .setDepth(profundidadeDeDesenho(movel.y) + 0.5);
-
-    // Um brilho fraco: no escuro, latao velho ainda pega luz.
-    this.tweens.add({
-      targets: this.relogioDeBolso,
-      alpha: { from: 0.72, to: 1 },
-      duration: 2200, yoyo: true, repeat: -1, ease: 'Sine.easeInOut',
-    });
-
-    this.pontoDoRelogio = this.criarInterativo({
-      x: movel.x,
-      y: movel.y + 26,
-      raio: 120,
-      alturaMarca: movel.topo + 34,
-      aoInteragir: () => this.tentarPegarORelogio(movel),
-    });
-  }
-
-  /** So alcanca quem estiver em cima do movel. */
-  tentarPegarORelogio(movel) {
-    if (this.alice.altura < movel.topo - 18) {
-      this.dialogo.mostrar(
-        ['Tem alguma coisa ali em cima.', 'Daqui eu não alcanço.'],
-        { rotulo: 'Alice' }
-      );
-      return;
-    }
-    this.pegarORelogio();
-  }
-
   /**
-   * Roteiro, secao 9, na ordem exata: som de item, pequena pausa, tic-tac,
-   * reacao da Alice, novo evento narrativo. E secao 10: e AQUI que o progresso
-   * fica salvo, porque foi uma conquista de verdade.
+   * A ESCADA QUEBRADA
+   *
+   * Ela nao existe ate o mecanismo da sala lateral ser resolvido. E o que o
+   * roteiro pede: o enigma abre o desafio fisico. Antes disso o sotao nao e
+   * inalcancavel — ele simplesmente nao esta la.
+   *
+   * Depois de cair, ainda ha um segundo portao: faltam degraus, e a Alice
+   * PEQUENA nao alcanca os que sobraram. Para subir, ela precisa comer o GROW.
    */
-  pegarORelogio() {
-    if (this.temORelogio) return;
-    this.temORelogio = true;
+  montarEscadaDoSotao() {
+    if (!SaveManager.temItem('mecanismo')) return;
 
-    this.entrarEmCinematica();
-    this.pontoDoRelogio.usado = true;
-    this.pontoDoRelogio.umaVez = true;
-    this.pontoDoRelogio.marca.destroy();
+    const x = this.paraSala(210);
+    const chao = 560;
 
-    AudioManager.tocar('efeito.item');
-    this.tweens.add({
-      targets: this.relogioDeBolso,
-      alpha: 0, y: this.relogioDeBolso.y - 26,
-      duration: 700,
-      onComplete: () => this.relogioDeBolso.destroy(),
-    });
+    this.escada = this.add
+      .image(x, chao, 'peca/escada-1')
+      .setOrigin(0.5, 1)
+      .setScale(0.44)
+      .setDepth(profundidadeDeDesenho(chao) - 0.3);
 
-    SaveManager.registrarItem('relogio-de-bolso');
-    this.marcarCheckpoint(this.alice.x, this.alice.y, 'relogio-de-bolso');
-
-    // A pausa. O silencio da fase inteira para antes de o tic-tac comecar.
-    AudioManager.pararAmbiente(500);
-
-    this.time.delayedCall(1900, () => {
-      AudioManager.tocarAmbiente('ambiente.tictac', 1500);
-
-      this.time.delayedCall(1300, () => {
-        this.dialogo.mostrar(
-          [
-            'É o relógio dele.',
-            'O vidro está quebrado e os ponteiros pararam em três e dezessete.',
-            'Mas está andando. Está andando de novo.',
-          ],
-          {
-            rotulo: 'Alice',
-            aoFechar: () => {
-              this.portaCedeu = true;
-              this.sairDeCinematica();
-            },
-          }
-        );
-      });
+    this.criarInterativo({
+      x,
+      y: chao + 20,
+      raio: 130,
+      alturaMarca: 210,
+      aoInteragir: () => {
+        if (this.alice.tamanho.id === 'pequena') {
+          this.dialogo.mostrar(
+            [
+              'Faltam degraus.',
+              'Do jeito que eu estou, o primeiro ja fica longe demais.',
+            ],
+            { rotulo: 'Alice' }
+          );
+          return;
+        }
+        this.subirParaOSotao();
+      },
     });
   }
 
-  /** Fim da Fase 1. */
-  atravessarAPorta() {
-    if (this.saindoDaFase) return;
-    this.saindoDaFase = true;
+  subirParaOSotao() {
+    if (this.trocandoDeSala) return;
+    this.trocandoDeSala = true;
 
-    this.entrarEmCinematica();
-    AudioManager.tocar('efeito.porta');
-    SaveManager.salvarCheckpoint(1, 'fase1-concluida');
-
-    this.time.delayedCall(1400, () => {
-      this.cameras.main.fadeOut(1600, 0, 0, 0);
-    });
-
+    this.alice.pararPassos();
+    AudioManager.tocar('efeito.rangido');
+    this.cameras.main.fadeOut(500, 0, 0, 0);
     this.cameras.main.once('camerafadeoutcomplete', () => {
-      const tela = dimensoes(this);
-
-      // A tela preta e desenhada PELO JOGO, e nao pelo efeito de fade da
-      // camera. Se o fade continuasse ligado, ele ficaria por cima de tudo que
-      // fosse criado agora — foi o que aconteceu: o cartao existia, mas
-      // invisivel atras do preto da camera, e a fase parecia voltar direto
-      // para o menu sem dizer nada.
-      this.add
-        .rectangle(0, 0, tela.largura * 2, tela.altura * 2, CORES.preto)
-        .setOrigin(0, 0).setScrollFactor(0).setDepth(2000);
-      this.cameras.main.resetFX();
-
-      const fim = this.add
-        .text(tela.meioX, tela.meioY - 12, 'FIM DA FASE 1', {
-          fontFamily: FONTE, fontSize: '26px', color: HEX.osso,
-        })
-        .setOrigin(0.5).setScrollFactor(0).setDepth(2001).setAlpha(0);
-
-      const nota = this.add
-        .text(tela.meioX, tela.meioY + 26, 'a floresta ainda nao existe', {
-          fontFamily: FONTE, fontSize: '14px', color: HEX.ossoApagado,
-        })
-        .setOrigin(0.5).setScrollFactor(0).setDepth(2001).setAlpha(0);
-
-      this.tweens.add({ targets: [fim, nota], alpha: 0.9, duration: 1600 });
-
-      // O tic-tac continua sozinho no escuro por um instante, e so entao a
-      // tela devolve para o menu.
-      this.time.delayedCall(4200, () => {
-        AudioManager.pararAmbiente(900);
-        this.cameras.main.fadeOut(900, 0, 0, 0);
-        this.cameras.main.once('camerafadeoutcomplete',
-          () => this.scene.start(SCENES.MENU));
+      this.scene.start(SCENES.SALA, {
+        sala: 'sotao', entrada: 'escada', tamanho: this.alice.tamanho.id,
       });
     });
   }

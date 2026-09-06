@@ -406,6 +406,25 @@ export class GameplayScene extends Phaser.Scene {
     if (id) SaveManager.salvarCheckpoint(this.faseNumero ?? 1, id);
   }
 
+  // -------------------------------------------------------------------- tamanho
+
+  /**
+   * Come o biscoito contrario ao tamanho atual.
+   *
+   * Os dois vidros ficam com ela desde a despensa: a escolha nao e QUAL comer,
+   * e ONDE. Roteiro, secao 7 — o jogador tem que observar o ambiente para
+   * perceber onde cada tamanho serve.
+   */
+  alternarTamanho() {
+    if (!SaveManager.temItem('biscoitos')) return;
+    if (this.emCinematica || this.pausado) return;
+    if (!this.alice.noChao || this.alice.gesto) return;
+
+    const alvo = this.alice.tamanho.id === 'pequena' ? 'normal' : 'pequena';
+    this.entrarEmCinematica();
+    this.alice.mudarTamanho(alvo).then(() => this.sairDeCinematica());
+  }
+
   // ---------------------------------------------------------------------- pausa
 
   montarPausa() {
@@ -495,6 +514,11 @@ export class GameplayScene extends Phaser.Scene {
       if (this.input_.consumirInteragir({ mesmoBloqueado: true })) this.dialogo.avancar();
       return;
     }
+
+    // Comer um biscoito. So depois de ter os dois vidros, so no chao, e nunca
+    // no meio de outra coisa — trocar de tamanho no ar quebraria a fisica do
+    // pulo e a leitura do que esta acontecendo.
+    if (this.input_.consumirTamanho()) this.alternarTamanho();
 
     if (this.interativoAtual && this.input_.consumirInteragir()) {
       const item = this.interativoAtual;

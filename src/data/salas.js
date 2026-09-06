@@ -14,6 +14,27 @@
  * mesma perspectiva.
  */
 
+/**
+ * O TAMANHO UTIL DE CADA PECA
+ *
+ * As pecas foram gravadas numa tela comum, com folga transparente em volta.
+ * `displayHeight` da imagem, portanto, NAO e a altura do desenho. Estes numeros
+ * sao o desenho de verdade, medidos pixel a pixel — sem eles a peca aparece num
+ * lugar e a colisao fica em outro.
+ *
+ * Um por variante, na ordem 0..3.
+ */
+export const MEDIDA_DA_PECA = {
+  caixote:          [[320, 252], [394, 252], [422, 266], [422, 252]],
+  escada:           [[218, 614], [342, 556], [364, 550], [340, 564]],
+  mecanismo:        [[414, 590], [414, 592], [414, 588], [414, 586]],
+  'ponteiro-curto': [[120, 254], [186, 204], [236, 146], [254, 128]],
+  'ponteiro-longo': [[116, 346], [264, 296], [330, 208], [484, 118]],
+  prateleira:       [[482, 136], [474, 148], [476, 142], [484, 148]],
+  tabua:            [[452, 148], [448, 166], [448, 188], [452, 148]],
+  viga:             [[444, 140], [444, 146], [440, 174], [436, 166]],
+};
+
 export const SALAS = {
   corredor: {
     imagem: 'sala-corredor',
@@ -66,14 +87,49 @@ export const SALAS = {
     ],
 
     /**
-     * Os biscoitos, nos vidros SHRINK e GROW da prateleira mais alta.
-     * `altura` e a altura da prateleira em pixels de jogo: e o que decide se a
-     * Alice alcanca pulando ou se precisa empilhar caixote antes.
+     * O PARKOUR DA DESPENSA
+     *
+     * Os caixotes que ela ja desenhou no chao viram degrau de verdade. Subir
+     * neles e a unica maneira de alcancar a prateleira dos biscoitos.
+     *
+     * As alturas foram escolhidas contra o pulo medido (128 px normal, 70 px
+     * pequena):
+     *   chao -> caixote baixo   96  ok de pulo normal, alto demais para a pequena
+     *   baixo -> caixote alto  178  degrau de 82
+     *   alto -> prateleira     210  degrau de 32
      */
-    biscoitos: [
-      { id: 'shrink', x: 0.755, altura: 300, vira: 'pequena', rotulo: 'SHRINK' },
-      { id: 'grow',   x: 0.815, altura: 300, vira: 'normal',  rotulo: 'GROW' },
+    /**
+     * O PARKOUR DA DESPENSA
+     *
+     * Os caixotes que ela desenhou no chao viram degrau de verdade. Subir neles
+     * e a unica maneira de alcancar a prateleira dos biscoitos.
+     *
+     * `apoio` fica no chao e a altura sai do proprio desenho.
+     * `saliencia` esta presa na parede, na altura dada.
+     *
+     * As alturas foram escolhidas contra o pulo MEDIDO — 128 px normal, 70 px
+     * pequena — para a subida so existir no tamanho grande:
+     *   chao      -> caixote 1   101   sobe de pulo normal; pequena nao alcanca
+     *   caixote 1 -> caixote 2   207   degrau de 106
+     *   caixote 2 -> prateleira  240   degrau de 33
+     */
+    plataformas: [
+      { chave: 'caixote', variante: 0, x: 0.545, escala: 0.40, tipo: 'apoio' },
+      { chave: 'caixote', variante: 2, x: 0.650, escala: 0.40, tipo: 'apoio',
+        sobre: 101 },
+      { chave: 'prateleira', variante: 1, x: 0.755, escala: 0.62,
+        tipo: 'saliencia', topo: 240 },
     ],
+
+    /**
+     * Os dois vidros, na prateleira mais alta.
+     *
+     * Ela pega OS DOIS de uma vez. Nao e escolha de qual: os dois ficam com ela
+     * e dali em diante a pergunta e ONDE usar cada tamanho — que e o que o
+     * roteiro pede na secao 7. Pegar um so criaria beco sem saida: quem
+     * encolhesse la em cima nao subiria de novo para pegar o outro.
+     */
+    biscoitos: { x: 0.755, altura: 280 },
 
     /** Os potes marcados. Ninguem aponta: quem reparar, guarda o numero. */
     observacoes: [
@@ -100,8 +156,23 @@ export const SALAS = {
       { x: 0.44, y: 0.02, raio: 300, forca: 0.30 },
     ],
 
-    saidas: [
-      { lado: 'fresta', para: 'corredor', entrada: 'fresta' },
+    /**
+     * Nao ha porta nesta sala: ela so se entra pela fresta, e so se sai por
+     * ela. Como a Alice chegou aqui pequena, sair e imediato — mas se ela
+     * comeu o GROW la dentro, precisa encolher de novo. Beco sem saida nao
+     * existe: os dois biscoitos andam com ela.
+     */
+    saidas: [],
+    saidasPorPonto: [
+      {
+        x: 0.245, altura: 80, raio: 130, para: 'corredor', entrada: 'fresta',
+        exigeTamanho: 'pequena',
+        rotulo: 'a fresta',
+        textoBloqueado: [
+          'A fresta continua ali.',
+          'Deste tamanho eu nao volto por ela.',
+        ],
+      },
     ],
 
     /**
@@ -118,8 +189,12 @@ export const SALAS = {
       ],
     },
 
-    /** O mecanismo. Acertar 03:17 nele derruba a escada na sala principal. */
-    mecanismo: { x: 0.12, altura: 210, raio: 150 },
+    /**
+     * O mecanismo. Acertar 03:17 nele derruba a escada no quarto principal.
+     * O numero nao esta aqui: esta no relogio parado do quarto, nos tres potes
+     * da despensa e no pendulo desta sala, que marca um minuto depois.
+     */
+    mecanismo: { x: 0.115, altura: 230, raio: 150, escala: 0.42 },
   },
 
   sotao: {
@@ -135,15 +210,44 @@ export const SALAS = {
       { x: 0.83, y: 0.08, raio: 240, forca: 0.28 },
     ],
 
-    saidas: [
-      { lado: 'escada', para: 'quarto', entrada: 'escada' },
+    saidas: [],
+    saidasPorPonto: [
+      {
+        x: 0.115, altura: 200, raio: 140, para: 'quarto', entrada: 'escada',
+        rotulo: 'a escada',
+        texto: ['Melhor descer enquanto ainda da.'],
+      },
     ],
 
-    /** O buraco no assoalho. Cair nele custa uma espada. */
-    buraco: { x: 0.47, largura: 0.14 },
+    /**
+     * O PARKOUR DO SOTAO — a progressao que termina no relogio (secao 9)
+     *
+     * Contra o pulo medido de 128 px, e sempre por cima do buraco:
+     *   chao   -> caixote   106
+     *   caixote-> viga      196   degrau de 90
+     *   viga   -> tabua     262   degrau de 66
+     * O relogio esta a 262: so alcanca quem chegou na tabua.
+     *
+     * A Alice PEQUENA (pulo 70) nao sobe nem no primeiro caixote. O sotao
+     * inteiro e territorio do tamanho normal — e isso ja foi dito antes, na
+     * escada de degraus faltando.
+     */
+    plataformas: [
+      { chave: 'caixote', variante: 3, x: 0.300, escala: 0.42, tipo: 'apoio' },
+      { chave: 'viga',    variante: 0, x: 0.470, escala: 0.60,
+        tipo: 'saliencia', topo: 196 },
+      { chave: 'tabua',   variante: 2, x: 0.660, escala: 0.52,
+        tipo: 'saliencia', topo: 262 },
+    ],
+
+    /**
+     * O buraco no assoalho, embaixo da viga. Cair custa uma espada — e a
+     * unica coisa da Fase 1 que machuca.
+     */
+    buraco: { x: 0.470, largura: 300 },
 
     /** O relogio de bolso do Coelho, no fim da progressao (secao 9). */
-    relogioDeBolso: { x: 0.845, altura: 190 },
+    relogioDeBolso: { x: 0.700, altura: 262 },
   },
 };
 

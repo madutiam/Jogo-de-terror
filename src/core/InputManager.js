@@ -19,6 +19,7 @@ export class InputManager {
       pulo: false,          // apertada, consumida uma vez
       puloSegurado: false,  // botao continua pressionado
       interagir: false,
+      tamanho: false,
     };
 
     const teclado = scene.input.keyboard;
@@ -36,6 +37,7 @@ export class InputManager {
       interagir: Phaser.Input.Keyboard.KeyCodes.E,
       enter: Phaser.Input.Keyboard.KeyCodes.ENTER,
       correr: Phaser.Input.Keyboard.KeyCodes.SHIFT,
+      tamanho: Phaser.Input.Keyboard.KeyCodes.Q,
       pausa: Phaser.Input.Keyboard.KeyCodes.ESC,
     });
 
@@ -56,6 +58,7 @@ export class InputManager {
     this.toque.pulo = false;
     this.toque.puloSegurado = false;
     this.toque.interagir = false;
+    this.toque.tamanho = false;
   }
 
   liberar() {
@@ -161,6 +164,20 @@ export class InputManager {
     }
 
     return teclado;
+  }
+
+  /**
+   * True uma unica vez por apertada: a Alice come um biscoito e troca de
+   * tamanho. So funciona depois que ela pega os dois vidros na despensa.
+   */
+  consumirTamanho() {
+    if (this.bloqueado) return false;
+
+    if (this.toque.tamanho) {
+      this.toque.tamanho = false;
+      return true;
+    }
+    return Phaser.Input.Keyboard.JustDown(this.teclas.tamanho);
   }
 
   consumirPausa() {
