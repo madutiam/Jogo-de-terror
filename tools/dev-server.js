@@ -45,6 +45,39 @@ function resolverCaminho(url) {
   return destino;
 }
 
+/**
+ * CARIMBA A HORA DE MODIFICACAO EM CADA IMPORTACAO
+ *
+ * O navegador guarda modulos ES num mapa proprio, por URL. `Cache-Control:
+ * no-store` NAO limpa esse mapa: recarregar a pagina pode continuar entregando
+ * o modulo antigo, e o jogo roda com codigo de meia hora atras. Foi assim que
+ * um conserto ja aplicado no disco continuou "sem efeito" na tela.
+ *
+ * Aqui cada `from './x.js'` sai como `from './x.js?v=<hora do arquivo>'`. A URL
+ * muda quando o arquivo muda, entao o mapa do navegador e obrigado a buscar de
+ * novo — e so quando precisa.
+ *
+ * Isto vale so para o servidor de desenvolvimento. O arquivo em disco nao e
+ * tocado.
+ */
+function carimbarImportacoes(codigo, arquivoAtual) {
+  const pasta = path.dirname(arquivoAtual);
+
+  return codigo.replace(
+    /(\bfrom\s*|\bimport\s*\(\s*)(['"])(\.[^'"]+?)\2/g,
+    (inteiro, antes, aspa, alvo) => {
+      if (alvo.includes('?')) return inteiro;
+      try {
+        const destino = path.resolve(pasta, alvo);
+        const marca = fs.statSync(destino).mtimeMs.toString(36);
+        return antes + aspa + alvo + '?v=' + marca + aspa;
+      } catch {
+        return inteiro;   // importacao que nao e arquivo local: deixa como esta
+      }
+    }
+  );
+}
+
 const servidor = http.createServer((req, res) => {
   const destino = resolverCaminho(req.url);
 
@@ -61,6 +94,20 @@ const servidor = http.createServer((req, res) => {
     }
 
     const tipo = TIPOS[path.extname(destino).toLowerCase()] || 'application/octet-stream';
+
+    // Os arquivos de codigo passam por uma reescrita antes de sair; o resto vai
+    // direto, em fluxo, sem carregar na memoria.
+    if (path.extname(destino).toLowerCase() === '.js') {
+      const codigo = carimbarImportacoes(fs.readFileSync(destino, 'utf8'), destino);
+      res.writeHead(200, {
+        'Content-Type': tipo,
+        'Content-Length': Buffer.byteLength(codigo),
+        'Cache-Control': 'no-store',
+      });
+      res.end(codigo);
+      return;
+    }
+
     res.writeHead(200, {
       'Content-Type': tipo,
       'Content-Length': info.size,
