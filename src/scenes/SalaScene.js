@@ -42,6 +42,9 @@ export class SalaScene extends GameplayScene {
     // A cena e reaproveitada a cada troca de sala: sem zerar isto, a segunda
     // porta nunca abriria.
     this.trocandoDeSala = false;
+    // Pela mesma razao: uma sala sem som intermitente herdaria o timer morto da
+    // sala anterior, e o `remove()` do relogio de bolso miraria no alvo errado.
+    this.intermitente = null;
     this.nomeDaSala = dados?.sala || 'corredor';
     this.entrada = dados?.entrada || 'leste';
     this.tamanhoDaAlice = dados?.tamanho || 'normal';
