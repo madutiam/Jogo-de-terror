@@ -70,6 +70,7 @@ export class TouchControls {
     this.criarBotao(this.layout.pulo, 'pulo');
     this.criarBotao(this.layout.acao, 'interagir');
     if (this.layout.correr) this.criarBotaoCorrer(this.layout.correr);
+    if (this.layout.inventario) this.criarBotao(this.layout.inventario, 'inventario');
 
     // Enquanto o dialogo estiver aberto os controles saem da frente.
     cena.events.on('dialogo:abriu', this.esconder, this);

@@ -15,6 +15,9 @@ const BASE = {
   pulo: { raio: 46, rotulo: '⌃' },
   acao: { raio: 38, rotulo: '◇' },
   correr: { raio: 34, rotulo: '»' },
+  /** Inventario. Vive num CANTO, longe do polegar que joga: abrir a lista
+   *  por engano no meio de um pulo seria pior que nao ter botao. */
+  inventario: { raio: 26, rotulo: '☰' },
 };
 
 /**
@@ -109,12 +112,27 @@ export function calcularLayout(config, tela) {
   const acao = emOrbita('acao');
   const correr = config.botaoCorrer ? emOrbita('correr') : null;
 
+  // O botao de inventario nao entra na orbita do pulo: fica no canto de CIMA,
+  // do lado oposto ao HUD de espadas, onde o polegar nao passa jogando.
+  // NAO espelha com o canhoto: o HUD de espadas mora no canto superior
+  // ESQUERDO, e espelhando o botao caia em cima dele. Este e o unico controle
+  // que fica no mesmo lugar para os dois — e tudo bem, porque nao e um controle
+  // de jogar: e para ler, com o jogo parado.
+  const raioInv = BASE.inventario.raio * escala;
+  const inventario = {
+    x: LARGURA - MARGEM - raioInv,
+    y: MARGEM + raioInv,
+    raio: raioInv,
+    rotulo: BASE.inventario.rotulo,
+  };
+
   const opacidade = config.opacidadeControles ?? 0.12;
 
   return {
     escala,
     canhoto,
     tipo,
+    inventario,
     /** Opacidade do preenchimento; borda e rotulo saem daqui. */
     opacidade,
     opacidadeBorda: Math.min(1, opacidade * 2.4),

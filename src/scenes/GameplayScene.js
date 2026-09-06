@@ -678,8 +678,30 @@ export class GameplayScene extends Phaser.Scene {
    * Nenhuma linha diz para onde ir. O texto e a leitura DELA (regra 43): junta
    * quem ja tem o quebra-cabeca, e nao entrega nada a quem nao olhou.
    */
+  /**
+   * Abre pela PAUSA: fecha o painel de pausa e volta para ele.
+   */
   abrirInventario() {
+    this.veioDaPausa = true;
     this.painelPausa.setVisible(false);
+    this.montarInventario();
+    this.painelInventario.setVisible(true);
+  }
+
+  /**
+   * Abre DIRETO, pela tecla Y ou pelo botao do celular.
+   *
+   * O jogo para enquanto a lista esta aberta — ler nao pode custar uma vida.
+   * Sai pela mesma tecla, por ESC ou pelo VOLTAR.
+   */
+  alternarInventario() {
+    if (this.painelInventario) { this.fecharInventario(); return; }
+    if (this.pausado) return;
+
+    this.veioDaPausa = false;
+    this.physics.pause();
+    this.alice?.pararPassos();
+    this.toque?.esconder();
     this.montarInventario();
     this.painelInventario.setVisible(true);
   }
@@ -687,7 +709,13 @@ export class GameplayScene extends Phaser.Scene {
   fecharInventario() {
     this.painelInventario?.destroy();
     this.painelInventario = null;
-    this.painelPausa.setVisible(true);
+
+    if (this.veioDaPausa) {
+      this.painelPausa.setVisible(true);
+    } else {
+      this.physics.resume();
+      this.toque?.mostrar();
+    }
   }
 
   montarInventario() {
@@ -796,7 +824,15 @@ export class GameplayScene extends Phaser.Scene {
   /** As fases chamam `super.update(...)` no comeco do proprio update. */
   update(tempo, delta) {
     if (this.input_?.consumirPausa()) this.alternarPausa();
+
+    // O inventario responde antes do resto: com a lista aberta o jogo esta
+    // parado, e a unica coisa que ainda precisa funcionar e fecha-la.
+    if (this.painelInventario && !this.veioDaPausa) {
+      if (this.input_?.consumirInventario()) this.fecharInventario();
+      return;
+    }
     if (this.pausado) return;
+    if (this.input_?.consumirInventario()) { this.alternarInventario(); return; }
 
     this.atualizarPiso();
     this.alice?.controlar(this.input_, tempo);

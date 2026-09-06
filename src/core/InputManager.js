@@ -20,6 +20,7 @@ export class InputManager {
       puloSegurado: false,  // botao continua pressionado
       interagir: false,
       tamanho: false,
+      inventario: false,
     };
 
     const teclado = scene.input.keyboard;
@@ -38,6 +39,7 @@ export class InputManager {
       enter: Phaser.Input.Keyboard.KeyCodes.ENTER,
       correr: Phaser.Input.Keyboard.KeyCodes.SHIFT,
       tamanho: Phaser.Input.Keyboard.KeyCodes.Q,
+      inventario: Phaser.Input.Keyboard.KeyCodes.Y,
       pausa: Phaser.Input.Keyboard.KeyCodes.ESC,
     });
 
@@ -59,6 +61,7 @@ export class InputManager {
     this.toque.puloSegurado = false;
     this.toque.interagir = false;
     this.toque.tamanho = false;
+    this.toque.inventario = false;
   }
 
   liberar() {
@@ -178,6 +181,21 @@ export class InputManager {
       return true;
     }
     return Phaser.Input.Keyboard.JustDown(this.teclas.tamanho);
+  }
+
+  /**
+   * Abrir o inventario. Y no teclado, botao proprio no celular.
+   *
+   * Nao passa pelo `bloqueado`: ver o que ela tem e leitura, nao acao — da para
+   * abrir com a caixa de dialogo na tela sem atrapalhar nada.
+   */
+  consumirInventario() {
+    const teclado = Phaser.Input.Keyboard.JustDown(this.teclas.inventario);
+    if (this.toque.inventario) {
+      this.toque.inventario = false;
+      return true;
+    }
+    return teclado;
   }
 
   consumirPausa() {
