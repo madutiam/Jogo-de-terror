@@ -29,6 +29,7 @@ import { DialogBox } from '../ui/DialogBox.js';
 import { TouchControls } from '../ui/TouchControls.js';
 import { CORES, HEX, FONTE, ESTILO, comSombra } from '../ui/theme.js';
 import { dimensoes } from '../core/tela.js';
+import { ITENS, PISTAS, ORDEM_ITENS, ORDEM_PISTAS } from '../data/inventario.js';
 
 /**
  * Quanto de cenario fica reservado nas beiradas do mundo, so para a Alice nao
@@ -621,6 +622,7 @@ export class GameplayScene extends Phaser.Scene {
           this.scene.start(SCENES.PHASE1);
         },
       },
+      { texto: 'O QUE ELA TEM', acao: () => this.abrirInventario() },
       {
         texto: 'VOLTAR AO MENU',
         acao: () => {
@@ -652,11 +654,119 @@ export class GameplayScene extends Phaser.Scene {
     this.painelPausa.add([fundo, titulo, ...itens]);
   }
 
+  // ------------------------------------------------------------- inventario
+
+  /**
+   * O QUE ELA TEM, E O QUE ELA REPAROU
+   *
+   * Nao e inventario de RPG (regra 48). Sao duas listas curtas, para o jogador
+   * reler as pistas sem refazer o caminho — e para perceber, vendo tudo junto,
+   * que os tres numeros que ele anotou em salas diferentes falam da mesma hora.
+   *
+   * Nenhuma linha diz para onde ir. O texto e a leitura DELA (regra 43): junta
+   * quem ja tem o quebra-cabeca, e nao entrega nada a quem nao olhou.
+   */
+  abrirInventario() {
+    this.painelPausa.setVisible(false);
+    this.montarInventario();
+    this.painelInventario.setVisible(true);
+  }
+
+  fecharInventario() {
+    this.painelInventario?.destroy();
+    this.painelInventario = null;
+    this.painelPausa.setVisible(true);
+  }
+
+  montarInventario() {
+    this.painelInventario?.destroy();
+
+    const tela = dimensoes(this);
+    const progresso = SaveManager.getProgresso();
+
+    this.painelInventario = this.add
+      .container(0, 0)
+      .setScrollFactor(0)
+      .setDepth(2100);
+
+    const fundo = this.add
+      .rectangle(tela.meioX, tela.meioY, tela.largura * 2, tela.altura * 2, CORES.preto, 0.93)
+      .setScrollFactor(0);
+
+    const partes = [fundo];
+    const margem = Math.max(40, tela.meioX - 330);
+    let y = 54;
+
+    const titulo = (texto) => {
+      partes.push(this.add
+        .text(margem, y, texto, { fontFamily: FONTE, fontSize: '13px', color: HEX.dourado })
+        .setScrollFactor(0));
+      y += 30;
+    };
+
+    const linha = (nome, texto) => {
+      partes.push(this.add
+        .text(margem, y, nome, comSombra({ fontFamily: FONTE, fontSize: '19px', color: HEX.osso }))
+        .setScrollFactor(0));
+      y += 24;
+      partes.push(this.add
+        .text(margem + 14, y, texto, {
+          fontFamily: FONTE, fontSize: '15px', color: HEX.ossoApagado,
+          wordWrap: { width: Math.min(620, tela.largura - margem * 2 - 14) },
+        })
+        .setScrollFactor(0));
+      y += 46;
+    };
+
+    const vazio = (texto) => {
+      partes.push(this.add
+        .text(margem + 14, y, texto, {
+          fontFamily: FONTE, fontSize: '15px', color: HEX.ossoApagado, fontStyle: 'italic',
+        })
+        .setScrollFactor(0));
+      y += 40;
+    };
+
+    titulo('COM ELA');
+    const itens = ORDEM_ITENS.filter((id) => progresso.itens.includes(id));
+    if (itens.length) itens.forEach((id) => linha(ITENS[id].nome, ITENS[id].texto));
+    else vazio('Nada ainda. Só a roupa do corpo.');
+
+    y += 10;
+    titulo('O QUE ELA REPAROU');
+    const pistas = ORDEM_PISTAS.filter((id) => progresso.pistas.includes(id));
+    if (pistas.length) pistas.forEach((id) => linha(PISTAS[id].nome, PISTAS[id].texto));
+    else vazio('Ela ainda não parou para olhar nada.');
+
+    const voltar = this.add
+      .text(tela.meioX, tela.altura - 40, 'VOLTAR', comSombra(ESTILO.menu))
+      .setOrigin(0.5)
+      .setColor(HEX.ossoApagado)
+      .setFontSize(19)
+      .setScrollFactor(0)
+      .setInteractive({ useHandCursor: true });
+
+    voltar.on('pointerover', () => voltar.setColor(HEX.dourado));
+    voltar.on('pointerout', () => voltar.setColor(HEX.ossoApagado));
+    voltar.on('pointerdown', () => this.fecharInventario());
+    partes.push(voltar);
+
+    this.painelInventario.add(partes);
+    for (const parte of partes) parte.setScrollFactor(0);
+  }
+
   alternarPausa(forcar) {
     const novo = forcar ?? !this.pausado;
     if (novo === this.pausado) return;
 
     this.pausado = novo;
+
+    // Despausar com o inventario aberto deixava o painel na tela por cima do
+    // jogo, e o ESC seguinte so reabria a pausa por baixo dele.
+    if (!novo) {
+      this.painelInventario?.destroy();
+      this.painelInventario = null;
+    }
     this.painelPausa.setVisible(novo);
 
     if (novo) {
