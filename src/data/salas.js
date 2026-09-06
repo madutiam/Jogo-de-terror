@@ -36,6 +36,21 @@ export const MEDIDA_DA_PECA = {
 };
 
 export const SALAS = {
+  /**
+   * PROVISORIO — a primeira tela da Fase 2, aqui so para poder ser renderizada
+   * e medida enquanto a Fase 2 nao tem tabela propria. Sai daqui quando ela
+   * tiver.
+   */
+  chegada: {
+    imagem: 'fase2-chegada',
+    linhaDoChao: 430,
+    terreno: 'floresta',
+    nome: 'a floresta',
+    luzes: [],
+    saidas: [],
+    ambiente: { clipe: 'ambiente.galhos', volume: 0.34 },
+  },
+
   corredor: {
     imagem: 'sala-corredor',
     linhaDoChao: 620,
