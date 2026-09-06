@@ -70,9 +70,9 @@ Créditos · Phase1 (o quarto) · Sala (as outras quatro salas da Fase 1).
 
 ## FASE 1 — o que está pronto, seção por seção
 
-A resposta curta à pergunta *"você implementou tudo da Fase 1?"* é **não.**
-O corpo da fase está de pé e fecha de ponta a ponta. O que falta é a moldura:
-as duas cinemáticas.
+A Fase 1 está **completa**, com uma única ressalva: a HIGHSFIELD 02 termina num
+cartão de fim em vez de entrar na floresta, porque a Fase 2 ainda não existe.
+Tudo o mais que as seções 6 a 11 pedem está no jogo.
 
 | § | o que o roteiro pede | estado |
 |---|---|---|
@@ -82,9 +82,9 @@ as duas cinemáticas.
 | 8 | puzzles de relógio/horário/símbolo, diferença entre salas | **parcial** — uma corrente (03:17) |
 | 9 | parkour como parte da investigação, terminando no relógio | **feito** — duas progressões |
 | 10 | checkpoint como conquista real | **feito** — nos biscoitos e no relógio |
-| 11 | com o relógio, a porta cede e leva à Fase 2 | **parcial** — a porta cede; não há Fase 2 |
-| — | HIGHSFIELD 01 (o relógio) | **não feito** |
-| — | HIGHSFIELD 02 (a porta) | **não feito** |
+| 11 | com o relógio, a porta cede e leva à Fase 2 | **parcial** — a cinemática roda inteira; não há Fase 2 |
+| — | HIGHSFIELD 01 (o relógio) | **feito** |
+| — | HIGHSFIELD 02 (a porta) | **feito** |
 
 ### A corrente que funciona hoje
 
@@ -129,11 +129,10 @@ que marca um minuto depois.
 
 ## O que NÃO está implementado
 
-### Cinemáticas — nenhuma das cinco
-- **HIGHSFIELD 01** (o relógio) — os 12 quadros do Coelho já estão recortados em
-  `assets/characters/coelho/` e `coelho-rosto/`, prontos para usar
-- **HIGHSFIELD 02** (a porta) — hoje a porta mostra um cartão "FIM DA FASE 1" e
-  volta ao menu
+### Cinemáticas — duas das cinco estão feitas
+- **HIGHSFIELD 01** (o relógio) — **feita.** Abre o jogo em JOGAR do zero
+- **HIGHSFIELD 02** (a porta) — **feita.** Termina no cartão de fim, porque a
+  Fase 2 não existe; quando existir, é trocar o último passo
 - **HIGHSFIELD 03, 04, 05** — dependem das Fases 2 e 3
 
 ### Fases 2 e 3 — não existem
@@ -144,8 +143,6 @@ Alice Demon (a folha inteira de movimentos existe, 39 quadros, não recortada),
 Chapeleiro, Soldado de cartas, Gato Cheshire.
 
 ### Outras faltas
-- **O tutorial não ensina a mecânica de tamanho** (§42 pede) — ele foi escrito
-  antes de ela existir
 - **O símbolo da espada ♠** não liga as pistas entre si, como o §8 sugere
 - **Cada sala usa o mesmo silêncio tenso** — não há ambiente próprio por cômodo
 - **Morte e renascimento não foram testados.** O único perigo da fase é o buraco
@@ -273,14 +270,46 @@ x medido com o jogo rodando.
 
 ---
 
+## O PRÓXIMO PASSO MAIS BARATO — áudio por sala
+
+Hoje as cinco salas da Fase 1 chamam `ambiente.silencio` e mais nada. Todas
+soam iguais. Dar ambiente próprio a cada cômodo é a mudança de maior efeito por
+menor esforço no projeto inteiro — e **não precisa de nenhum áudio novo**: os
+quatro clipes de ambiente que existem já bastam.
+
+O que existe: `ambiente.silencio` · `ambiente.tictac` · `ambiente.galhos` ·
+`ambiente.sussurros`.
+
+| sala | o que tocar | por quê |
+|---|---|---|
+| **quarto** | `silencio` (como está) | é o cômodo frio do começo; o silêncio é a linha de base contra a qual todo o resto vai soar |
+| **corredor** | `silencio` mais baixo, com `efeito.rangido` disparado em intervalos irregulares (12 a 25 s) | corredor comprido e estreito: o som distante faz o jogador olhar para trás |
+| **despensa** | `silencio` com volume menor ainda | cômodo fechado, cheio de coisa. Abafado é o que se espera de uma despensa |
+| **sala lateral** | **`tictac` bem baixo** | ela TEM um relógio de pêndulo desenhado na parede. O tic-tac ali não é enfeite: é a sala dizendo que o tempo andou deste lado — a mesma coisa que o 03:18 diz de olho |
+| **sótão** | `galhos` bem baixo, como vento no telhado, + `sussurros` raríssimo | é o ponto mais alto da casa, com uma janela redonda. Vento é o que se ouve de um sótão |
+
+O da **sala lateral** é o que mais rende: o som confirma a pista que os olhos já
+deram, sem uma palavra.
+
+Onde mexer: `SalaScene.create()` chama `tocarAmbiente('ambiente.silencio')`
+fixo. Basta cada sala em `src/data/salas.js` trazer o próprio `ambiente`
+(clipe + volume), e a cena ler de lá — do mesmo jeito que já lê luzes e saídas.
+
+Para o rangido em intervalo irregular, um `time.addEvent` com `delay` sorteado
+a cada disparo. Não usar intervalo fixo: ritmo previsível deixa de assustar na
+terceira vez.
+
+---
+
 ## Ordem sugerida daqui
 
-1. **HIGHSFIELD 02** — a passagem pela porta. Fecha a Fase 1 de verdade, e os
-   assets já existem
-2. **HIGHSFIELD 01** — a abertura. Os 12 quadros do Coelho estão prontos
-3. **Tutorial** — ensinar a mecânica de tamanho (§42)
-4. **Ambiente por sala** — cada cômodo com o próprio som
-5. **Fase 2** — floresta, Alice Demon, perseguição
+1. **Áudio por sala** — descrito acima. É o mais barato e o que mais muda
+2. **Testar morte e renascimento** — o buraco do sótão é o único perigo da
+   fase, e o caminho de volta ao checkpoint nunca foi percorrido
+3. **Testar os controles de toque** — existem, mas não foram verificados
+   depois das mudanças recentes
+4. **Recortar a Alice Demon** — 39 quadros, com a ferramenta que já existe
+5. **Fase 2** — floresta, investigação, a roupa do Coelho, o espelho
 
 Antes de qualquer uma: reler a seção correspondente do
 [ROTEIRO.md](ROTEIRO.md). Ele é específico ao ponto de dizer o que acontece em
