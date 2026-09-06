@@ -160,7 +160,24 @@ export class Phase1Scene extends GameplayScene {
     AudioManager.pararMusica(400);
     AudioManager.tocarAmbiente('ambiente.silencio', 2600);
 
-    this.abrir();
+    // A ABERTURA E DA PARTIDA, NAO DO COMODO
+    //
+    // `abrir()` rodava em TODA entrada no quarto: voltando do corredor,
+    // descendo do sotao, reiniciando a fase. Alem de repetir a fala, ela tirava
+    // o controle por dois segundos a cada vez — o que numa fase que passa pelo
+    // quarto quatro vezes vira pedagio.
+    //
+    // Duas condicoes, e as duas importam. `entrada` so vem preenchida quando a
+    // Alice chega de OUTRA sala, entao ela sozinha ja barra o vaivem. E o item
+    // no save garante o resto: reiniciar a fase para testar nao repete a fala,
+    // mas RECOMECAR do menu apaga o progresso e a abertura volta a existir,
+    // porque ai e uma partida nova de verdade.
+    if (!this.entrada && !SaveManager.temItem('abertura-fase1')) {
+      SaveManager.registrarItem('abertura-fase1');
+      this.abrir();
+    } else {
+      this.voltarAoQuarto();
+    }
   }
 
   /** Converte uma coordenada X do desenho original para a sala grande. */
@@ -472,6 +489,14 @@ export class Phase1Scene extends GameplayScene {
   }
 
   // ------------------------------------------------------------------- abertura
+
+  /**
+   * Voltar ao quarto vindo de outro comodo. So a luz acendendo: sem caixa,
+   * sem cinematica, sem esperar. O controle nunca sai da mao do jogador.
+   */
+  voltarAoQuarto() {
+    this.cameras.main.fadeIn(420, 0, 0, 0);
+  }
 
   /**
    * Entrada da fase (regra 6): a Alice aparece, a caixa apresenta o objetivo,
