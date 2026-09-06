@@ -1,0 +1,25 @@
+{
+ "folhas": [
+  {
+   "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Ponteiros soltos.png",
+   "fundo": "chapado",
+   "corDeFundo": [
+    0,
+    0,
+    0
+   ],
+   "tolerancia": 30,
+   "linhas": [
+    {
+     "chave": "ponteiro-longo",
+     "x1": 0,
+     "y1": 16,
+     "x2": 2172,
+     "y2": 372,
+     "quadros": 4,
+     "ancora": "massa"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,25 @@
+{
+ "folhas": [
+  {
+   "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Caixote de madeira.png",
+   "fundo": "chapado",
+   "corDeFundo": [
+    0,
+    0,
+    0
+   ],
+   "tolerancia": 30,
+   "linhas": [
+    {
+     "chave": "caixote",
+     "x1": 0,
+     "y1": 236,
+     "x2": 2172,
+     "y2": 520,
+     "quadros": 4,
+     "ancora": "massa"
+    }
+   ]
+  }
+ ]
+}

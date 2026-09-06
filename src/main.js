@@ -17,6 +17,7 @@ import { TutorialScene } from './scenes/TutorialScene.js';
 import { SettingsScene } from './scenes/SettingsScene.js';
 import { CreditsScene } from './scenes/CreditsScene.js';
 import { Phase1Scene } from './scenes/Phase1Scene.js';
+import { SalaScene } from './scenes/SalaScene.js';
 
 const configuracao = {
   type: Phaser.AUTO,
@@ -62,6 +63,7 @@ const configuracao = {
     SettingsScene,
     CreditsScene,
     Phase1Scene,
+    SalaScene,
   ],
 };
 

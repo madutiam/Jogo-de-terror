@@ -1,0 +1,38 @@
+﻿[
+    {
+        "arquivo":  "viga-0.png",
+        "chave":  "viga",
+        "indice":  0,
+        "larguraUtil":  445,
+        "alturaUtil":  140,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "viga-1.png",
+        "chave":  "viga",
+        "indice":  1,
+        "larguraUtil":  444,
+        "alturaUtil":  147,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "viga-2.png",
+        "chave":  "viga",
+        "indice":  2,
+        "larguraUtil":  441,
+        "alturaUtil":  174,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "viga-3.png",
+        "chave":  "viga",
+        "indice":  3,
+        "larguraUtil":  437,
+        "alturaUtil":  167,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    }
+]

@@ -18,6 +18,8 @@ export const SCENES = {
   SETTINGS: 'Settings',
   CREDITS: 'Credits',
   PHASE1: 'Phase1',
+  /** Uma cena para todas as salas da Fase 1; ver src/data/salas.js. */
+  SALA: 'Sala',
 };
 
 /**

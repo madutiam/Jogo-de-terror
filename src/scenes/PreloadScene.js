@@ -39,12 +39,27 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('fase2-floresta', 'assets/scenarios/fase2-floresta.png');
     this.load.image('fase3-tabuleiro', 'assets/scenarios/fase3-tabuleiro.png');
 
+    // As salas da Fase 1, cada uma numa imagem inteira.
+    this.load.image('sala-corredor', 'assets/scenarios/sala-corredor.png');
+    this.load.image('sala-despensa', 'assets/scenarios/sala-despensa.png');
+    this.load.image('sala-lateral',  'assets/scenarios/sala-lateral.png');
+    this.load.image('sala-sotao',    'assets/scenarios/sala-sotao.png');
+
     // ---- objetos ----
     this.load.image('porta', 'assets/objects/porta.png');
     this.load.image('chave', 'assets/objects/chave.png');
     // O relogio de bolso do Coelho: o item que fecha a Fase 1 (roteiro, 9 e 11).
     this.load.image('relogio-bolso', 'assets/objects/relogio/relogio-bolso-0.png');
     this.load.image('relogio-bolso-aberto', 'assets/objects/relogio/relogio-bolso-aberto-0.png');
+
+    // Pecas de parkour: 4 variantes de cada, para a fase nao ficar repetida.
+    for (const peca of ['caixote', 'escada', 'mecanismo', 'tabua', 'prateleira',
+                        'viga', 'ponteiro-longo', 'ponteiro-curto']) {
+      for (let i = 0; i < 4; i++) {
+        this.load.image('peca/' + peca + '-' + i,
+          'assets/objects/pecas/' + peca + '-' + i + '.png');
+      }
+    }
 
     // ---- interface ----
     this.load.image('capa', 'assets/ui/capa.png');

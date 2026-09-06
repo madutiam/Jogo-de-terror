@@ -1,0 +1,25 @@
+{
+ "folhas": [
+  {
+   "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Mecanismo de relógio.png",
+   "fundo": "chapado",
+   "corDeFundo": [
+    0,
+    0,
+    0
+   ],
+   "tolerancia": 30,
+   "linhas": [
+    {
+     "chave": "mecanismo",
+     "x1": 0,
+     "y1": 28,
+     "x2": 2172,
+     "y2": 636,
+     "quadros": 4,
+     "ancora": "massa"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,25 @@
+{
+ "folhas": [
+  {
+   "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Tábua solta.png",
+   "fundo": "chapado",
+   "corDeFundo": [
+    0,
+    0,
+    0
+   ],
+   "tolerancia": 30,
+   "linhas": [
+    {
+     "chave": "tabua",
+     "x1": 0,
+     "y1": 244,
+     "x2": 2172,
+     "y2": 448,
+     "quadros": 4,
+     "ancora": "massa"
+    }
+   ]
+  }
+ ]
+}

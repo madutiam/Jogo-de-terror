@@ -1,0 +1,27 @@
+{
+  "folhas": [
+    { "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Caixote de madeira.png", "fundo": "chapado", "corDeFundo": [0,0,0], "tolerancia": 30,
+      "linhas": [ { "chave": "caixote", "x1": 0, "y1": 236, "x2": 2172, "y2": 520, "quadros": 4, "ancora": "massa" } ] },
+
+    { "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Escada quebrada.png", "fundo": "chapado", "corDeFundo": [0,0,0], "tolerancia": 30,
+      "linhas": [ { "chave": "escada", "x1": 0, "y1": 30, "x2": 2172, "y2": 662, "quadros": 4, "ancora": "massa" } ] },
+
+    { "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Mecanismo de relógio.png", "fundo": "chapado", "corDeFundo": [0,0,0], "tolerancia": 30,
+      "linhas": [ { "chave": "mecanismo", "x1": 0, "y1": 28, "x2": 2172, "y2": 636, "quadros": 4, "ancora": "massa" } ] },
+
+    { "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Ponteiros soltos.png", "fundo": "chapado", "corDeFundo": [0,0,0], "tolerancia": 30,
+      "linhas": [
+        { "chave": "ponteiro-longo", "x1": 0, "y1": 16, "x2": 2172, "y2": 372, "quadros": 4, "ancora": "massa" },
+        { "chave": "ponteiro-curto", "x1": 0, "y1": 406, "x2": 2172, "y2": 678, "quadros": 4, "ancora": "massa" }
+      ] },
+
+    { "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Tábua solta.png", "fundo": "chapado", "corDeFundo": [0,0,0], "tolerancia": 30,
+      "linhas": [ { "chave": "tabua", "x1": 0, "y1": 244, "x2": 2172, "y2": 448, "quadros": 4, "ancora": "massa" } ] },
+
+    { "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Prateleira de parede.png", "fundo": "chapado", "corDeFundo": [0,0,0], "tolerancia": 30,
+      "linhas": [ { "chave": "prateleira", "x1": 0, "y1": 256, "x2": 2172, "y2": 434, "quadros": 4, "ancora": "massa" } ] },
+
+    { "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Viga do sótão.png", "fundo": "chapado", "corDeFundo": [0,0,0], "tolerancia": 30,
+      "linhas": [ { "chave": "viga", "x1": 0, "y1": 244, "x2": 2172, "y2": 428, "quadros": 4, "ancora": "massa" } ] }
+  ]
+}

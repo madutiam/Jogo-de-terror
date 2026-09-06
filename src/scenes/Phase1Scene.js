@@ -17,7 +17,9 @@
  *   - a Alice de costas (hoje ela continua de frente ao andar para o fundo)
  */
 
-import { SCENES, PROFUNDIDADE, profundidadeDeDesenho } from '../core/constants.js';
+import {
+  SCENES, PROFUNDIDADE, ALICE_TAMANHO, profundidadeDeDesenho,
+} from '../core/constants.js';
 import { dimensoes } from '../core/tela.js';
 import { GameplayScene } from './GameplayScene.js';
 import { AudioManager } from '../core/AudioManager.js';
@@ -83,6 +85,15 @@ export class Phase1Scene extends GameplayScene {
     this.faseNumero = 1;
   }
 
+  /** Recebe de onde ela veio, quando volta de outra sala. */
+  init(dados) {
+    // A cena volta a ser usada quando a Alice retorna de outra sala.
+    this.trocandoDeSala = false;
+    this.saindoDaFase = false;
+    this.entrada = dados?.entrada || null;
+    this.tamanhoDaAlice = dados?.tamanho || 'normal';
+  }
+
   create() {
     this.tela = dimensoes(this);
     this.cameras.main.setBackgroundColor(CORES.preto);
@@ -102,7 +113,14 @@ export class Phase1Scene extends GameplayScene {
     this.montarPorta();
 
     // ---- jogabilidade ----
-    this.montarJogabilidade({ x: this.paraSala(430), y: 700 });
+    const inicio = this.entrada === 'oeste'
+      ? { x: 200, y: 700 }
+      : { x: this.paraSala(430), y: 700 };
+    this.montarJogabilidade(inicio);
+
+    // Quem saiu pequena, volta pequena.
+    this.alice.tamanho = ALICE_TAMANHO[this.tamanhoDaAlice] || ALICE_TAMANHO.normal;
+    this.alice.aplicarPegada();
 
     this.montarObstaculos();
     this.montarObservacoes();
@@ -550,9 +568,21 @@ export class Phase1Scene extends GameplayScene {
 
   update(tempo, delta) {
     super.update(tempo, delta);
-    if (this.pausado) return;
+    if (this.pausado || this.saindoDaFase) return;
 
     // A escuridao anda junto: a sala grande so existe em volta dela.
     this.quarto.seguirComEscuridao(this.alice.x, this.alice.y);
+
+    // A ponta oeste do quarto e um vao aberto: da no corredor.
+    if (this.alice.x <= 150 && !this.trocandoDeSala) {
+      this.trocandoDeSala = true;
+      this.alice.pararPassos();
+      this.cameras.main.fadeOut(420, 0, 0, 0);
+      this.cameras.main.once('camerafadeoutcomplete', () => {
+        this.scene.start(SCENES.SALA, {
+          sala: 'corredor', entrada: 'leste', tamanho: this.alice.tamanho.id,
+        });
+      });
+    }
   }
 }
