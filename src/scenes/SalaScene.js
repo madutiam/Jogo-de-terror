@@ -2,8 +2,8 @@
  * UMA CENA PARA TODAS AS SALAS DA FASE 1
  *
  * Corredor, despensa, sala lateral e sotao usam esta mesma cena. O que muda
- * entre elas esta em `src/data/salas.js` — imagem, luzes, saidas, o que tem
- * dentro. Trocar de sala e reiniciar esta cena com outro nome; os assets ja
+ * entre elas esta em `src/data/salas.js` — imagem, luzes, saidas, som, o que
+ * tem dentro. Trocar de sala e reiniciar esta cena com outro nome; os assets ja
  * estao carregados, entao a troca e imediata.
  *
  * O quarto principal continua na Phase1Scene, porque ele e montado de um jeito
@@ -79,10 +79,65 @@ export class SalaScene extends GameplayScene {
     this.montarSaidas();
 
     AudioManager.pararMusica(400);
-    AudioManager.tocarAmbiente('ambiente.silencio', 2200);
+    this.iniciarAmbienteDaSala();
 
     this.cameras.main.fadeIn(600, 0, 0, 0);
     this.mostrarNome();
+  }
+
+  // ------------------------------------------------------------------ ambiente
+
+  /**
+   * O SOM DE CADA COMODO
+   *
+   * As cinco salas chamavam `ambiente.silencio` e mais nada, entao todas
+   * soavam iguais — e uma casa em que todo comodo soa igual e uma casa que o
+   * ouvido para de escutar. Agora cada sala traz o proprio ambiente em
+   * `salas.js`, do mesmo jeito que ja traz luzes e saidas.
+   *
+   * Nenhum audio novo foi preciso: sao os quatro clipes de ambiente que ja
+   * existiam, em pesos diferentes.
+   */
+  iniciarAmbienteDaSala() {
+    const a = this.ambienteDaSala();
+    AudioManager.tocarAmbiente(a.clipe, a.fade ?? 2200, { volume: a.volume });
+    if (a.intermitente) this.agendarIntermitente(a.intermitente);
+  }
+
+  ambienteDaSala() {
+    // O relogio de bolso volta a andar no instante em que ela o pega, e dali em
+    // diante o sotao E o tic-tac. Subir de novo depois disso nao pode devolver
+    // o vento: o que mudou na sala foi a historia, nao a hora do dia.
+    if (this.nomeDaSala === 'sotao' && SaveManager.temItem('relogio-de-bolso')) {
+      return { clipe: 'ambiente.tictac', volume: 0.34 };
+    }
+    return this.dados.ambiente || { clipe: 'ambiente.silencio' };
+  }
+
+  /**
+   * Um som solto, em intervalo SORTEADO a cada disparo.
+   *
+   * Intervalo fixo vira metronomo: na terceira vez o jogador ja sabe a hora e
+   * o susto acaba antes de acontecer. Sorteado, o corredor nunca fica
+   * confortavel — e nao ha nada para achar, o que e justamente o ponto.
+   *
+   * O relogio da cena morre com a cena, entao trocar de sala cancela isto
+   * sozinho.
+   */
+  agendarIntermitente(i) {
+    const proximo = () => {
+      this.intermitente = this.time.delayedCall(
+        Phaser.Math.Between(i.minMs, i.maxMs),
+        () => {
+          // Durante cinematica o controle sai do jogador (regra 8) e a cena
+          // manda no som. Um rangido sorteado no meio de uma fala atropelaria
+          // a cena — o relogio segue correndo e ele tenta de novo depois.
+          if (!this.emCinematica) AudioManager.tocar(i.clipe, { volume: i.volume });
+          proximo();
+        }
+      );
+    };
+    proximo();
   }
 
   pontoDeEntrada() {
@@ -447,7 +502,10 @@ export class SalaScene extends GameplayScene {
     this.marcarCheckpoint(this.alice.x, this.alice.y, 'relogio-de-bolso');
 
     // A pausa. O silencio da fase inteira para antes de o tic-tac comecar.
+    // O vento do sotao tambem sai, e o sussurro sorteado junto: se ele caisse
+    // dentro destes 1,9 s de nada, a pausa deixaria de ser pausa.
     AudioManager.pararAmbiente(500);
+    this.intermitente?.remove();
 
     this.time.delayedCall(1900, () => {
       AudioManager.tocarAmbiente('ambiente.tictac', 1500);

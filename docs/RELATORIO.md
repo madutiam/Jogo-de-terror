@@ -79,6 +79,10 @@ cada) · **12 peças de xadrez** (6 limpas, 6 sombrias) ainda não recortadas.
 **25 arquivos, 32 clipes catalogados.** Os 30 sons que a seção 33 lista estão
 todos no acervo — `AUDIO_FALTANDO` está vazio.
 
+Cada cômodo da Fase 1 tem o próprio ambiente, montado só com esses clipes —
+o corredor com rangido sorteado, a sala lateral com o tic-tac que confirma o
+03:18 da parede, o sótão com vento e sussurro raro.
+
 Cada clipe tem corte medido, não estimado: os pontos foram levantados com
 análise de envelope (RMS + detecção de transiente) sobre os arquivos, e depois
 conferidos de ouvido. Trechos usam **marcador do Phaser**, e não `seek`, porque
@@ -211,22 +215,21 @@ você decidir.
 
 ## 6. PLANO — a ordem daqui
 
-A seção 57 do roteiro define a ordem geral. Os itens 1 a 11 estão feitos. O que
-falta, na ordem que faz sentido:
+A seção 57 do roteiro define a ordem geral. Os itens 1 a 11 estão feitos, mais
+o **áudio por sala** — cada um dos cinco cômodos com o próprio ambiente, sem
+nenhum áudio novo. O que falta, na ordem que faz sentido:
 
-1. **Áudio por sala** — cada cômodo com o próprio ambiente. Hoje as cinco salas
-   usam o mesmo silêncio tenso. É barato e muda muito.
-2. **Testar morte e renascimento** — o buraco do sótão é o único perigo da fase,
+1. **Testar morte e renascimento** — o buraco do sótão é o único perigo da fase,
    e o caminho de volta ao checkpoint nunca foi percorrido.
-3. **Testar os controles de toque** — existem, mas não foram verificados depois
+2. **Testar os controles de toque** — existem, mas não foram verificados depois
    das mudanças recentes.
-4. **Recortar a Alice Demon** — 39 quadros, com a ferramenta que já existe.
-5. **Fase 2** — floresta, investigação, a roupa do Coelho, o espelho.
-6. **HIGHSFIELD 03** — o espelho e a aparição da Demon.
-7. **A perseguição.**
-8. **Recortar as peças de xadrez** e construir a Fase 3.
-9. **HIGHSFIELD 04 e 05.**
-10. **A revelação final** — o texto que junta as pistas das três fases.
+3. **Recortar a Alice Demon** — 39 quadros, com a ferramenta que já existe.
+4. **Fase 2** — floresta, investigação, a roupa do Coelho, o espelho.
+5. **HIGHSFIELD 03** — o espelho e a aparição da Demon.
+6. **A perseguição.**
+7. **Recortar as peças de xadrez** e construir a Fase 3.
+8. **HIGHSFIELD 04 e 05.**
+9. **A revelação final** — o texto que junta as pistas das três fases.
 
 ### Duas decisões que são suas
 

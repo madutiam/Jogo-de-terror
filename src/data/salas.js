@@ -42,6 +42,18 @@ export const SALAS = {
     terreno: 'madeira',
     nome: 'corredor',
 
+    /**
+     * Corredor comprido e estreito, e a unica sala que tem PORTAS nas duas
+     * pontas. O silencio vem mais baixo que no quarto para abrir espaco ao
+     * rangido — que nunca toca perto: e sempre uma porta que ela ja passou, ou
+     * uma que ainda nao abriu. O som faz o jogador olhar para tras. Nao tem
+     * nada la; e essa a graca.
+     */
+    ambiente: {
+      clipe: 'ambiente.silencio', volume: 0.30,
+      intermitente: { clipe: 'efeito.rangido', volume: 0.30, minMs: 12000, maxMs: 25000 },
+    },
+
     luzes: [
       // O lustre no meto do corredor.
       { x: 0.56, y: 0.05, raio: 420, forca: 0.42 },
@@ -96,6 +108,13 @@ export const SALAS = {
     linhaDoChao: 790,
     terreno: 'madeira',
     nome: 'despensa',
+
+    /**
+     * Comodo pequeno, fechado e cheio de coisa ate o teto. Som abafado e o que
+     * o ouvido espera de uma despensa — e o contraste com o corredor, que ela
+     * acabou de deixar, vende os dois de uma vez.
+     */
+    ambiente: { clipe: 'ambiente.silencio', volume: 0.22 },
 
     luzes: [
       // A lampada pendurada, que e a unica coisa acesa aqui.
@@ -172,6 +191,19 @@ export const SALAS = {
     terreno: 'madeira',
     nome: 'sala lateral',
 
+    /**
+     * A SALA QUE O SOM RESOLVE
+     *
+     * Ela tem um relogio de pendulo desenhado na parede, marcando 03:18 —
+     * um minuto depois do relogio parado do quarto. O tic-tac baixinho nao e
+     * enfeite: e a sala dizendo, pelo ouvido, exatamente o que o mostrador diz
+     * pelo olho. Do outro lado da fresta o tempo andou.
+     *
+     * Bem baixo de proposito. Alto demais viraria aviso; assim e uma coisa que
+     * o jogador nota sozinho, e a descoberta continua sendo dele.
+     */
+    ambiente: { clipe: 'ambiente.tictac', volume: 0.18 },
+
     luzes: [
       { x: 0.30, y: 0.04, raio: 380, forca: 0.34 },
       // A janela, ao fundo.
@@ -224,6 +256,19 @@ export const SALAS = {
     linhaDoChao: 640,
     terreno: 'madeira',
     nome: 'sotao',
+
+    /**
+     * O ponto mais alto da casa, com uma janela redonda. Estalos de galho
+     * baixinhos passam por vento no telhado — e sussurro raro, tao espacado
+     * que fica a duvida se veio de fora ou de dentro.
+     *
+     * O sussurro e EFEITO, nao ambiente: so toca uma camada de ambiente por
+     * vez, e trocar o vento pelo sussurro perderia o vento.
+     */
+    ambiente: {
+      clipe: 'ambiente.galhos', volume: 0.26,
+      intermitente: { clipe: 'efeito.sussurro', volume: 0.22, minMs: 35000, maxMs: 75000 },
+    },
 
     luzes: [
       // A luz da lua pela janela redonda: fria, e a unica que diz que ela

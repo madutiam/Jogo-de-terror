@@ -145,7 +145,6 @@ Chapeleiro, Soldado de cartas, Gato Cheshire.
 
 ### Outras faltas
 - **O símbolo da espada ♠** não liga as pistas entre si, como o §8 sugere
-- **Cada sala usa o mesmo silêncio tenso** — não há ambiente próprio por cômodo
 - **Morte e renascimento não foram testados.** O único perigo da fase é o buraco
   do sótão
 - **Controles de toque não foram testados** depois das mudanças recentes
@@ -328,46 +327,50 @@ x medido com o jogo rodando.
 
 ---
 
-## O PRÓXIMO PASSO MAIS BARATO — áudio por sala
+## ÁUDIO POR SALA — feito
 
-Hoje as cinco salas da Fase 1 chamam `ambiente.silencio` e mais nada. Todas
-soam iguais. Dar ambiente próprio a cada cômodo é a mudança de maior efeito por
-menor esforço no projeto inteiro — e **não precisa de nenhum áudio novo**: os
-quatro clipes de ambiente que existem já bastam.
+Cada cômodo tem o próprio ambiente. **Nenhum áudio novo foi preciso**: são os
+quatro clipes que já existiam, em pesos diferentes.
 
-O que existe: `ambiente.silencio` · `ambiente.tictac` · `ambiente.galhos` ·
-`ambiente.sussurros`.
-
-| sala | o que tocar | por quê |
+| sala | o que toca | por quê |
 |---|---|---|
-| **quarto** | `silencio` (como está) | é o cômodo frio do começo; o silêncio é a linha de base contra a qual todo o resto vai soar |
-| **corredor** | `silencio` mais baixo, com `efeito.rangido` disparado em intervalos irregulares (12 a 25 s) | corredor comprido e estreito: o som distante faz o jogador olhar para trás |
-| **despensa** | `silencio` com volume menor ainda | cômodo fechado, cheio de coisa. Abafado é o que se espera de uma despensa |
-| **sala lateral** | **`tictac` bem baixo** | ela TEM um relógio de pêndulo desenhado na parede. O tic-tac ali não é enfeite: é a sala dizendo que o tempo andou deste lado — a mesma coisa que o 03:18 diz de olho |
-| **sótão** | `galhos` bem baixo, como vento no telhado, + `sussurros` raríssimo | é o ponto mais alto da casa, com uma janela redonda. Vento é o que se ouve de um sótão |
+| **quarto** | `silencio` | o cômodo frio do começo — a linha de base contra a qual todo o resto soa |
+| **corredor** | `silencio` a 0,30 + `efeito.rangido` sorteado (12 a 25 s) | corredor comprido: o rangido faz olhar para trás, e não há nada lá |
+| **despensa** | `silencio` a 0,22 | cômodo fechado e entulhado. Abafado é o que o ouvido espera |
+| **sala lateral** | **`tictac` a 0,18** | ela tem um relógio de pêndulo marcando 03:18. O som confirma pelo ouvido o que o mostrador diz pelo olho |
+| **sótão** | `galhos` a 0,26 + `efeito.sussurro` raríssimo (35 a 75 s) | ponto mais alto da casa, janela redonda: vento no telhado |
 
-O da **sala lateral** é o que mais rende: o som confirma a pista que os olhos já
-deram, sem uma palavra.
+O da **sala lateral** é o que mais rende — o som entrega a pista sem uma
+palavra, e a descoberta continua sendo do jogador.
 
-Onde mexer: `SalaScene.create()` chama `tocarAmbiente('ambiente.silencio')`
-fixo. Basta cada sala em `src/data/salas.js` trazer o próprio `ambiente`
-(clipe + volume), e a cena ler de lá — do mesmo jeito que já lê luzes e saídas.
+**Quatro decisões que estão no código e valem saber:**
 
-Para o rangido em intervalo irregular, um `time.addEvent` com `delay` sorteado
-a cada disparo. Não usar intervalo fixo: ritmo previsível deixa de assustar na
-terceira vez.
+- **Intervalo sorteado, nunca fixo.** Ritmo previsível deixa de assustar na
+  terceira vez. `Phaser.Math.Between(minMs, maxMs)` a cada disparo.
+- **Sussurro é efeito, não ambiente.** Só toca uma camada de ambiente por vez;
+  trocar o vento pelo sussurro perderia o vento.
+- **Nada solto durante cinemática.** Um rangido sorteado no meio de uma fala
+  atropelaria a cena (regra 8). O relógio segue correndo e tenta depois.
+- **Depois do relógio de bolso, o sótão VIRA o tic-tac** (0,34). Subir de novo
+  não devolve o vento: o que mudou ali foi a história, não a hora do dia. E a
+  pausa de 1,9 s antes do tic-tac cancela o sussurro pendente — senão a pausa
+  deixaria de ser pausa.
+
+Onde está: `ambiente` em cada sala de `src/data/salas.js`, lido por
+`SalaScene.iniciarAmbienteDaSala()`. Uma sala nova só precisa da entrada na
+tabela. O `tocarAmbiente(id, fadeMs, { volume })` desliza o peso quando a sala
+nova pede outro para o mesmo clipe — atravessar uma porta não corta o som.
 
 ---
 
 ## Ordem sugerida daqui
 
-1. **Áudio por sala** — descrito acima. É o mais barato e o que mais muda
-2. **Testar morte e renascimento** — o buraco do sótão é o único perigo da
+1. **Testar morte e renascimento** — o buraco do sótão é o único perigo da
    fase, e o caminho de volta ao checkpoint nunca foi percorrido
-3. **Testar os controles de toque** — existem, mas não foram verificados
+2. **Testar os controles de toque** — existem, mas não foram verificados
    depois das mudanças recentes
-4. **Recortar a Alice Demon** — 39 quadros, com a ferramenta que já existe
-5. **Fase 2** — floresta, investigação, a roupa do Coelho, o espelho
+3. **Recortar a Alice Demon** — 39 quadros, com a ferramenta que já existe
+4. **Fase 2** — floresta, investigação, a roupa do Coelho, o espelho
 
 Antes de qualquer uma: reler a seção correspondente do
 [ROTEIRO.md](ROTEIRO.md). Ele é específico ao ponto de dizer o que acontece em
