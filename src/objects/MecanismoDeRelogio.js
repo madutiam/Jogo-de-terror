@@ -81,14 +81,36 @@ export class MecanismoDeRelogio {
       .setOrigin(0.5, 0.88)
       .setScale(this.escala * 0.72);
 
+    /**
+     * O QUE ELA JA MARCOU — em numero, nao so em ponteiro.
+     *
+     * O mostrador nao tem algarismos e o minuto anda de um em um. Sem leitura,
+     * acertar 17 exigia CONTAR dezessete toques no escuro; perdida a conta, nao
+     * havia como saber onde parou. O enigma virava adivinhacao de interface,
+     * que nao e o enigma que o §43 pede.
+     *
+     * Isto nao entrega nada: um mecanismo de verdade mostra a hora em que ele
+     * esta. Descobrir QUAL hora marcar continua sendo dela, e essa resposta
+     * mora no relogio parado do quarto, nos tres potes e no pendulo desta sala.
+     *
+     * Fica logo abaixo do mostrador, e nao no rodape: o olho esta no painel.
+     */
+    this.leitura = this.cena.add
+      .text(tela.meioX, this.eixoY + 300 * this.escala, '', {
+        fontFamily: FONTE, fontSize: '30px', color: HEX.dourado, align: 'center',
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0);
+
     this.ajuda = this.cena.add
-      .text(tela.meioX, tela.altura - 54, '', {
+      .text(tela.meioX, this.eixoY + 344 * this.escala, '', {
         fontFamily: FONTE, fontSize: '15px', color: HEX.ossoApagado, align: 'center',
       })
       .setOrigin(0.5)
       .setScrollFactor(0);
 
-    this.grupo.add([fundo, this.mostrador, this.ponteiroHora, this.ponteiroMinuto, this.ajuda]);
+    this.grupo.add([fundo, this.mostrador, this.ponteiroHora, this.ponteiroMinuto,
+      this.leitura, this.ajuda]);
     for (const parte of this.grupo.list) parte.setScrollFactor(0);
 
     this.atualizar();
@@ -137,11 +159,20 @@ export class MecanismoDeRelogio {
 
     const marcado = this.selecionado === 'hora' ? this.ponteiroHora : this.ponteiroMinuto;
     const outro = this.selecionado === 'hora' ? this.ponteiroMinuto : this.ponteiroHora;
-    marcado.setAlpha(1);
-    outro.setAlpha(0.55);
+    // Em 00:00 os dois ponteiros ficam um EM CIMA do outro, apontando para
+    // cima: so a opacidade nao dizia qual estava selecionado, e ela girava sem
+    // saber o que mexia. O selecionado vem na frente e limpo; o outro recua de
+    // verdade e perde a cor.
+    marcado.setAlpha(1).setDepth(2).clearTint();
+    outro.setAlpha(0.34).setDepth(1).setTint(0x6b6257);
+
+    // 12 vira 12, nao 0 — mostrador nenhum marca "zero hora".
+    const h = this.hora === 0 ? 12 : this.hora;
+    const dd = (n) => (n < 10 ? '0' + n : String(n));
+    this.leitura.setText(dd(h) + ':' + dd(this.minuto));
 
     this.ajuda.setText(
-      (this.selecionado === 'hora' ? 'ponteiro das horas' : 'ponteiro dos minutos') +
+      'girando ' + (this.selecionado === 'hora' ? 'as HORAS' : 'os MINUTOS') +
       '\n← → gira   ↑ ↓ troca de ponteiro   E confirma   ESC sai'
     );
   }
