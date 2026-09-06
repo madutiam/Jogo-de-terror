@@ -388,6 +388,18 @@ export class GameplayScene extends Phaser.Scene {
 
   morrer() {
     this.entrarEmCinematica();
+
+    // Guarda o ambiente ANTES de silenciar.
+    //
+    // `silenciar` corta tudo — e e isso que a morte pede. Mas `renascer` nao
+    // devolvia nada, entao o comodo voltava MUDO e ficava assim ate a troca de
+    // sala. Some justamente a camada que diz onde ela esta: o tic-tac da sala
+    // lateral, o vento do sotao. O silencio aqui e ferramenta (regra 34), nao
+    // pode virar estado permanente.
+    const amb = AudioManager.ambienteAtual;
+    this.ambienteAntesDaMorte =
+      amb ? { id: amb.__id, volume: amb.__volumeBase } : null;
+
     AudioManager.silenciar({ fadeMs: 300 });
 
     this.cameras.main.fadeOut(700, 0, 0, 0);
@@ -398,6 +410,12 @@ export class GameplayScene extends Phaser.Scene {
   renascer() {
     this.alice.colocarEm(this.pontoDeRetorno.x, this.pontoDeRetorno.y);
     this.hud.definirVidas(VIDAS_INICIAIS);
+
+    // O peso vai junto: cada comodo tem o seu, e sem ele o ambiente voltaria
+    // no volume cheio do catalogo.
+    const a = this.ambienteAntesDaMorte;
+    if (a) AudioManager.tocarAmbiente(a.id, 900, { volume: a.volume });
+
     this.cameras.main.fadeIn(600, 0, 0, 0);
     this.time.delayedCall(600, () => this.sairDeCinematica());
     this.aoRenascer?.();
