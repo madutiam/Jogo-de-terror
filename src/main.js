@@ -18,6 +18,8 @@ import { SettingsScene } from './scenes/SettingsScene.js';
 import { CreditsScene } from './scenes/CreditsScene.js';
 import { Phase1Scene } from './scenes/Phase1Scene.js';
 import { SalaScene } from './scenes/SalaScene.js';
+import { Highsfield01Scene } from './scenes/Highsfield01Scene.js';
+import { Highsfield02Scene } from './scenes/Highsfield02Scene.js';
 
 const configuracao = {
   type: Phaser.AUTO,
@@ -64,6 +66,8 @@ const configuracao = {
     CreditsScene,
     Phase1Scene,
     SalaScene,
+    Highsfield01Scene,
+    Highsfield02Scene,
   ],
 };
 

@@ -20,6 +20,9 @@ export const SCENES = {
   PHASE1: 'Phase1',
   /** Uma cena para todas as salas da Fase 1; ver src/data/salas.js. */
   SALA: 'Sala',
+  /** As cinematicas. Sao EXATAMENTE cinco no jogo inteiro (roteiro, secao 32). */
+  HIGHSFIELD01: 'Highsfield01',
+  HIGHSFIELD02: 'Highsfield02',
 };
 
 /**

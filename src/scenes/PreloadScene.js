@@ -27,6 +27,15 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('alice-demon', 'assets/characters/alice-demon.png');
     this.load.image('coelho', 'assets/characters/coelho.png');
     this.load.image('coelho-morto', 'assets/characters/coelho-morto.png');
+
+    // As tres poses do Coelho para a HIGHSFIELD 01, e os nove closes de rosto.
+    for (const pose of ['relogio', 'alice', 'estranha']) {
+      this.load.image('coelho/' + pose, 'assets/characters/coelho/coelho-' + pose + '-0.png');
+      for (let i = 0; i < 3; i++) {
+        this.load.image('coelho/' + pose + '-rosto-' + i,
+          'assets/characters/coelho-rosto/coelho-' + pose + '-rosto-' + i + '.png');
+      }
+    }
     this.load.image('chapeleiro', 'assets/characters/chapeleiro.png');
     this.load.image('chapeleiro-fofo', 'assets/characters/chapeleiro-fofo.png');
     this.load.image('soldado-cartas', 'assets/characters/soldado-cartas.png');

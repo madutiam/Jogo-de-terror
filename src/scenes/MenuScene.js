@@ -342,7 +342,11 @@ export class MenuScene extends Phaser.Scene {
     this.cameras.main.fadeOut(900, 0, 0, 0);
     this.cameras.main.once('camerafadeoutcomplete', () => {
       this.saindo = false;
-      this.scene.start(SCENES.PHASE1);
+
+      // JOGAR do zero entra pela HIGHSFIELD 01, que e a abertura da historia.
+      // CONTINUAR pula ela: quem ja viu nao precisa rever a cada morte.
+      const jaViu = SaveManager.temItem('viu-highsfield-01');
+      this.scene.start(jaViu ? SCENES.PHASE1 : SCENES.HIGHSFIELD01);
     });
   }
 
