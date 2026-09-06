@@ -305,7 +305,14 @@ export class SalaScene extends GameplayScene {
     this.criarInterativo({
       x: p.x * this.sala.largura,
       y: PROFUNDIDADE.FUNDO + 46,
-      raio: 120,
+      // 180, e nao 120.
+      //
+      // A fresta mora na parede do FUNDO, e a Alice nunca chega colada nela: o
+      // entulho a segura antes. MEDIDO, com ela empurrando o mais para tras que
+      // consegue: distancia 118 contra raio 120. Dois pixels — passava, mas por
+      // sorte, e qualquer ajuste no cenario ou no corpo dela tirava a unica
+      // entrada da sala lateral do mapa.
+      raio: 180,
       alturaMarca: 70,
       aoInteragir: () => {
         if (this.alice.tamanho.id !== 'pequena') {
