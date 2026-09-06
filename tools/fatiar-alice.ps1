@@ -309,6 +309,30 @@ foreach ($folha in $cfg.folhas) {
       PreencherPelaCaixa $mascara $pareceFundo $img.largura $img.altura `
         ([int]$linha.x1) ([int]$linha.y1) ([int]$linha.x2) ([int]$linha.y2)
     }
+    # REGIOES DE LEGENDA, APAGADAS NA MAO
+    #
+    # `LimparAnotacoes` so remove componente que seja >=60% VERMELHO. Nas folhas
+    # de personagem isso basta: os rotulos dela sao vermelhos. Na folha de
+    # OBJETOS os subtitulos sao CLAROS -- "ABERTO (CLOSE)", "(~200px)", "03:17"
+    # -- entao passavam pelo filtro e vinham gravados dentro do sprite. O
+    # relogio de bolso aberto chegou no jogo com o texto da folha em cima dele,
+    # e a HIGHSFIELD 02 mostrava isso em tela cheia.
+    #
+    # Aqui a regiao e DITA, nao adivinhada: nenhuma heuristica nova, nenhum
+    # risco de comer parte do desenho.
+    if ($linha.apagar) {
+      $fora = 0
+      foreach ($r in $linha.apagar) {
+        $ax1 = [int]$r[0]; $ay1 = [int]$r[1]; $ax2 = [int]$r[2]; $ay2 = [int]$r[3]
+        for ($y = $ay1; $y -lt $ay2; $y++) {
+          for ($x = $ax1; $x -lt $ax2; $x++) {
+            $p = $y * $img.largura + $x
+            if ($mascara[$p]) { $mascara[$p] = 0; $fora++ }
+          }
+        }
+      }
+      Write-Host ("   {0}: {1} px de legenda apagados" -f $linha.chave, $fora)
+    }
     if ($linha.limparAnotacoes) {
       $apagados = LimparAnotacoes $img $mascara ([int]$linha.x1) ([int]$linha.y1) ([int]$linha.x2) ([int]$linha.y2)
       if ($apagados -gt 0) { Write-Host ("   {0}: {1} px de anotacao solta apagados" -f $linha.chave, $apagados) }

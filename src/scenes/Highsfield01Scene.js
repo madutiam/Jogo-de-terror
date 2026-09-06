@@ -57,6 +57,18 @@ export class Highsfield01Scene extends Phaser.Scene {
 
     this.palco = this.add.container(meioX, meioY);
 
+    // O VAZIO ATRAS DO CENARIO
+    //
+    // O desenho do quarto cobre a tela em repouso, mas a camera desta cena
+    // ANDA: quando ela aproxima e desloca para o Coelho, a beirada direita do
+    // desenho entra no quadro e aparece um corte reto entre o comodo e o preto.
+    // Este retangulo mora atras de tudo, dentro do palco, e e grande o
+    // bastante para nenhum enquadramento alcancar o fim dele. Na cor mais
+    // escura da parede, e nao preto puro: assim a transicao nao tem linha.
+    this.add.existing(this.vazio = this.add
+      .rectangle(0, 0, 4200, 3000, 0x0c1016)
+      .setOrigin(0.5));
+
     const fundo = this.add.image(0, 0, 'fase1-quarto').setOrigin(0.5);
     // Cobre a tela sem esticar: o que sobra nas beiradas some no escuro.
     const escala = Math.max(largura / fundo.width, altura / fundo.height);
@@ -66,6 +78,9 @@ export class Highsfield01Scene extends Phaser.Scene {
     // Onde as duas figuras pisam, medido no desenho de 960x640.
     const chao = (480 - 320) * escala;
     const naArte = (x) => (x - 480) * escala;
+    // A linha do tempo mira por aqui: sem guardar, a camera so sabe apontar
+    // para o centro do desenho, que nao e onde ninguem esta.
+    this.chao = chao;
 
     this.alice = this.add
       .image(naArte(360), chao, 'alice/grande-parada-0')
@@ -77,18 +92,32 @@ export class Highsfield01Scene extends Phaser.Scene {
       .setOrigin(0.5, 1)
       .setScale(escala * 0.52);
 
-    this.palco.add([fundo, this.alice, this.coelho]);
+    this.palco.add([this.vazio, fundo, this.alice, this.coelho]);
 
     // Escuridao por cima de tudo, menos de um halo em volta dos dois.
     this.montarPenumbra();
 
     // O close do relogio entra depois, por cima. E o proprio desenho dela do
     // relogio de bolso aberto, ja marcando 03:17.
+    // A altura vem da TEXTURA, nao de um numero escrito aqui. O desenho ja foi
+    // refatiado uma vez (tinha vindo com o texto da folha gravado dentro) e o
+    // 428 que morava aqui virou mentira em silencio: o close encolhia sozinho.
+    // O VEU DO CLOSE
+    //
+    // Entre a cena e o relogio. Sem ele o close vira adesivo colado por cima do
+    // quarto: tudo continua igualmente nitido e o olho nao sabe onde pousar.
+    // Com ele o comodo RECUA, e a Alice fica "parcialmente ao fundo" — que e
+    // exatamente a palavra do §32 para 9-12 s.
+    this.veu = this.add
+      .rectangle(meioX, meioY, largura * 2, altura * 2, 0x000000, 1)
+      .setAlpha(0)
+      .setDepth(450);
+
     this.close = this.add
       .image(meioX, meioY, 'relogio-bolso-aberto')
-      .setScale(Math.min(1, (altura * 0.72) / 428))
       .setAlpha(0)
       .setDepth(500);
+    this.close.setScale(Math.min(1, (altura * 0.72) / this.close.height));
   }
 
   montarPenumbra() {
@@ -148,13 +177,24 @@ export class Highsfield01Scene extends Phaser.Scene {
     c.em(6000, () => {
       AudioManager.pararAmbiente(600);
       AudioManager.tocarAmbiente('ambiente.tictac', 900);
-      this.aproximar(this.coelho.x * 0.8, -40, 1.9, 3000);
+
+      // 1,45x, e nao 1,9x. Em 1,9 a cabeca do Coelho enchia o quadro e as
+      // orelhas saiam cortadas pelo topo — vira retrato, e o §32 pede que a
+      // camera se aproxime DO RELOGIO, com a cena ainda em volta.
+      //
+      // A mira e o relogio na MAO dele, nao o corpo: `chao` menos meia altura.
+      // Mirar acima da cabeca (era -40) empurrava os dois para o rodape do
+      // quadro, porque o ponto mirado e o que vai para o centro da tela.
+      this.aproximar(this.coelho.x + 14, this.chao - 62, 1.45, 3000);
     });
 
     // 9-12 s — close no relogio. Os ponteiros ainda funcionam.
     c.em(9000, () => {
       this.tweens.add({ targets: this.close, alpha: 1, duration: 900 });
-      this.tweens.add({ targets: this.penumbra, alpha: 0.55, duration: 900 });
+      // O veu entra JUNTO com o relogio, na mesma duracao: o comodo apaga na
+      // mesma velocidade em que o objeto aparece. A penumbra fica onde esta —
+      // abaixa-la aqui clareava a cena bem na hora de escurece-la.
+      this.tweens.add({ targets: this.veu, alpha: 0.62, duration: 900 });
     });
 
     // 12-14 s — TIC. Silencio. O TAC nao acontece.
@@ -167,7 +207,7 @@ export class Highsfield01Scene extends Phaser.Scene {
     // de que alguma coisa esta errada.
     c.em(14000, () => {
       this.tweens.add({ targets: this.close, alpha: 0, duration: 700 });
-      this.tweens.add({ targets: this.penumbra, alpha: 1, duration: 700 });
+      this.tweens.add({ targets: this.veu, alpha: 0, duration: 700 });
       this.aproximar(0, 0, 1.24, 2600);
       this.coelho.setTexture('coelho/estranha');
     });

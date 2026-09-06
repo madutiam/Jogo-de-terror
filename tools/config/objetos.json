@@ -1,11 +1,45 @@
 {
-  "folhas": [{
-    "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Objetos relógio de bolso, espelho avulso, pedaço de roupa, rastros, comida podre.png",
-    "fundo": "transparente",
-    "tolerancia": 130,
-    "linhas": [
-      { "chave": "relogio-bolso",       "x1": 35,  "y1": 225, "x2": 252, "y2": 372, "quadros": 1, "ancora": "massa" },
-      { "chave": "relogio-bolso-aberto", "x1": 255, "y1": 25,  "x2": 665, "y2": 470, "quadros": 1, "ancora": "massa" }
-    ]
-  }]
+  "folhas": [
+    {
+      "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Objetos relógio de bolso, espelho avulso, pedaço de roupa, rastros, comida podre.png",
+      "fundo": "transparente",
+      "tolerancia": 130,
+      "linhas": [
+        {
+          "chave": "relogio-bolso",
+          "x1": 35,
+          "y1": 225,
+          "x2": 252,
+          "y2": 372,
+          "quadros": 1,
+          "ancora": "massa",
+          "limparAnotacoes": true
+        },
+        {
+          "chave": "relogio-bolso-aberto",
+          "x1": 255,
+          "y1": 25,
+          "x2": 645,
+          "y2": 470,
+          "quadros": 1,
+          "ancora": "massa",
+          "limparAnotacoes": true,
+          "apagar": [
+            [
+              255,
+              25,
+              645,
+              46
+            ],
+            [
+              585,
+              46,
+              645,
+              168
+            ]
+          ]
+        }
+      ]
+    }
+  ]
 }
