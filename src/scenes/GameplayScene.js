@@ -516,42 +516,58 @@ export class GameplayScene extends Phaser.Scene {
       .setScrollFactor(0);
 
     const titulo = this.add
-      .text(tela.meioX, tela.meioY - 56, 'PAUSADO', comSombra(ESTILO.menu))
+      .text(tela.meioX, tela.meioY - 78, 'PAUSADO', comSombra(ESTILO.menu))
       .setOrigin(0.5)
       .setScrollFactor(0);
 
-    const continuar = this.add
-      .text(tela.meioX, tela.meioY + 10, 'CONTINUAR', comSombra(ESTILO.menu))
-      .setOrigin(0.5)
-      .setColor(HEX.ossoApagado)
-      .setFontSize(21)
-      // Preso a camera ANTES de virar interativo. O desenho seguia o container
-      // (que ja era 0) e o clique seguia o filho (que era 1): a area clicavel
-      // ficava a uma rolagem de camera de distancia do texto, e andava junto
-      // com a Alice. Era por isso que os botoes nao respondiam.
-      .setScrollFactor(0)
-      .setInteractive({ useHandCursor: true });
+    /**
+     * As opcoes vem de uma lista para caber uma terceira sem recontar
+     * posicao na mao.
+     *
+     * REINICIAR A FASE recomeca o quarto do zero e NAO apaga nada: pistas e
+     * itens continuam com ela. Quem quer perder tudo tem o RECOMECAR do menu,
+     * que e onde uma coisa destrutiva deve morar — nao a um clique de distancia
+     * de quem so queria despausar.
+     */
+    const opcoes = [
+      { texto: 'CONTINUAR', acao: () => this.alternarPausa(false) },
+      {
+        texto: 'REINICIAR A FASE',
+        acao: () => {
+          AudioManager.silenciar({ fadeMs: 250 });
+          this.alternarPausa(false);
+          this.scene.start(SCENES.PHASE1);
+        },
+      },
+      {
+        texto: 'VOLTAR AO MENU',
+        acao: () => {
+          AudioManager.silenciar({ fadeMs: 250 });
+          this.scene.start(SCENES.MENU);
+        },
+      },
+    ];
 
-    const sair = this.add
-      .text(tela.meioX, tela.meioY + 52, 'VOLTAR AO MENU', comSombra(ESTILO.menu))
-      .setOrigin(0.5)
-      .setColor(HEX.ossoApagado)
-      .setFontSize(21)
-      .setScrollFactor(0)
-      .setInteractive({ useHandCursor: true });
+    const itens = opcoes.map((o, i) => {
+      const item = this.add
+        .text(tela.meioX, tela.meioY - 8 + i * 42, o.texto, comSombra(ESTILO.menu))
+        .setOrigin(0.5)
+        .setColor(HEX.ossoApagado)
+        .setFontSize(21)
+        // Preso a camera ANTES de virar interativo. O desenho seguia o
+        // container (que ja era 0) e o clique seguia o filho (que era 1): a
+        // area clicavel ficava a uma rolagem de camera de distancia do texto,
+        // e andava junto com a Alice. Era por isso que os botoes nao respondiam.
+        .setScrollFactor(0)
+        .setInteractive({ useHandCursor: true });
 
-    for (const item of [continuar, sair]) {
       item.on('pointerover', () => item.setColor(HEX.dourado));
       item.on('pointerout', () => item.setColor(HEX.ossoApagado));
-    }
-
-    continuar.on('pointerdown', () => this.alternarPausa(false));
-    sair.on('pointerdown', () => {
-      AudioManager.silenciar({ fadeMs: 250 });
-      this.scene.start(SCENES.MENU);
+      item.on('pointerdown', o.acao);
+      return item;
     });
 
-    this.painelPausa.add([fundo, titulo, continuar, sair]);
+    this.painelPausa.add([fundo, titulo, ...itens]);
   }
 
   alternarPausa(forcar) {
