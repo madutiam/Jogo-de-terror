@@ -1,7 +1,7 @@
 /**
  * TUTORIAL (regra 42): ensina o minimo e sai da frente.
  *
- * A sala e um corredor de 2800px que o jogador atravessa uma vez. Cada trecho
+ * A sala e um corredor de 3400px que o jogador atravessa uma vez. Cada trecho
  * dela ensina uma coisa, na ordem em que ela precisa ser aprendida:
  *
  *   1  andar para os lados        — o corpo responde
@@ -10,8 +10,9 @@
  *   4  observar                   — a marca dourada acende sozinha; olhe
  *   5  coletar                    — mesmo botao, consequencia diferente
  *   6  dano                       — o HUD so acende quando passa a significar algo
- *   7  tamanho (biscoitos)        — BLOQUEADO: falta arte e falta mecanica
- *   8  silencio                   — o aviso acabou
+ *   7  tamanho (biscoitos)        — encolher e passar por baixo da viga
+ *   8  a viga                     — a prova de que entendeu
+ *   9  silencio                   — o aviso acabou
  *
  * Correr nao e passo: e uma reacao. Quem correr sem ser mandado recebe uma
  * frase e mais nada; quem nunca correr nunca ouve falar disso.
@@ -21,7 +22,9 @@
  * observacao — usar um deles ja seria adiantar a investigacao.
  */
 
-import { SCENES, PROFUNDIDADE, ALICE_STATE, VIDAS_INICIAIS } from '../core/constants.js';
+import {
+  SCENES, PROFUNDIDADE, ALICE_STATE, VIDAS_INICIAIS, profundidadeDeDesenho,
+} from '../core/constants.js';
 import { dimensoes } from '../core/tela.js';
 import { GameplayScene } from './GameplayScene.js';
 import { AudioManager } from '../core/AudioManager.js';
@@ -30,9 +33,9 @@ import { CORES, HEX, FONTE } from '../ui/theme.js';
 import { relatorio } from '../core/MissingAssets.js';
 
 const SALA = {
-  // Os ultimos 260px ficam reservados para o passo do tamanho entrar no dia
-  // em que a arte do biscoito existir, sem precisar redesenhar a sala.
-  largura: 2800,
+  // O trecho final, de 2800 em diante, e o do tamanho: os vidros, a viga
+  // baixa, e a saida depois dela.
+  largura: 3400,
   profundidade: PROFUNDIDADE.FRENTE,
   limiteFundo: 496,
 };
@@ -197,6 +200,24 @@ export class TutorialScene extends GameplayScene {
           if (this.hud.vidas < VIDAS_INICIAIS) this.dizer('Elas não voltam sozinhas.');
         },
       },
+
+      // 7) tamanho — os vidros, e uma viga baixa demais para passar inteira.
+      // O tutorial ensina a TECLA e a consequencia. Nao ensina onde usar: isso
+      // e da fase, e a regra 42 manda nao adiantar puzzle.
+      {
+        verificar: () => this.podeTrocarTamanho === true,
+        entrar: () => this.dizer(
+          'Dois vidros. Um encolhe, o outro devolve.',
+          this.ehToque ? '◈' : 'Q'
+        ),
+      },
+
+      // 8) atravessar a viga, ja pequena — a prova de que entendeu
+      {
+        verificar: () => this.alice.x > 3120,
+        entrar: () => this.dizer('Do outro lado o teto é mais baixo.'),
+        concluir: () => this.dizer('Nem toda porta é do tamanho de quem passa.'),
+      },
     ];
 
     // ---- passo 4: um ponto do assoalho, sem objeto desenhado ----
@@ -234,9 +255,67 @@ export class TutorialScene extends GameplayScene {
       },
     });
 
+    this.montarPassoDoTamanho();
+
     // Guarda a posicao do bau so para conferencia — o obstaculo dele ja veio
     // de montarMobilia().
     this.bau = bau;
+  }
+
+  /**
+   * PASSO 7 — O TAMANHO
+   *
+   * Os dois vidros num caixote, ao alcance da mao: aqui nao ha puzzle, so a
+   * lição. Depois deles, uma viga atravessada baixa demais — ela ocupa a
+   * profundidade inteira da sala, entao nao ha como contornar. So passa quem
+   * encolher.
+   *
+   * O que a Alice ganha aqui NAO entra no save: senao a despensa da Fase 1,
+   * que e onde os biscoitos sao conquistados de verdade, ficaria sem sentido
+   * para quem fez o tutorial antes.
+   */
+  montarPassoDoTamanho() {
+    const chao = 700;
+
+    // Os vidros, num caixote. Ao alcance: o tutorial nao pede parkour aqui.
+    this.caixoteDosVidros = this.add
+      .image(2860, chao, 'peca/caixote-1')
+      .setOrigin(0.5, 1)
+      .setScale(0.34)
+      .setDepth(profundidadeDeDesenho(chao) - 0.2);
+
+    this.criarObstaculo({
+      x: 2860, y: chao, largura: 120, profundidade: 46, alturaTopo: 86,
+    });
+
+    this.pontoDosVidros = this.criarInterativo({
+      x: 2860, y: chao + 20, raio: 150, raioAviso: 320, umaVez: true,
+      alturaMarca: 120,
+      aoInteragir: () => {
+        AudioManager.tocar('efeito.item');
+        this.podeTrocarTamanho = true;
+        this.tweens.add({
+          targets: this.caixoteDosVidros, alpha: 0.55, duration: 400,
+        });
+      },
+    });
+
+    // A viga: baixa, atravessada, e ocupando a sala toda em profundidade.
+    // Nao da para dar a volta — e essa e a questao.
+    const vigaX = 3060;
+    this.viga = this.add
+      .image(vigaX, chao - 96, 'peca/viga-2')
+      .setOrigin(0.5, 0.5)
+      .setScale(0.72)
+      .setDepth(profundidadeDeDesenho(chao) + 0.4);
+
+    this.criarObstaculo({
+      x: vigaX,
+      y: (SALA.limiteFundo + SALA.profundidade) / 2,
+      largura: 70,
+      profundidade: SALA.profundidade - SALA.limiteFundo,
+      soPequena: true,
+    });
   }
 
   /**

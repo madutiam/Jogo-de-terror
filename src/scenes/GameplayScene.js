@@ -85,7 +85,13 @@ export class GameplayScene extends Phaser.Scene {
       this.alice,
       this.obstaculos,
       null,
-      (alice, obstaculo) => alice.altura < (obstaculo.alturaTopo ?? Infinity) - 2
+      (alice, obstaculo) => {
+        // Passagem baixa: barra quem estiver do tamanho normal, deixa passar
+        // quem tiver comido o biscoito. E o §7 na fisica — "passar por espacos
+        // pequenos" tem que ser uma parede de verdade, nao um texto.
+        if (obstaculo.soPequena) return !alice.pequena;
+        return alice.altura < (obstaculo.alturaTopo ?? Infinity) - 2;
+      }
     );
 
     this.input_ = new InputManager(this);
@@ -141,6 +147,7 @@ export class GameplayScene extends Phaser.Scene {
 
     this.physics.add.existing(retangulo, true);
     retangulo.alturaTopo = config.alturaTopo;
+    retangulo.soPequena = !!config.soPequena;
     this.obstaculos.add(retangulo);
 
     // Nas fases o obstaculo e invisivel: quem o jogador ve e o movel desenhado
@@ -462,7 +469,9 @@ export class GameplayScene extends Phaser.Scene {
    * perceber onde cada tamanho serve.
    */
   alternarTamanho() {
-    if (!SaveManager.temItem('biscoitos')) return;
+    // No tutorial ela ganha os biscoitos sem que isso entre no save — senao a
+    // despensa da Fase 1 ficaria sem sentido para quem fez o tutorial antes.
+    if (!this.podeTrocarTamanho && !SaveManager.temItem('biscoitos')) return;
     if (this.emCinematica || this.pausado) return;
     if (!this.alice.noChao || this.alice.gesto) return;
 
