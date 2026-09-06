@@ -24,13 +24,19 @@ import { HEX, FONTE } from '../ui/theme.js';
 import { MecanismoDeRelogio } from '../objects/MecanismoDeRelogio.js';
 
 /**
- * Onde acaba a sala e comeca a proxima.
+ * Folga da faixa de saida ALEM do ponto mais extremo que a Alice alcanca.
  *
- * Tem que ser MAIOR que a margem lateral do mundo (130 px), senao a faixa fica
- * atras do limite onde a Alice pode andar e a porta nunca dispara — o jogador
- * encosta na parede invisivel e nada acontece.
+ * A faixa nao pode ser um numero escrito a mao. O que importa nao e a margem
+ * lateral do mundo (130) sozinha: e ela MAIS meio corpo da Alice, porque o
+ * centro dela — que e o x testado — para meio corpo antes da parede. Com 58 de
+ * largura isso da 159, e a faixa fixa de 165 sobrava SEIS pixels. Seis pixels
+ * e o mesmo que nada: a porta abria as vezes e as vezes nao, dependendo de
+ * onde o passo terminava.
+ *
+ * Agora a faixa nasce do limite real do mundo mais meio corpo, e isto aqui e
+ * so a folga por cima. Se a margem ou o tamanho da Alice mudarem, ela segue.
  */
-const FAIXA_DE_SAIDA = 165;
+const FOLGA_DE_SAIDA = 24;
 
 export class SalaScene extends GameplayScene {
   constructor() {
@@ -533,12 +539,19 @@ export class SalaScene extends GameplayScene {
    */
   montarSaidas() {
     this.saidas = [];
+
+    // O x mais extremo que o CENTRO da Alice alcanca andando, mais a folga.
+    const limites = this.physics.world.bounds;
+    const meioCorpo = this.alice.body.width / 2;
+    const oeste = limites.x + meioCorpo + FOLGA_DE_SAIDA;
+    const leste = limites.right - meioCorpo - FOLGA_DE_SAIDA;
+
     for (const s of this.dados.saidas || []) {
       if (s.lado !== 'leste' && s.lado !== 'oeste') continue;
       this.saidas.push({
         ...s,
-        x1: s.lado === 'oeste' ? 0 : this.sala.largura - FAIXA_DE_SAIDA,
-        x2: s.lado === 'oeste' ? FAIXA_DE_SAIDA : this.sala.largura,
+        x1: s.lado === 'oeste' ? 0 : leste,
+        x2: s.lado === 'oeste' ? oeste : this.sala.largura,
       });
     }
   }

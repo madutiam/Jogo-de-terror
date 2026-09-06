@@ -537,7 +537,23 @@ export class Phase1Scene extends GameplayScene {
     this.quarto.seguirComEscuridao(this.alice.x, this.alice.y);
 
     // A ponta oeste do quarto e um vao aberto: da no corredor.
-    if (this.alice.x <= 150 && !this.trocandoDeSala) {
+    //
+    // O LIMITE SAI DA FISICA, NAO DE UM NUMERO ESCRITO A MAO.
+    //
+    // Estava 150, e era inalcancavel: o mundo reserva MARGEM_LATERAL (130) na
+    // borda e o corpo dela tem 58 de largura, entao o centro da Alice nunca
+    // passa de 159 andando. Ela batia na parede invisivel e nada acontecia —
+    // os outros quatro comodos da fase eram INACESSIVEIS pelo caminho normal.
+    //
+    // A mesma armadilha ja tinha sido paga uma vez na SalaScene (faixa de
+    // porta a 70 px, atras do limite) e esta escrita no ESTADO-DO-PROJETO.
+    // Escrever o numero na mao de novo era so esperar a vez. Agora ele nasce
+    // do proprio limite do mundo mais meio corpo: se a margem ou a Alice
+    // mudarem de tamanho, a faixa acompanha.
+    const faixaDoVao =
+      this.physics.world.bounds.x + this.alice.body.width / 2 + 24;
+
+    if (this.alice.x <= faixaDoVao && !this.trocandoDeSala) {
       this.trocandoDeSala = true;
       this.alice.pararPassos();
       this.cameras.main.fadeOut(420, 0, 0, 0);
