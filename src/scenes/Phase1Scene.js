@@ -422,6 +422,66 @@ export class Phase1Scene extends GameplayScene {
     });
   }
 
+  /**
+   * FIM DA FASE 1 (roteiro, secao 11)
+   *
+   * Este metodo foi apagado sem querer quando o relogio de bolso mudou de
+   * lugar: eu recortei o trecho entre dois marcadores do arquivo e ele estava
+   * no meio. Sem ele, apertar E na porta ja destrancada lancava uma excecao
+   * dentro do update — e o jogo TRAVAVA na porta, sem mensagem nenhuma.
+   *
+   * Recuperado do historico, identico ao que era.
+   */
+  atravessarAPorta() {
+    if (this.saindoDaFase) return;
+    this.saindoDaFase = true;
+
+    this.entrarEmCinematica();
+    AudioManager.tocar('efeito.porta');
+    SaveManager.salvarCheckpoint(1, 'fase1-concluida');
+
+    this.time.delayedCall(1400, () => {
+      this.cameras.main.fadeOut(1600, 0, 0, 0);
+    });
+
+    this.cameras.main.once('camerafadeoutcomplete', () => {
+      const tela = dimensoes(this);
+
+      // A tela preta e desenhada PELO JOGO, e nao pelo efeito de fade da
+      // camera. Se o fade continuasse ligado, ele ficaria por cima de tudo que
+      // fosse criado agora — foi o que aconteceu: o cartao existia, mas
+      // invisivel atras do preto da camera, e a fase parecia voltar direto
+      // para o menu sem dizer nada.
+      this.add
+        .rectangle(0, 0, tela.largura * 2, tela.altura * 2, CORES.preto)
+        .setOrigin(0, 0).setScrollFactor(0).setDepth(2000);
+      this.cameras.main.resetFX();
+
+      const fim = this.add
+        .text(tela.meioX, tela.meioY - 12, 'FIM DA FASE 1', {
+          fontFamily: FONTE, fontSize: '26px', color: HEX.osso,
+        })
+        .setOrigin(0.5).setScrollFactor(0).setDepth(2001).setAlpha(0);
+
+      const nota = this.add
+        .text(tela.meioX, tela.meioY + 26, 'a floresta ainda nao existe', {
+          fontFamily: FONTE, fontSize: '14px', color: HEX.ossoApagado,
+        })
+        .setOrigin(0.5).setScrollFactor(0).setDepth(2001).setAlpha(0);
+
+      this.tweens.add({ targets: [fim, nota], alpha: 0.9, duration: 1600 });
+
+      // O tic-tac continua sozinho no escuro por um instante, e so entao a
+      // tela devolve para o menu.
+      this.time.delayedCall(4200, () => {
+        AudioManager.pararAmbiente(900);
+        this.cameras.main.fadeOut(900, 0, 0, 0);
+        this.cameras.main.once('camerafadeoutcomplete',
+          () => this.scene.start(SCENES.MENU));
+      });
+    });
+  }
+
   /** Guarda a pista e da o retorno de descoberta. */
   registrarPista(id, xCheckpoint, yCheckpoint) {
     const nova = SaveManager.registrarPista(id);
