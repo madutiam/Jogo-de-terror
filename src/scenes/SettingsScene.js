@@ -279,10 +279,21 @@ export class SettingsScene extends Phaser.Scene {
       y: caixa.y + ponto.y * fator,
     });
 
-    const circulo = (ponto, raio, preenchimento) => {
+    /**
+     * `forca` multiplica a opacidade ESCOLHIDA, em vez de substituir.
+     *
+     * A previa desenhava com numeros fixos no codigo — 0,16 no botao, 0,08 no
+     * analogico, 0,22 no knob. Trocar a opacidade nas configuracoes mudava a
+     * config e o jogo, mas a previa continuava identica: quem estava olhando
+     * para ela concluia, com razao, que a opcao nao funcionava.
+     */
+    const circulo = (ponto, raio, forca = 1) => {
       const p = paraPrevia(ponto);
-      const c = this.add.circle(p.x, p.y, Math.max(2, raio * fator), CORES.osso, preenchimento);
-      c.setStrokeStyle(1, CORES.osso, 0.5);
+      const c = this.add.circle(
+        p.x, p.y, Math.max(2, raio * fator),
+        CORES.osso, Math.min(1, layout.opacidade * forca)
+      );
+      c.setStrokeStyle(1, CORES.osso, layout.opacidadeBorda);
       this.previa.add(c);
     };
 
@@ -300,7 +311,7 @@ export class SettingsScene extends Phaser.Scene {
       for (const [dx, dy] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) {
         circulo(
           { x: mov.x + dx * mov.afastamento, y: mov.y + dy * mov.afastamento },
-          mov.botao, 0.16
+          mov.botao, 1.3
         );
       }
     } else if (layout.tipo === 'seguir') {
@@ -310,13 +321,16 @@ export class SettingsScene extends Phaser.Scene {
       alvo.setStrokeStyle(1, CORES.osso, 0.6);
       this.previa.add(alvo);
     } else {
-      circulo(layout.movimento, layout.movimento.raio, 0.08);
-      circulo(layout.movimento, layout.movimento.knob, 0.22);
+      circulo(layout.movimento, layout.movimento.raio, 1);
+      circulo(layout.movimento, layout.movimento.knob, 2);
     }
 
-    circulo(layout.pulo, layout.pulo.raio, 0.16);
-    circulo(layout.acao, layout.acao.raio, 0.16);
-    if (layout.correr) circulo(layout.correr, layout.correr.raio, 0.16);
+    circulo(layout.pulo, layout.pulo.raio, 1.3);
+    circulo(layout.acao, layout.acao.raio, 1.3);
+    if (layout.correr) circulo(layout.correr, layout.correr.raio, 1.3);
+    // O botao de inventario tambem existe no jogo; a previa mostrava tudo
+    // menos ele.
+    if (layout.inventario) circulo(layout.inventario, layout.inventario.raio, 1.3);
 
     this.previa.add(
       this.add

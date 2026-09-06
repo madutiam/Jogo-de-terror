@@ -8,9 +8,21 @@ const CHAVE_CONFIG = 'alice-terror:config';
 const CHAVE_PROGRESSO = 'alice-terror:progresso';
 
 const CONFIG_PADRAO = {
-  volumeGeral: 0.8,
-  volumeMusica: 0.7,
-  volumeEfeitos: 0.9,
+  /**
+   * FOLGA PARA SUBIR.
+   *
+   * Estava 0,8 / 0,7 / 0,9. Com isso a musica do menu tocava em 0,308 e, com
+   * TUDO no maximo, chegava a 0,55 — o teto vem do volume do proprio clipe, que
+   * e a mixagem e nao deve mudar. Ou seja: arrastar os tres controles de ponta a
+   * ponta rendia 1,8x, que no ouvido e quase nada. Quem punha em 100%% concluia,
+   * com razao, que o controle nao fazia efeito.
+   *
+   * Mais baixo, a mesma viagem rende 2,4x, e sobrar espaco para subir e o que
+   * faz um controle de volume parecer um controle de volume.
+   */
+  volumeGeral: 0.7,
+  volumeMusica: 0.6,
+  volumeEfeitos: 0.8,
 
   // ---- controles de toque (celular) ----
   /** Multiplica o tamanho dos botoes: 0.8 pequeno, 1 medio, 1.3 grande. */
