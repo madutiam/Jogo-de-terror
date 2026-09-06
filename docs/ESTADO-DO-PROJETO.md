@@ -212,6 +212,33 @@ escrever um script Python no scratchpad com a ferramenta Write, e rodá-lo.
 
 ## Armadilhas técnicas já pagas
 
+### O volume só pega no quadro SEGUINTE ao `play()`
+
+Esta é a mais cara de descobrir, porque nada avisa. Qualquer volume definido no
+**mesmo quadro** do `play()` é descartado pelo Phaser. Medido no navegador,
+quatro caminhos, todos terminando em ganho **1**:
+
+| caminho | resultado |
+|---|---|
+| volume no `sound.add(chave, { volume })` | ganho 1 |
+| volume no próprio `play({ volume })` | ganho 1 |
+| volume no `config` do **marcador** | ganho 1 |
+| `setVolume` na linha logo depois do `play()` | ganho 1 |
+| **`setVolume` um quadro adiante** | **funciona** |
+
+O estrago: a música do menu era criada em volume 0 para subir suave, o Phaser
+devolvia 1, e o fade então **descia** de 1 até 0,308 — o que se ouvia era uma
+pancada no começo em vez de uma entrada. E teria estragado o áudio por sala
+inteiro: cada cômodo tem o peso dele, e todos sairiam no talo.
+
+A solução no `AudioManager`: o volume desejado vive em `__volumeAtual`, e o som
+entra numa fila (`pendentes`) aplicada no próximo passo do jogo. **Nada na
+classe lê `som.volume`** — o Phaser mente nesse instante. Quem mexe em volume é
+só `definirVolume()`.
+
+Se um som novo sair alto demais, é aqui que se olha.
+
+
 Cada uma custou tempo. Não repetir.
 
 **`anims` é do Phaser.** Criei um getter com esse nome na Alice e o

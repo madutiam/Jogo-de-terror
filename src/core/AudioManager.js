@@ -30,12 +30,23 @@ class Audio {
 
   registrar(game) {
     this.game = game;
+
+    // Util para inspecionar pelo console, como `window.aliceTerror`. Sem isto
+    // nao ha como conferir volume real por sala sem alterar codigo de jogo.
+    if (typeof window !== 'undefined') window.aliceAudio = this;
+
     this.aplicarVolumes();
     this.ligarDesbloqueio();
 
     /** Fades em andamento. Ver `esmaecer`. */
     this.fades = [];
-    game.events.on('step', () => this.avancarFades());
+    /** Sons que acabaram de tocar e ainda esperam o volume. Ver `aplicarPendentes`. */
+    this.pendentes = [];
+
+    game.events.on('step', () => {
+      this.aplicarPendentes();
+      this.avancarFades();
+    });
   }
 
   /**
@@ -54,11 +65,47 @@ class Audio {
     this.fades = this.fades.filter((f) => f.som !== som);
 
     if (!som || ms <= 0) {
-      som?.setVolume(alvo);
+      if (som) this.definirVolume(som, alvo);
       aoTerminar?.();
       return;
     }
-    this.fades.push({ som, de: som.volume, para: alvo, ms, passou: 0, aoTerminar });
+    // `de` sai de `__volumeAtual`, nunca de `som.volume`: no quadro do play o
+    // Phaser ainda responde 1, e o fade desceria DE 1 em vez de subir do zero.
+    this.fades.push({
+      som, de: som.__volumeAtual ?? som.volume, para: alvo, ms, passou: 0, aoTerminar,
+    });
+  }
+
+  /**
+   * O VOLUME SO PEGA NO QUADRO SEGUINTE AO `play()`
+   *
+   * MEDIDO no navegador, quatro caminhos, todos terminando em ganho 1:
+   * volume no `sound.add`, volume no proprio `play`, volume no config do
+   * MARCADOR, e `setVolume` na linha logo depois do play. O mesmo `setVolume`
+   * um quadro adiante pega e vale 0,33 certinho.
+   *
+   * Isso explicava a musica do menu comecando com uma pancada: ela era criada
+   * em volume 0 para subir suave, o Phaser devolvia 1, e o fade entao DESCIA de
+   * 1 ate 0,308. E teria estragado o ambiente por sala inteiro — cada comodo
+   * tem o peso dele, e todos sairiam no talo.
+   *
+   * Entao o volume desejado vive em `__volumeAtual`, e o som entra numa fila
+   * aplicada no proximo passo do jogo. Nada mais na classe le `som.volume`.
+   */
+  aplicarPendentes() {
+    if (!this.pendentes.length) return;
+    for (const som of this.pendentes) {
+      if (som && !som.pendingRemove && som.__volumeAtual !== undefined) {
+        som.setVolume(som.__volumeAtual);
+      }
+    }
+    this.pendentes.length = 0;
+  }
+
+  /** Unico lugar que mexe em volume de som. Mantem `__volumeAtual` de pe. */
+  definirVolume(som, v) {
+    som.__volumeAtual = v;
+    som.setVolume(v);
   }
 
   avancarFades() {
@@ -68,7 +115,7 @@ class Audio {
     this.fades = this.fades.filter((f) => {
       f.passou += dt;
       const t = Math.min(1, f.passou / f.ms);
-      if (f.som.setVolume) f.som.setVolume(f.de + (f.para - f.de) * t);
+      if (f.som.setVolume) this.definirVolume(f.som, f.de + (f.para - f.de) * t);
       if (t < 1) return true;
       f.aoTerminar?.();
       return false;
@@ -147,13 +194,19 @@ class Audio {
     if (!this.game) return;
 
     if (this.musicaAtual && this.musicaAtual.isPlaying) {
-      this.musicaAtual.setVolume(this.volumeDe('musica', this.musicaAtual.__volumeBase));
+      this.definirVolume(
+        this.musicaAtual, this.volumeDe('musica', this.musicaAtual.__volumeBase)
+      );
     }
     if (this.ambienteAtual && this.ambienteAtual.isPlaying) {
-      this.ambienteAtual.setVolume(this.volumeDe('ambiente', this.ambienteAtual.__volumeBase));
+      this.definirVolume(
+        this.ambienteAtual, this.volumeDe('ambiente', this.ambienteAtual.__volumeBase)
+      );
     }
     for (const som of this.loops.values()) {
-      if (som.isPlaying) som.setVolume(this.volumeDe('efeito', som.__volumeBase));
+      if (som.isPlaying) {
+        this.definirVolume(som, this.volumeDe('efeito', som.__volumeBase));
+      }
     }
   }
 
@@ -211,6 +264,9 @@ class Audio {
     const som = this.game.sound.add(clipe.arquivo);
     som.__volumeBase = volume;
 
+    // O volume que ESTE som deve ter agora. Ver `definirVolume`.
+    som.__volumeAtual = volume;
+
     const ehTrecho = clipe.inicio !== undefined || clipe.duracao !== undefined;
 
     if (ehTrecho) {
@@ -230,10 +286,16 @@ class Audio {
     return som;
   }
 
-  /** Toca o som respeitando o marcador, se houver. */
+  /**
+   * Toca o som respeitando o marcador, se houver — e agenda o volume.
+   *
+   * O agendamento nao e frescura. Ver `aplicarPendentes`.
+   */
   iniciar(som) {
     if (som.__marcador) som.play(som.__marcador);
     else som.play();
+
+    this.pendentes.push(som);
     return som;
   }
 
