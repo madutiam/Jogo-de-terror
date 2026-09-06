@@ -129,8 +129,15 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
     return this.tamanho.id === 'pequena';
   }
 
-  /** Conjunto de animacoes do tamanho atual. */
-  get anims() {
+  /**
+   * Conjunto de animacoes do tamanho atual.
+   *
+   * NAO chamar isto de `anims`: `anims` ja e o controlador de animacao do
+   * proprio Phaser, herdado do Sprite. Sombreando ele, `destroy()` chamava
+   * `this.anims.destroy()` num objeto de dados comum e estourava — o jogo
+   * inteiro ficava preto ao trocar de cena.
+   */
+  get animacoes() {
     return ALICE_ANIM[this.tamanho.id];
   }
 
@@ -205,7 +212,7 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
    * @param {string} prefixo 'anda' | 'corre' | 'pula' | 'pega'
    */
   animacaoDirecional(prefixo, dx, dy) {
-    const a = this.anims;
+    const a = this.animacoes;
     if (Math.abs(dx) >= Math.abs(dy)) {
       return dx < 0 ? a[prefixo + 'Esq'] : a[prefixo + 'Dir'];
     }
@@ -436,7 +443,7 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
     if (this.paradaDesde === 0) this.paradaDesde = tempo;
 
     if (this.ofegante) {
-      this.tocarCiclo(this.anims.ofegante);
+      this.tocarCiclo(this.animacoes.ofegante);
       return;
     }
 
@@ -446,7 +453,7 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
       this.direcao.y < 0 && Math.abs(this.direcao.y) > Math.abs(this.direcao.x);
 
     if (olhandoParaOFundo) {
-      this.tocarCiclo(this.anims.paradaCostas);
+      this.tocarCiclo(this.animacoes.paradaCostas);
       return;
     }
 
@@ -454,7 +461,7 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
     // para a camera — e o unico desenho de parada que serve, e nao inventa
     // pose. Antes disso, fica no ultimo quadro de caminhada.
     if (tempo - this.paradaDesde >= IDLE_FRONT_DELAY) {
-      this.tocarCiclo(this.anims.paradaFrente);
+      this.tocarCiclo(this.animacoes.paradaFrente);
       pedirAsset(
         'Alice', 'IDLE de perfil',
         'Alice parada vista de lado, 2 a 4 quadros de respiracao. ' +
@@ -523,7 +530,7 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
     this.invulneravelAte = this.scene.time.now + IFRAMES;
     this.estado = ALICE_STATE.DAMAGE;
 
-    const anim = this.olhandoPara < 0 ? this.anims.danoEsq : this.anims.danoDir;
+    const anim = this.olhandoPara < 0 ? this.animacoes.danoEsq : this.animacoes.danoDir;
     if (anim) {
       this.gesto = {
         anim,
@@ -560,7 +567,7 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
     this.body.setAcceleration(0, 0);
     this.body.setVelocity(0, 0);
     this.pararPassos();
-    this.tocarCiclo(this.anims.paradaFrente);
+    this.tocarCiclo(this.animacoes.paradaFrente);
   }
 
   descongelar() {
