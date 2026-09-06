@@ -51,6 +51,21 @@ export const SALAS = {
     ambiente: { clipe: 'ambiente.galhos', volume: 0.34 },
   },
 
+  /** PROVISORIO, como a chegada: a pista da perseguicao. */
+  corrida: {
+    imagem: 'fase2-corrida',
+    // 350, e nao 430. A arte da corrida tem 724 de altura contra os 887 da
+    // chegada: o que casa as duas e a posicao RELATIVA da linha (48% da altura),
+    // nao o numero absoluto. Copiar o 430 encolhia a sala para 2374 e deixava um
+    // terco da profundidade em chao pintado pelo motor.
+    linhaDoChao: 350,
+    terreno: 'floresta',
+    nome: 'a floresta',
+    luzes: [],
+    saidas: [],
+    ambiente: { clipe: 'ambiente.galhos', volume: 0.40 },
+  },
+
   corredor: {
     imagem: 'sala-corredor',
     linhaDoChao: 620,
