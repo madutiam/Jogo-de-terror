@@ -98,6 +98,9 @@ export class SalaScene extends GameplayScene {
 
   montarConteudo() {
     const d = this.dados;
+    if (d.rastros) this.montarRastros(d.rastros.map((r) => ({
+      ...r, x: r.x * this.sala.largura,
+    })));
     if (d.plataformas) for (const p of d.plataformas) this.montarPlataforma(p);
     if (d.observacoes) for (const o of d.observacoes) this.montarObservacao(o);
     if (d.biscoitos) this.montarBiscoitos(d.biscoitos);

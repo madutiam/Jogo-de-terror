@@ -53,6 +53,43 @@ function sombraSuave(cena) {
   return chave;
 }
 
+/**
+ * O RASTRO NO CHAO DO QUARTO
+ *
+ * Onde a coisa aconteceu: perto da mesa e da cadeira virada. Dali sai uma marca
+ * de arrasto que vai enfraquecendo para o OESTE, ate o vao que da no corredor.
+ *
+ * Isto e a direcao da fase. Nenhum texto manda ir para o oeste; quem seguir o
+ * sangue sai pelo lado certo por conta propria. E o que a secao 8 pede: a
+ * informacao esta no ambiente, e nao existe seta.
+ *
+ * A opacidade cai junto com a distancia — sangue arrastado vai acabando.
+ */
+const RASTROS_DO_QUARTO = [
+  // O ponto onde comecou.
+  { chave: 'poca-grande', x: 1120, y: 604, escala: 1.0, alpha: 0.95 },
+  { chave: 'respingos',   x: 1218, y: 566, escala: 0.9, alpha: 0.8, angulo: 14 },
+  { chave: 'respingos',   x: 1032, y: 646, escala: 0.7, alpha: 0.7, angulo: -22, virar: true },
+  { chave: 'poca-media',  x: 1186, y: 662, escala: 0.8, alpha: 0.75 },
+
+  // A marca de arrasto, indo embora.
+  {
+    chave: 'arrasto', x: 968, y: 650, escala: 1.0, alpha: 0.85, angulo: -7,
+    rotulo: 'a marca no chao', pista: 'marca-de-arrasto',
+    texto: [
+      'Isto nao e pegada.',
+      'Alguma coisa foi puxada por aqui, e nao se soltou no caminho.',
+      'Vai para a porta dos fundos.',
+    ],
+  },
+  { chave: 'arrasto', x: 806, y: 686, escala: 0.95, alpha: 0.66, angulo: -5, virar: true },
+  { chave: 'pegada',  x: 726, y: 758, escala: 0.8,  alpha: 0.5,  angulo: -12 },
+  { chave: 'arrasto', x: 632, y: 706, escala: 0.9,  alpha: 0.5,  angulo: -6 },
+  { chave: 'pegada',  x: 540, y: 776, escala: 0.75, alpha: 0.38, angulo: -8, virar: true },
+  { chave: 'arrasto', x: 448, y: 724, escala: 0.85, alpha: 0.36, angulo: -4, virar: true },
+  { chave: 'arrasto', x: 276, y: 742, escala: 0.8,  alpha: 0.22, angulo: -3 },
+];
+
 const SALA = {
   largura: 2400,
   profundidade: PROFUNDIDADE.FRENTE,
@@ -117,6 +154,7 @@ export class Phase1Scene extends GameplayScene {
     this.montarObstaculos();
     this.montarObservacoes();
     this.montarEscadaDoSotao();
+    this.montarRastros(RASTROS_DO_QUARTO);
 
     // ---- audio (regra 34: ambiente e passos, sem musica por cima) ----
     AudioManager.pararMusica(400);

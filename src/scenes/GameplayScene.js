@@ -406,6 +406,52 @@ export class GameplayScene extends Phaser.Scene {
     if (id) SaveManager.salvarCheckpoint(this.faseNumero ?? 1, id);
   }
 
+  // -------------------------------------------------------------------- rastros
+
+  /**
+   * O QUE SOBROU NO CHAO
+   *
+   * Sangue, marca de arrasto, um tufo de pelo, uma pegada. Nao sao enfeite: sao
+   * a unica coisa no jogo que diz o que aconteceu aqui antes de a Alice acordar.
+   *
+   * E sao tambem a direcao. A marca de arrasto vai ficando mais fraca para o
+   * oeste, ate a porta do corredor — quem seguir o rastro sai do quarto pelo
+   * lado certo sem que ninguem tenha dito nada (roteiro, secao 8: a informacao
+   * esta no ambiente, e nao ha seta).
+   *
+   * Ficam no chao: desenhados abaixo de quem anda, e encolhendo com a
+   * profundidade, como todo o resto.
+   */
+  montarRastros(lista) {
+    for (const r of lista) {
+      const escala = escalaPorProfundidade(r.y) * (r.escala ?? 1);
+
+      this.add
+        .image(r.x, r.y, 'rastro/' + r.chave)
+        .setOrigin(0.5, 0.5)
+        .setScale(escala)
+        .setAngle(r.angulo ?? 0)
+        .setFlipX(!!r.virar)
+        .setAlpha(r.alpha ?? 1)
+        .setDepth(profundidadeDeDesenho(r.y) - 0.5);
+
+      if (!r.texto) continue;
+
+      this.criarInterativo({
+        x: r.x,
+        y: r.y,
+        raio: 110,
+        alturaMarca: 34,
+        aoInteragir: () => {
+          this.dialogo.mostrar(r.texto, {
+            rotulo: r.rotulo,
+            aoFechar: () => r.pista && SaveManager.registrarPista(r.pista),
+          });
+        },
+      });
+    }
+  }
+
   // -------------------------------------------------------------------- tamanho
 
   /**

@@ -52,6 +52,12 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('relogio-bolso', 'assets/objects/relogio/relogio-bolso-0.png');
     this.load.image('relogio-bolso-aberto', 'assets/objects/relogio/relogio-bolso-aberto-0.png');
 
+    // Rastros: o que sobrou de quem foi levado.
+    for (const r of ['poca-grande', 'poca-media', 'respingos',
+                     'arrasto', 'tufo-pelo', 'pegada']) {
+      this.load.image('rastro/' + r, 'assets/objects/rastros/' + r + '-0.png');
+    }
+
     // Pecas de parkour: 4 variantes de cada, para a fase nao ficar repetida.
     for (const peca of ['caixote', 'escada', 'mecanismo', 'tabua', 'prateleira',
                         'viga', 'ponteiro-longo', 'ponteiro-curto']) {

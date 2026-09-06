@@ -55,6 +55,28 @@ export const SALAS = {
     ],
 
     /**
+     * O rastro continua. Ele passa direto pela fresta e segue para o oeste,
+     * na direcao da despensa — quem estava sendo arrastado nao entrou pelo
+     * buraco.
+     */
+    rastros: [
+      { chave: 'arrasto', x: 0.78, y: 700, escala: 0.95, alpha: 0.42, angulo: -5 },
+      { chave: 'poca-media', x: 0.66, y: 664, escala: 0.7, alpha: 0.4 },
+      {
+        chave: 'tufo-pelo', x: 0.56, y: 716, escala: 0.9, alpha: 0.9,
+        rotulo: 'um tufo de pelo', pista: 'tufo-de-pelo',
+        texto: [
+          'Pelo branco, preso numa lasca do rodape.',
+          'Arrancado, nao caido.',
+          'Era ele.',
+        ],
+      },
+      { chave: 'arrasto', x: 0.44, y: 734, escala: 0.9, alpha: 0.3, angulo: -4, virar: true },
+      { chave: 'pegada',  x: 0.34, y: 776, escala: 0.75, alpha: 0.26, angulo: -9 },
+      { chave: 'arrasto', x: 0.22, y: 748, escala: 0.85, alpha: 0.18, angulo: -3 },
+    ],
+
+    /**
      * A fresta entulhada na parede do fundo. So a Alice PEQUENA entra.
      * Roteiro, secao 7: o tamanho abre caminho que nao existiria de outro jeito.
      */
