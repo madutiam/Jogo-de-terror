@@ -1,4 +1,4 @@
-{
+﻿{
   "folhas": [
     {
       "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Atlas de Sprites da Alice Pixel Art.png",
@@ -376,6 +376,36 @@
           "ancora": "vestido",
           "escala": 0.5981,
           "limparAnotacoes": false
+        }
+      ]
+    },
+    {
+      "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/Alice Comendo Biscoitos.png",
+      "fundo": "transparente",
+      "corDeFundo": [
+        0,
+        0,
+        0
+      ],
+      "tolerancia": 40,
+      "linhas": [
+        {
+          "chave": "come-shrink",
+          "x1": 270,
+          "y1": 146,
+          "x2": 1710,
+          "y2": 369,
+          "quadros": 8,
+          "ancora": "vestido"
+        },
+        {
+          "chave": "come-grow",
+          "x1": 270,
+          "y1": 538,
+          "x2": 1700,
+          "y2": 763,
+          "quadros": 8,
+          "ancora": "vestido"
         }
       ]
     }

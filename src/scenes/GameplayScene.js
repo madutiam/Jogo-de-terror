@@ -495,7 +495,45 @@ export class GameplayScene extends Phaser.Scene {
 
     const alvo = this.alice.tamanho.id === 'pequena' ? 'normal' : 'pequena';
     this.entrarEmCinematica();
-    this.alice.mudarTamanho(alvo).then(() => this.sairDeCinematica());
+    this.momentoDoBiscoito(alvo);
+  }
+
+  /**
+   * O MOMENTO DO BISCOITO
+   *
+   * Nao e uma HIGHSFIELD — sao 5, e continuam 5 (§32). E um MOMENTO: a camera
+   * chega perto, o controle sai da mao do jogador (que ja saia) e o ambiente
+   * recua, para os dois gestos terem espaco de acontecer.
+   *
+   * A camera fecha ANTES da mordida e so volta depois que o corpo terminou de
+   * mudar. Isso e o que separa "ela comeu um biscoito e algo aconteceu com ela"
+   * de "eu apertei Q".
+   */
+  momentoDoBiscoito(alvo) {
+    const cam = this.cameras.main;
+    const zoomBase = cam.zoom;
+
+    cam.zoomTo(zoomBase * 1.3, 620, 'Sine.easeInOut');
+
+    // O comodo abaixa e volta. O silencio aqui e o mesmo recurso do §34: por
+    // dois segundos a casa para de existir e so ela existe.
+    const ambiente = AudioManager.ambienteAtual;
+    const eraAmbiente = ambiente
+      ? { id: ambiente.__id, volume: ambiente.__volumeBase }
+      : null;
+    if (eraAmbiente) {
+      AudioManager.tocarAmbiente(eraAmbiente.id, 500, {
+        volume: eraAmbiente.volume * 0.35,
+      });
+    }
+
+    this.alice.comerBiscoito(alvo).then(() => {
+      cam.zoomTo(zoomBase, 700, 'Sine.easeInOut');
+      if (eraAmbiente) {
+        AudioManager.tocarAmbiente(eraAmbiente.id, 900, { volume: eraAmbiente.volume });
+      }
+      this.time.delayedCall(700, () => this.sairDeCinematica());
+    });
   }
 
   // ---------------------------------------------------------------------- pausa

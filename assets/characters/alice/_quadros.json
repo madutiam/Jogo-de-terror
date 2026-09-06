@@ -1465,5 +1465,149 @@
         "alturaUtil":  253,
         "ancoraOrigem":  "vestido",
         "aviso":  ""
+    },
+    {
+        "arquivo":  "come-shrink-0.png",
+        "chave":  "come-shrink",
+        "indice":  0,
+        "larguraUtil":  127,
+        "alturaUtil":  213,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-shrink-1.png",
+        "chave":  "come-shrink",
+        "indice":  1,
+        "larguraUtil":  155,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-shrink-2.png",
+        "chave":  "come-shrink",
+        "indice":  2,
+        "larguraUtil":  126,
+        "alturaUtil":  213,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-shrink-3.png",
+        "chave":  "come-shrink",
+        "indice":  3,
+        "larguraUtil":  122,
+        "alturaUtil":  213,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-shrink-4.png",
+        "chave":  "come-shrink",
+        "indice":  4,
+        "larguraUtil":  141,
+        "alturaUtil":  216,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-shrink-5.png",
+        "chave":  "come-shrink",
+        "indice":  5,
+        "larguraUtil":  136,
+        "alturaUtil":  216,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-shrink-6.png",
+        "chave":  "come-shrink",
+        "indice":  6,
+        "larguraUtil":  121,
+        "alturaUtil":  215,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-shrink-7.png",
+        "chave":  "come-shrink",
+        "indice":  7,
+        "larguraUtil":  125,
+        "alturaUtil":  216,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-grow-0.png",
+        "chave":  "come-grow",
+        "indice":  0,
+        "larguraUtil":  128,
+        "alturaUtil":  220,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-grow-1.png",
+        "chave":  "come-grow",
+        "indice":  1,
+        "larguraUtil":  155,
+        "alturaUtil":  221,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-grow-2.png",
+        "chave":  "come-grow",
+        "indice":  2,
+        "larguraUtil":  122,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-grow-3.png",
+        "chave":  "come-grow",
+        "indice":  3,
+        "larguraUtil":  119,
+        "alturaUtil":  218,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-grow-4.png",
+        "chave":  "come-grow",
+        "indice":  4,
+        "larguraUtil":  139,
+        "alturaUtil":  218,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-grow-5.png",
+        "chave":  "come-grow",
+        "indice":  5,
+        "larguraUtil":  137,
+        "alturaUtil":  223,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-grow-6.png",
+        "chave":  "come-grow",
+        "indice":  6,
+        "larguraUtil":  124,
+        "alturaUtil":  220,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "come-grow-7.png",
+        "chave":  "come-grow",
+        "indice":  7,
+        "larguraUtil":  124,
+        "alturaUtil":  220,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
     }
 ]

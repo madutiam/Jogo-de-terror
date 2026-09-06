@@ -117,6 +117,11 @@ export const ALICE_QUADROS = {
 
   // Reacoes.
   'ofegante': 4, 'dano-dir': 2, 'dano-esq': 2,
+
+  // Comendo o biscoito. Duas sequencias completas, uma por vidro: ela tira o
+  // biscoito, come e mastiga. O que vem DEPOIS e a `transicao`, que e o corpo
+  // mudando — sao dois gestos, nao um.
+  'come-shrink': 8, 'come-grow': 8,
 };
 
 /** Tela comum de todos os quadros, em pixels. */
@@ -172,6 +177,14 @@ export const ALICE_TAMANHO = {
 
 /** Duracao da animacao de encolher (e de crescer), em ms. */
 export const ALICE_TRANSICAO_MS = 720;
+
+/**
+ * Quanto dura o gesto de comer, antes de o corpo comecar a mudar.
+ *
+ * 8 quadros. Nao e so animacao: e a pausa que faz o biscoito virar objeto em
+ * vez de botao. Curto demais e a troca continua parecendo um atalho de teclado.
+ */
+export const ALICE_COMER_MS = 980;
 
 /**
  * QUAL LINHA DE QUADROS USAR EM CADA SITUACAO
@@ -266,6 +279,14 @@ export const ALICE_ANIM = {
 
   /** Encolher. Para crescer, a mesma sequencia toca de tras para a frente. */
   transicao: { linha: 'transicao', ms: 90 },
+
+  /**
+   * Comer. Vem ANTES da transicao, e cada vidro tem a sua: no SHRINK ela
+   * encolhe os ombros ao engolir, no GROW ela se estica. Sao desenhos
+   * diferentes, nao o mesmo espelhado.
+   */
+  comeShrink: { linha: 'come-shrink', ms: 120 },
+  comeGrow:   { linha: 'come-grow',   ms: 120 },
 };
 
 /** Estados de animacao previstos na especificacao (regra 27). */

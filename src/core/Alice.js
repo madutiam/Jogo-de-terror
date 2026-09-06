@@ -40,6 +40,7 @@ import {
   PHYSICS,
   ALICE_ANIM,
   ALICE_QUADROS,
+  ALICE_COMER_MS,
   ALICE_TAMANHO,
   ALICE_TRANSICAO_MS,
   ALICE_SPRITE,
@@ -162,7 +163,48 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
    * desenhados para isso, e crescer e a mesma sequencia de tras para a frente.
    * Devolve uma Promise que fecha quando ela termina de mudar.
    */
-  mudarTamanho(alvo) {
+  /**
+   * COMER O BISCOITO
+   *
+   * Sao DOIS gestos, nesta ordem: ela tira o biscoito e come (8 quadros), e so
+   * entao o corpo muda (8 quadros). Antes so existia o segundo — o biscoito
+   * mudava o tamanho sem que ninguem a visse comer, e por isso lia como atalho
+   * de teclado em vez de objeto.
+   *
+   * Cada vidro tem a propria sequencia: no SHRINK ela encolhe os ombros ao
+   * engolir, no GROW ela se estica. Sao desenhos diferentes.
+   */
+  comerBiscoito(alvo) {
+    const novo = ALICE_TAMANHO[alvo];
+    if (!novo || novo.id === this.tamanho.id) return Promise.resolve(false);
+
+    const anim = novo.id === 'pequena' ? ALICE_ANIM.comeShrink : ALICE_ANIM.comeGrow;
+
+    this.controlavel = false;
+    this.estado = ALICE_STATE.TAMANHO;
+    this.body.setVelocity(0, 0);
+    this.body.setAcceleration(0, 0);
+    this.pararPassos();
+    AudioManager.tocar('efeito.item');
+
+    return new Promise((resolver) => {
+      this.gesto = {
+        anim,
+        total: ALICE_QUADROS[anim.linha],
+        inicio: this.scene.time.now,
+        duracao: ALICE_COMER_MS,
+        aoTerminar: () => resolver(true),
+      };
+      // O corpo so comeca a mudar depois que ela engole.
+    }).then(() => this.mudarTamanho(alvo, 'efeito.roupa'));
+  }
+
+  /**
+   * `som` e dito por quem chama porque o gesto de comer ja gastou o
+   * `efeito.item` na mordida: repetir o mesmo som na mudanca do corpo soaria
+   * como dois itens coletados em vez de uma coisa acontecendo com ela.
+   */
+  mudarTamanho(alvo, som = 'efeito.item') {
     const novo = ALICE_TAMANHO[alvo];
     if (!novo || novo.id === this.tamanho.id) return Promise.resolve(false);
 
@@ -174,7 +216,7 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
     this.body.setVelocity(0, 0);
     this.body.setAcceleration(0, 0);
     this.pararPassos();
-    AudioManager.tocar('efeito.item');
+    AudioManager.tocar(som);
 
     return new Promise((resolver) => {
       this.gesto = {
