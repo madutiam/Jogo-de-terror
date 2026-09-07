@@ -84,6 +84,9 @@ export class StoryScene extends Phaser.Scene {
     this.ligarRolagem();
 
     this.rolagem = 0;
+    // O alvo comeca junto: sem isso o primeiro `update` deslizaria de um lugar
+    // que nao existe.
+    this.alvo = 0;
     this.atualizarAparicoes();
 
     // O tema da abertura acompanha a leitura inteira, baixo, com o silencio
@@ -239,7 +242,9 @@ export class StoryScene extends Phaser.Scene {
 
     this.input.on('pointermove', (ponteiro) => {
       if (!ponteiro.isDown) return;
-      this.rolar(-ponteiro.velocity.y * 0.35);
+      // Menos que antes: com a inercia por baixo, 0,35 empurrava o alvo longe
+      // demais e o texto passava do ponto onde o dedo parou.
+      this.rolar(-ponteiro.velocity.y * 0.18);
     });
 
     this.teclas = this.input.keyboard.addKeys({
@@ -250,11 +255,25 @@ export class StoryScene extends Phaser.Scene {
     });
   }
 
+  /**
+   * ROLAGEM COM INERCIA
+   *
+   * Antes cada clique da roda saltava o texto de uma vez, e ler virava uma
+   * sequencia de sobressaltos. Numa tela que e so texto — e que e a HISTORIA,
+   * onde a pessoa esta lendo devagar — o salto quebra a linha em que ela estava.
+   *
+   * Agora `rolar` mexe so no ALVO. O texto persegue esse alvo em `update`, e
+   * quem le ve a pagina deslizar ate parar. Segurar a seta continua sendo
+   * continuo, porque o alvo anda junto e a distancia nunca cresce.
+   */
   rolar(delta) {
-    const antes = this.rolagem;
-    this.rolagem = Phaser.Math.Clamp(this.rolagem + delta, 0, this.rolagemMax);
-    if (this.rolagem === antes) return;
+    this.alvo = Phaser.Math.Clamp((this.alvo ?? this.rolagem) + delta, 0, this.rolagemMax);
+  }
 
+  /** Vai direto, sem deslizar. Usado ao montar a tela. */
+  irPara(valor) {
+    this.alvo = Phaser.Math.Clamp(valor, 0, this.rolagemMax);
+    this.rolagem = this.alvo;
     this.conteudo.y = TOPO - this.rolagem;
     this.atualizarAparicoes();
   }
@@ -265,6 +284,26 @@ export class StoryScene extends Phaser.Scene {
     if (this.teclas.baixo.isDown) this.rolar(passo);
     if (Phaser.Input.Keyboard.JustDown(this.teclas.pgUp)) this.rolar(-this.areaVisivel * 0.8);
     if (Phaser.Input.Keyboard.JustDown(this.teclas.pgDown)) this.rolar(this.areaVisivel * 0.8);
+
+    if (this.alvo === undefined) this.alvo = this.rolagem;
+
+    const falta = this.alvo - this.rolagem;
+    if (Math.abs(falta) < 0.35) {
+      if (falta !== 0) {
+        this.rolagem = this.alvo;
+        this.conteudo.y = TOPO - this.rolagem;
+        this.atualizarAparicoes();
+      }
+      return;
+    }
+
+    // Suavizacao por TEMPO, e nao por quadro: com um fator fixo por quadro a
+    // pagina desliza mais rapido em 144 Hz que em 60. TEMPO_DE_DESLIZE e quanto
+    // ela leva para vencer ~63% do que falta.
+    const TEMPO_DE_DESLIZE = 110;
+    this.rolagem += falta * (1 - Math.exp(-delta / TEMPO_DE_DESLIZE));
+    this.conteudo.y = TOPO - this.rolagem;
+    this.atualizarAparicoes();
   }
 
   voltar() {
