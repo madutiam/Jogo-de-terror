@@ -87,6 +87,10 @@ export class SalaScene extends GameplayScene {
     this.montarConteudo();
     this.montarSaidas();
 
+    // O mapa se acende a partir daqui: um comodo so existe nele depois de
+    // pisado.
+    SaveManager.registrarSala(this.nomeDaSala);
+
     AudioManager.pararMusica(400);
     this.iniciarAmbienteDaSala();
 

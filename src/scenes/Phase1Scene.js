@@ -157,6 +157,8 @@ export class Phase1Scene extends GameplayScene {
     this.montarRastros(RASTROS_DO_QUARTO);
 
     // ---- audio (regra 34: ambiente e passos, sem musica por cima) ----
+    SaveManager.registrarSala('quarto');
+
     AudioManager.pararMusica(400);
     AudioManager.tocarAmbiente('ambiente.silencio', 2600);
 

@@ -30,6 +30,8 @@ import { TouchControls } from '../ui/TouchControls.js';
 import { CORES, HEX, FONTE, ESTILO, comSombra } from '../ui/theme.js';
 import { dimensoes } from '../core/tela.js';
 import { ITENS, PISTAS, ORDEM_ITENS, ORDEM_PISTAS } from '../data/inventario.js';
+import { MAPA_FASE1, LIGACOES_FASE1 } from '../data/mapa.js';
+import { PainelDeAbas } from '../ui/PainelDeAbas.js';
 
 /**
  * Quanto de cenario fica reservado nas beiradas do mundo, so para a Alice nao
@@ -634,7 +636,7 @@ export class GameplayScene extends Phaser.Scene {
           this.scene.start(SCENES.PHASE1);
         },
       },
-      { texto: 'O QUE ELA TEM', acao: () => this.abrirInventario() },
+      { texto: 'CADERNO', acao: () => this.abrirInventario() },
       {
         texto: 'VOLTAR AO MENU',
         acao: () => {
@@ -666,50 +668,42 @@ export class GameplayScene extends Phaser.Scene {
     this.painelPausa.add([fundo, titulo, ...itens]);
   }
 
-  // ------------------------------------------------------------- inventario
+  // ------------------------------------------------------------------ abas
 
   /**
-   * O QUE ELA TEM, E O QUE ELA REPAROU
+   * O CADERNO — inventario, diario, mapa e comandos
    *
-   * Nao e inventario de RPG (regra 48). Sao duas listas curtas, para o jogador
-   * reler as pistas sem refazer o caminho — e para perceber, vendo tudo junto,
-   * que os tres numeros que ele anotou em salas diferentes falam da mesma hora.
+   * Quatro abas, e quem escolhe o que ver e o jogador. Antes era uma tela so
+   * com duas colunas brigando por espaco; com o mapa e o diario entrando, virava
+   * lista sem fim.
    *
-   * Nenhuma linha diz para onde ir. O texto e a leitura DELA (regra 43): junta
-   * quem ja tem o quebra-cabeca, e nao entrega nada a quem nao olhou.
+   * Nada aqui guarda estado: cada aba e montada na hora, a partir do save. Uma
+   * pista achada com o caderno aberto aparece na proxima vez que a aba abrir, e
+   * nenhuma delas pode mostrar coisa velha.
    */
-  /**
-   * Abre pela PAUSA: fecha o painel de pausa e volta para ele.
-   */
-  abrirInventario() {
-    this.veioDaPausa = true;
-    this.painelPausa.setVisible(false);
-    this.montarInventario();
-    this.painelInventario.setVisible(true);
+  abrirCaderno(idInicial, veioDaPausa = false) {
+    if (this.caderno?.aberto) return;
+
+    this.veioDaPausa = veioDaPausa;
+    if (veioDaPausa) this.painelPausa.setVisible(false);
+    else {
+      // Ler nao pode custar uma vida.
+      this.physics.pause();
+      this.alice?.pararPassos();
+      this.toque?.esconder();
+    }
+
+    this.caderno = new PainelDeAbas(this, [
+      { id: 'inventario', nome: 'Inventário', montar: (a, p) => this.abaInventario(a, p) },
+      { id: 'diario',     nome: 'Diário',     montar: (a, p) => this.abaDiario(a, p) },
+      { id: 'mapa',       nome: 'Mapa',       montar: (a, p) => this.abaMapa(a, p) },
+      { id: 'comandos',   nome: 'Comandos',   montar: (a, p) => this.abaComandos(a, p) },
+    ], { aoFechar: () => this.aoFecharCaderno() });
+
+    this.caderno.abrir(idInicial);
   }
 
-  /**
-   * Abre DIRETO, pela tecla Y ou pelo botao do celular.
-   *
-   * O jogo para enquanto a lista esta aberta — ler nao pode custar uma vida.
-   * Sai pela mesma tecla, por ESC ou pelo VOLTAR.
-   */
-  alternarInventario() {
-    if (this.painelInventario) { this.fecharInventario(); return; }
-    if (this.pausado) return;
-
-    this.veioDaPausa = false;
-    this.physics.pause();
-    this.alice?.pararPassos();
-    this.toque?.esconder();
-    this.montarInventario();
-    this.painelInventario.setVisible(true);
-  }
-
-  fecharInventario() {
-    this.painelInventario?.destroy();
-    this.painelInventario = null;
-
+  aoFecharCaderno() {
     if (this.veioDaPausa) {
       this.painelPausa.setVisible(true);
     } else {
@@ -718,162 +712,232 @@ export class GameplayScene extends Phaser.Scene {
     }
   }
 
-  montarInventario() {
-    this.painelInventario?.destroy();
+  alternarInventario() {
+    if (this.caderno?.aberto) { this.caderno.fechar(); return; }
+    if (this.pausado) return;
+    this.abrirCaderno('inventario', false);
+  }
 
-    const tela = dimensoes(this);
-    const progresso = SaveManager.getProgresso();
+  /** Aberto pela pausa: o VOLTAR devolve a pausa, que e de onde se veio. */
+  abrirInventario() {
+    this.abrirCaderno('inventario', true);
+  }
 
-    this.painelInventario = this.add
-      .container(0, 0)
-      .setScrollFactor(0)
-      .setDepth(2100);
+  fecharInventario() {
+    this.caderno?.fechar();
+  }
 
-    const fundo = this.add
-      .rectangle(tela.meioX, tela.meioY, tela.largura * 2, tela.altura * 2, CORES.preto, 0.93)
-      .setScrollFactor(0);
+  // ------------------------------------------------------- lista e detalhe
 
-    const partes = [fundo];
-    const margem = Math.max(40, tela.meioX - 330);
-    let y = 54;
+  /**
+   * O formato que o inventario e o diario compartilham: os nomes a esquerda,
+   * e o que esta escolhido aberto a direita.
+   *
+   * Duas colunas e nao uma lista corrida porque a leitura muda: a esquerda e
+   * "o que eu tenho", que se percorre com o olho, e a direita e um texto, que
+   * se le. Misturar os dois faz a pessoa reler o que ja sabe para achar o que
+   * nao sabe.
+   */
+  listaComDetalhe(area, painel, entradas, vazio) {
+    if (!entradas.length) {
+      painel.por(this.add
+        .text(area.x + 6, area.y + 8, vazio, {
+          fontFamily: FONTE, fontSize: '16px', color: HEX.ossoApagado, fontStyle: 'italic',
+        }));
+      return;
+    }
 
-    // Onde a coluna dos COMANDOS comeca. E calculada aqui, antes de qualquer
-    // texto, porque e ela que define ate onde a coluna da esquerda pode
-    // quebrar linha — senao a descricao de um item passa por baixo das teclas.
-    this.colunaComandos = tela.largura >= 900
-      ? Math.min(tela.largura - 300, margem + 470)
-      : null;
+    const larguraLista = Math.min(320, area.largura * 0.38);
+    const xDetalhe = area.x + larguraLista + 40;
+    const larguraDetalhe = area.largura - larguraLista - 40;
 
-    const larguraTexto = this.colunaComandos
-      ? this.colunaComandos - margem - 34
-      : Math.min(620, tela.largura - margem * 2 - 14);
+    // O filete entre as colunas. Sem ele as duas viram uma mancha so.
+    painel.por(this.add.graphics()
+      .lineStyle(1, CORES.dourado, 0.18)
+      .lineBetween(area.x + larguraLista + 18, area.y - 2,
+                   area.x + larguraLista + 18, area.y + area.altura - 10));
 
-    const titulo = (texto) => {
-      partes.push(this.add
-        .text(margem, y, texto, { fontFamily: FONTE, fontSize: '13px', color: HEX.dourado })
-        .setScrollFactor(0));
-      y += 30;
+    const detalhe = { titulo: null, texto: null };
+    const itens = [];
+
+    const mostrar = (i) => {
+      itens.forEach((t, k) => {
+        t.setColor(k === i ? HEX.osso : HEX.ossoMorto);
+        t.setAlpha(k === i ? 1 : 0.9);
+      });
+      detalhe.titulo.setText(entradas[i].nome);
+      detalhe.texto.setText(entradas[i].texto);
     };
 
-    const linha = (nome, texto) => {
-      partes.push(this.add
-        .text(margem, y, nome, comSombra({ fontFamily: FONTE, fontSize: '19px', color: HEX.osso }))
-        .setScrollFactor(0));
-      y += 24;
-      partes.push(this.add
-        .text(margem + 14, y, texto, {
-          fontFamily: FONTE, fontSize: '15px', color: HEX.ossoApagado,
-          wordWrap: { width: larguraTexto },
+    let y = area.y + 4;
+    entradas.forEach((entrada, i) => {
+      const t = this.add
+        .text(area.x + 6, y, entrada.nome, comSombra({
+          fontFamily: FONTE, fontSize: '17px', color: HEX.ossoMorto,
+        }))
+        .setInteractive({ useHandCursor: true });
+
+      t.on('pointerover', () => t.setColor(HEX.dourado));
+      t.on('pointerout', () => mostrar(itens.indexOf(t)));
+      t.on('pointerdown', () => mostrar(i));
+
+      itens.push(t);
+      painel.por(t);
+      y += 32;
+    });
+
+    detalhe.titulo = painel.por(this.add
+      .text(xDetalhe, area.y + 4, '', comSombra({
+        fontFamily: FONTE, fontSize: '23px', color: HEX.osso,
+      })));
+
+    detalhe.texto = painel.por(this.add
+      .text(xDetalhe, area.y + 46, '', {
+        fontFamily: FONTE, fontSize: '16px', color: HEX.ossoApagado,
+        wordWrap: { width: larguraDetalhe },
+        lineSpacing: 5,
+      }));
+
+    mostrar(0);
+  }
+
+  // ----------------------------------------------------------------- abas
+
+  abaInventario(area, painel) {
+    const p = SaveManager.getProgresso();
+    this.listaComDetalhe(
+      area, painel,
+      ORDEM_ITENS.filter((id) => p.itens.includes(id)).map((id) => ITENS[id]),
+      'Nada ainda. Só a roupa do corpo.'
+    );
+  }
+
+  abaDiario(area, painel) {
+    const p = SaveManager.getProgresso();
+    // Na ordem em que a fase OFERECE, e nao na que foram achadas: assim a lista
+    // conta a historia na ordem certa mesmo para quem explorou fora de ordem.
+    this.listaComDetalhe(
+      area, painel,
+      ORDEM_PISTAS.filter((id) => p.pistas.includes(id)).map((id) => PISTAS[id]),
+      'Ela ainda não parou para olhar nada.'
+    );
+  }
+
+  /**
+   * O MAPA, ACESO COMODO A COMODO
+   *
+   * So aparece o que ela ja pisou, e uma passagem so aparece quando os DOIS
+   * lados foram pisados — senao o mapa entregaria que existe algo do outro lado
+   * da fresta, que e a descoberta que o §7 guarda.
+   */
+  abaMapa(area, painel) {
+    const visitadas = SaveManager.getProgresso().salas;
+
+    if (!visitadas.length) {
+      painel.por(this.add
+        .text(area.x + 6, area.y + 8, 'Ela ainda não saiu de onde acordou.', {
+          fontFamily: FONTE, fontSize: '16px', color: HEX.ossoApagado, fontStyle: 'italic',
+        }));
+      return;
+    }
+
+    const colunas = 3, linhas = 3;
+    const passoX = Math.min(230, area.largura / colunas);
+    const passoY = Math.min(120, (area.altura - 60) / linhas);
+    const ox = area.x + (area.largura - passoX * (colunas - 1)) / 2 - 70;
+    const oy = area.y + 30;
+
+    const onde = (id) => {
+      const m = MAPA_FASE1[id];
+      return m ? { x: ox + m.col * passoX, y: oy + m.lin * passoY } : null;
+    };
+
+    // As ligacoes primeiro, para os comodos ficarem por cima delas.
+    const linhasG = this.add.graphics();
+    for (const l of LIGACOES_FASE1) {
+      if (!visitadas.includes(l.de) || !visitadas.includes(l.para)) continue;
+      const a = onde(l.de), b = onde(l.para);
+      if (!a || !b) continue;
+      linhasG.lineStyle(1, CORES.dourado, l.nota ? 0.28 : 0.5);
+      linhasG.lineBetween(a.x + 70, a.y + 14, b.x + 70, b.y + 14);
+      if (l.nota) {
+        painel.por(this.add
+          .text((a.x + b.x) / 2 + 70, (a.y + b.y) / 2 + 14, l.nota, {
+            fontFamily: FONTE, fontSize: '12px', color: HEX.ossoMorto,
+          })
+          .setOrigin(0.5)
+          .setBackgroundColor('#07080b')
+          .setPadding(6, 2, 6, 2));
+      }
+    }
+    painel.por(linhasG);
+
+    for (const id of Object.keys(MAPA_FASE1)) {
+      if (!visitadas.includes(id)) continue;
+      const p = onde(id);
+      const aqui = id === (this.nomeDaSala ?? 'quarto');
+
+      const caixa = this.add.graphics();
+      caixa.fillStyle(CORES.preto, 0.7);
+      caixa.fillRect(p.x, p.y - 2, 140, 32);
+      caixa.lineStyle(1, CORES.dourado, aqui ? 0.85 : 0.35);
+      caixa.strokeRect(p.x + 0.5, p.y - 1.5, 139, 31);
+      painel.por(caixa);
+
+      painel.por(this.add
+        .text(p.x + 70, p.y + 14, MAPA_FASE1[id].nome, {
+          fontFamily: FONTE, fontSize: '15px',
+          color: aqui ? HEX.dourado : HEX.ossoApagado,
         })
-        .setScrollFactor(0));
-      y += 46;
-    };
+        .setOrigin(0.5));
+    }
 
-    const vazio = (texto) => {
-      partes.push(this.add
-        .text(margem + 14, y, texto, {
-          fontFamily: FONTE, fontSize: '15px', color: HEX.ossoApagado, fontStyle: 'italic',
-        })
-        .setScrollFactor(0));
-      y += 40;
-    };
-
-    titulo('COM ELA');
-    const itens = ORDEM_ITENS.filter((id) => progresso.itens.includes(id));
-    if (itens.length) itens.forEach((id) => linha(ITENS[id].nome, ITENS[id].texto));
-    else vazio('Nada ainda. Só a roupa do corpo.');
-
-    y += 10;
-    titulo('O QUE ELA REPAROU');
-    const pistas = ORDEM_PISTAS.filter((id) => progresso.pistas.includes(id));
-    if (pistas.length) pistas.forEach((id) => linha(PISTAS[id].nome, PISTAS[id].texto));
-    else vazio('Ela ainda não parou para olhar nada.');
-
-    this.montarComandos(partes, tela, margem, y);
-
-    const voltar = this.add
-      .text(tela.meioX, tela.altura - 40, 'VOLTAR', comSombra(ESTILO.menu))
-      .setOrigin(0.5)
-      .setColor(HEX.ossoApagado)
-      .setFontSize(19)
-      .setScrollFactor(0)
-      .setInteractive({ useHandCursor: true });
-
-    voltar.on('pointerover', () => voltar.setColor(HEX.dourado));
-    voltar.on('pointerout', () => voltar.setColor(HEX.ossoApagado));
-    voltar.on('pointerdown', () => this.fecharInventario());
-    partes.push(voltar);
-
-    this.painelInventario.add(partes);
-    for (const parte of partes) parte.setScrollFactor(0);
+    painel.por(this.add
+      .text(area.x + 6, area.y + area.altura - 26,
+        'O mapa acende sozinho: só existe o que ela já pisou.', {
+          fontFamily: FONTE, fontSize: '13px', color: HEX.ossoMorto, fontStyle: 'italic',
+        }));
   }
 
   /**
    * OS COMANDOS, ESCRITOS
    *
-   * A dica que aparecia no comeco da fase some sozinha, e nunca falou de Q nem
-   * de Y. Quem chegou depois dela, ou piscou, tinha que adivinhar — e adivinhar
+   * A dica do comeco da fase some sozinha e nunca falou de Q nem de Y. Adivinhar
    * comando nao e o mesmo que interpretar pista: o §43 pede que o jogador
    * descubra o MUNDO, nao a interface.
    *
-   * Mora aqui porque esta e a tela que ele ja sabe abrir, e a unica que da para
-   * consultar no meio do jogo sem perder nada.
-   *
-   * A lista muda com o aparelho: no celular nao adianta falar de espaco e
-   * shift, e no computador nao adianta desenhar botao. Quem manda e o mesmo
-   * `toque.ativo` que decide se os controles de toque existem.
+   * A lista muda com o aparelho — no celular nao adianta falar de espaco e
+   * shift, e no computador nao adianta desenhar botao.
    */
-  montarComandos(partes, tela, margem, yListas) {
+  abaComandos(area, painel) {
     const noToque = !!this.toque?.ativo;
 
-    const teclado = [
-      ['A D  ← →', 'andar'],
-      ['W S  ↑ ↓', 'fundo e frente'],
-      ['espaço', 'pular'],
-      ['shift', 'correr'],
-      ['E', 'observar'],
-      ['Q', 'comer o biscoito'],
-      ['Y', 'esta tela'],
-      ['esc', 'pausa'],
-    ];
+    const lista = noToque
+      ? [['analógico', 'andar em qualquer direção'],
+         ['⌃', 'pular'], ['◇', 'observar'],
+         ['»', 'correr — se estiver ligado'], ['☰', 'este caderno']]
+      : [['A D  ← →', 'andar'], ['W S  ↑ ↓', 'fundo e frente'],
+         ['espaço', 'pular'], ['shift', 'correr'], ['E', 'observar'],
+         ['Q', 'comer o biscoito'], ['Y', 'este caderno'], ['esc', 'pausa']];
 
-    const toque = [
-      ['analógico', 'andar em qualquer direção'],
-      ['⌃', 'pular'],
-      ['◇', 'observar'],
-      ['»', 'correr — se estiver ligado'],
-      ['☰', 'esta tela'],
-    ];
-
-    const lista = noToque ? toque : teclado;
-
-    // Coluna a direita quando cabe (decidido em `montarInventario`, que precisa
-    // do numero antes para saber onde quebrar o texto); embaixo das listas
-    // quando nao cabe. E melhor empilhar do que as duas colunas se encostarem.
-    const x = this.colunaComandos ?? margem;
-    let y = this.colunaComandos ? 54 : yListas + 16;
-
-    partes.push(this.add
-      .text(x, y, 'COMANDOS', { fontFamily: FONTE, fontSize: '13px', color: HEX.dourado })
-      .setScrollFactor(0));
-    y += 30;
-
+    let y = area.y + 4;
     for (const [tecla, oQue] of lista) {
-      partes.push(this.add
-        .text(x, y, tecla, comSombra({ fontFamily: FONTE, fontSize: '16px', color: HEX.osso }))
-        .setScrollFactor(0));
-      partes.push(this.add
-        .text(x + 108, y, oQue, { fontFamily: FONTE, fontSize: '15px', color: HEX.ossoApagado })
-        .setScrollFactor(0));
-      y += 27;
+      painel.por(this.add
+        .text(area.x + 6, y, tecla, comSombra({
+          fontFamily: FONTE, fontSize: '17px', color: HEX.osso,
+        })));
+      painel.por(this.add
+        .text(area.x + 150, y, oQue, {
+          fontFamily: FONTE, fontSize: '16px', color: HEX.ossoApagado,
+        }));
+      y += 30;
     }
 
     if (!noToque) {
-      partes.push(this.add
-        .text(x, y + 8, 'F11 deixa em tela cheia.', {
-          fontFamily: FONTE, fontSize: '13px', color: HEX.ossoApagado, fontStyle: 'italic',
-        })
-        .setScrollFactor(0));
+      painel.por(this.add
+        .text(area.x + 6, y + 12, 'F11 deixa em tela cheia.', {
+          fontFamily: FONTE, fontSize: '13px', color: HEX.ossoMorto, fontStyle: 'italic',
+        }));
     }
   }
 
@@ -883,11 +947,11 @@ export class GameplayScene extends Phaser.Scene {
 
     this.pausado = novo;
 
-    // Despausar com o inventario aberto deixava o painel na tela por cima do
-    // jogo, e o ESC seguinte so reabria a pausa por baixo dele.
-    if (!novo) {
-      this.painelInventario?.destroy();
-      this.painelInventario = null;
+    // Despausar com o caderno aberto deixava o painel na tela por cima do jogo,
+    // e o ESC seguinte so reabria a pausa por baixo dele.
+    if (!novo && this.caderno?.aberto) {
+      this.veioDaPausa = false;   // nao devolve a pausa: ela esta saindo dela
+      this.caderno.fechar();
     }
     this.painelPausa.setVisible(novo);
 
@@ -907,10 +971,10 @@ export class GameplayScene extends Phaser.Scene {
   update(tempo, delta) {
     if (this.input_?.consumirPausa()) this.alternarPausa();
 
-    // O inventario responde antes do resto: com a lista aberta o jogo esta
-    // parado, e a unica coisa que ainda precisa funcionar e fecha-la.
-    if (this.painelInventario && !this.veioDaPausa) {
-      if (this.input_?.consumirInventario()) this.fecharInventario();
+    // O caderno responde antes do resto: com ele aberto o jogo esta parado, e a
+    // unica coisa que ainda precisa funcionar e fecha-lo.
+    if (this.caderno?.aberto && !this.veioDaPausa) {
+      if (this.input_?.consumirInventario()) this.caderno.fechar();
       return;
     }
     if (this.pausado) return;

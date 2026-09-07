@@ -43,6 +43,16 @@ const PROGRESSO_PADRAO = {
   fase: 1,
   /** Id do checkpoint dentro da fase, ou null para o inicio. */
   checkpoint: null,
+  /**
+   * Comodos em que ela ja entrou, na ORDEM em que entrou.
+   *
+   * O mapa se revela a partir daqui: um comodo so aparece depois de pisado. A
+   * ordem importa porque e ela que conta o caminho — quem voltou pelo corredor
+   * tres vezes nao tem tres corredores, mas quem foi a despensa antes da sala
+   * lateral ve o mapa crescer nessa ordem.
+   */
+  salas: [],
+
   /** Pistas ja encontradas, por id. As tres fases compartilham esta lista. */
   pistas: [],
   /** Itens no bolso da Alice (relogio, chave, pedaco de roupa...). */
@@ -89,7 +99,7 @@ export const SaveManager = {
   // ---- progresso ----
 
   getProgresso() {
-    return { ...progresso, pistas: [...progresso.pistas], itens: [...progresso.itens] };
+    return { ...progresso, pistas: [...progresso.pistas], itens: [...progresso.itens], salas: [...progresso.salas] };
   },
 
   /** Salva o ponto atual. So deve ser chamado depois de uma conquista real. */
@@ -109,6 +119,18 @@ export const SaveManager = {
     return progresso.pistas.includes(id);
   },
 
+  /** Marca um comodo como visitado. Devolve true so na primeira vez. */
+  registrarSala(id) {
+    if (!id || progresso.salas.includes(id)) return false;
+    progresso = { ...progresso, salas: [...progresso.salas, id] };
+    gravar(CHAVE_PROGRESSO, progresso);
+    return true;
+  },
+
+  visitou(id) {
+    return progresso.salas.includes(id);
+  },
+
   registrarItem(id) {
     if (progresso.itens.includes(id)) return false;
     progresso = { ...progresso, itens: [...progresso.itens, id] };
@@ -126,7 +148,7 @@ export const SaveManager = {
   },
 
   apagarProgresso() {
-    progresso = { ...PROGRESSO_PADRAO, pistas: [], itens: [] };
+    progresso = { ...PROGRESSO_PADRAO, pistas: [], itens: [], salas: [] };
     gravar(CHAVE_PROGRESSO, progresso);
   },
 };
