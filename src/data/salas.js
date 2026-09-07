@@ -36,51 +36,6 @@ export const MEDIDA_DA_PECA = {
 };
 
 export const SALAS = {
-  /**
-   * PROVISORIO — a primeira tela da Fase 2, aqui so para poder ser renderizada
-   * e medida enquanto a Fase 2 nao tem tabela propria. Sai daqui quando ela
-   * tiver.
-   */
-  chegada: {
-    imagem: 'fase2-chegada',
-    linhaDoChao: 430,
-    terreno: 'floresta',
-    nome: 'a floresta',
-    luzes: [],
-    saidas: [],
-    ambiente: { clipe: 'ambiente.galhos', volume: 0.34 },
-  },
-
-  /** PROVISORIO, como a chegada: a pista da perseguicao. */
-  corrida: {
-    imagem: 'fase2-corrida',
-    // 350, e nao 430. A arte da corrida tem 724 de altura contra os 887 da
-    // chegada: o que casa as duas e a posicao RELATIVA da linha (48% da altura),
-    // nao o numero absoluto. Copiar o 430 encolhia a sala para 2374 e deixava um
-    // terco da profundidade em chao pintado pelo motor.
-    linhaDoChao: 350,
-    terreno: 'floresta',
-    nome: 'a floresta',
-    luzes: [],
-    saidas: [],
-    ambiente: { clipe: 'ambiente.galhos', volume: 0.40 },
-  },
-
-  /**
-   * PROVISORIO: a clareira do espelho. E a unica tela da floresta com LUZ
-   * propria — a claridade que cai no centro sem vir de lugar nenhum. Por isso
-   * ela tem `luzes`, e as outras duas nao.
-   */
-  espelho: {
-    imagem: 'fase2-espelho',
-    linhaDoChao: 429,
-    terreno: 'floresta',
-    nome: 'a clareira',
-    luzes: [{ x: 0.52, y: 0.30, raio: 300, forca: 0.30 }],
-    saidas: [],
-    ambiente: { clipe: 'ambiente.sussurros', volume: 0.26 },
-  },
-
   corredor: {
     imagem: 'sala-corredor',
     linhaDoChao: 620,
@@ -374,4 +329,6 @@ export const ENTRADAS = {
   oeste:  { x: 0.22, y: 0.42 },
   fresta: { x: 0.245, y: 0.20 },
   escada: { x: 0.16, y: 0.40 },
+  /** Fase 2: a porta com a caveira, encostada na arvore da ponta oeste. */
+  porta:  { x: 0.10, y: 0.55 },
 };

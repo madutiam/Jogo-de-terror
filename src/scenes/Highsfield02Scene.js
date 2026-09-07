@@ -21,13 +21,14 @@
  * Como a pose nao muda, o que o olho ve e o fundo mudando — que e exatamente o
  * que o roteiro descreve.
  *
- * A Fase 2 ainda nao existe. A cena vai ate a porta se fechar atras dela, e ai
- * mostra o cartao de fim. Quando a floresta existir, e so trocar o ultimo passo.
+ * A porta se fecha atras dela e a cena entrega a Alice na chegada da floresta,
+ * do lado de fora, no tamanho em que ela terminou a casa.
  */
 
 import { SCENES } from '../core/constants.js';
+import { PRIMEIRA_SALA_FASE2 } from '../data/fase2.js';
 import { dimensoes } from '../core/tela.js';
-import { CORES, HEX, FONTE } from '../ui/theme.js';
+import { CORES } from '../ui/theme.js';
 import { AudioManager } from '../core/AudioManager.js';
 import { SaveManager } from '../core/SaveManager.js';
 import { Cinematica } from '../core/Cinematica.js';
@@ -168,42 +169,24 @@ export class Highsfield02Scene extends Phaser.Scene {
     c.aoFim(21400, () => {
       SaveManager.salvarCheckpoint(1, 'fase1-concluida');
       SaveManager.registrarItem('viu-highsfield-02');
-      this.mostrarFim();
+      this.entrarNaFloresta();
     });
 
     c.iniciar();
   }
 
   /**
-   * O cartao de fim. Fica aqui ate a Fase 2 existir — quando existir, este
-   * metodo vira `this.scene.start(SCENES.PHASE2)` e nada mais muda.
+   * A porta se fecha atras dela e a floresta comeca.
+   *
+   * Este metodo era um cartao de "FIM DA FASE 1" esperando a floresta existir.
+   * Ela existe: a cinematica agora entrega a Alice na chegada, do lado de fora
+   * da porta, no tamanho em que ela terminou a casa.
    */
-  mostrarFim() {
-    const { meioX, meioY, largura, altura } = this.tela;
-
-    this.add.rectangle(0, 0, largura * 2, altura * 2, CORES.preto)
-      .setOrigin(0, 0).setDepth(2000);
-
-    const fim = this.add
-      .text(meioX, meioY - 12, 'FIM DA FASE 1', {
-        fontFamily: FONTE, fontSize: '26px', color: HEX.osso,
-      })
-      .setOrigin(0.5).setDepth(2001).setAlpha(0);
-
-    const nota = this.add
-      .text(meioX, meioY + 26, 'a floresta ainda não existe', {
-        fontFamily: FONTE, fontSize: '14px', color: HEX.ossoApagado,
-      })
-      .setOrigin(0.5).setDepth(2001).setAlpha(0);
-
-    this.tweens.add({ targets: [fim, nota], alpha: 0.9, duration: 1600 });
-
-    // O tic-tac continua sozinho no escuro por um instante.
-    this.time.delayedCall(4200, () => {
-      AudioManager.silenciar({ fadeMs: 900 });
-      this.cameras.main.fadeOut(900, 0, 0, 0);
-      this.cameras.main.once('camerafadeoutcomplete',
-        () => this.scene.start(SCENES.MENU));
+  entrarNaFloresta() {
+    AudioManager.silenciar({ fadeMs: 900 });
+    this.cameras.main.fadeOut(900, 0, 0, 0);
+    this.cameras.main.once('camerafadeoutcomplete', () => {
+      this.scene.start(SCENES.SALA, { fase: 2, ...PRIMEIRA_SALA_FASE2 });
     });
   }
 }

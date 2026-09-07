@@ -18,6 +18,7 @@ import { dimensoes } from '../core/tela.js';
 import { GameplayScene } from './GameplayScene.js';
 import { SalaDesenhada } from '../objects/SalaDesenhada.js';
 import { SALAS, ENTRADAS, MEDIDA_DA_PECA } from '../data/salas.js';
+import { SALAS_FASE2 } from '../data/fase2.js';
 import { AudioManager } from '../core/AudioManager.js';
 import { SaveManager } from '../core/SaveManager.js';
 import { HEX, FONTE } from '../ui/theme.js';
@@ -38,12 +39,22 @@ import { MecanismoDeRelogio } from '../objects/MecanismoDeRelogio.js';
  */
 const FOLGA_DE_SAIDA = 24;
 
+/**
+ * A tabela de cada fase.
+ *
+ * A cena e a mesma para a casa e para a floresta: o que muda e de onde ela le.
+ * Manter as duas tabelas separadas evita que um nome repetido numa fase
+ * atropele a outra — e ja evitou: `espelho` e uma pista da fase 1 e uma tela
+ * inteira da fase 2.
+ */
+const TABELAS = { 1: SALAS, 2: SALAS_FASE2 };
+
 export class SalaScene extends GameplayScene {
   constructor() {
     super(SCENES.SALA, {});
   }
 
-  /** @param {{sala: string, entrada: string, tamanho?: string}} dados */
+  /** @param {{sala: string, entrada: string, tamanho?: string, fase?: number}} dados */
   init(dados) {
     // A cena e reaproveitada a cada troca de sala: sem zerar isto, a segunda
     // porta nunca abriria.
@@ -51,13 +62,14 @@ export class SalaScene extends GameplayScene {
     // Pela mesma razao: uma sala sem som intermitente herdaria o timer morto da
     // sala anterior, e o `remove()` do relogio de bolso miraria no alvo errado.
     this.intermitente = null;
-    this.nomeDaSala = dados?.sala || 'corredor';
+    this.faseNumero = dados?.fase ?? 1;
+    this.tabela = TABELAS[this.faseNumero] || SALAS;
+    this.nomeDaSala = dados?.sala || (this.faseNumero === 2 ? 'chegada' : 'corredor');
     this.entrada = dados?.entrada || 'leste';
     this.tamanhoDaAlice = dados?.tamanho || 'normal';
-    this.dados = SALAS[this.nomeDaSala];
+    this.dados = this.tabela[this.nomeDaSala];
 
     this.terreno = this.dados.terreno || 'madeira';
-    this.faseNumero = 1;
   }
 
   create() {
@@ -88,8 +100,9 @@ export class SalaScene extends GameplayScene {
     this.montarSaidas();
 
     // O mapa se acende a partir daqui: um comodo so existe nele depois de
-    // pisado.
-    this.descobrirSala(this.nomeDaSala);
+    // pisado. So a casa entra nele — a floresta nao tem planta desenhada, e
+    // guardar o nome dela na lista so faria a aba do mapa filtrar lixo.
+    if (this.faseNumero === 1) this.descobrirSala(this.nomeDaSala);
 
     AudioManager.pararMusica(400);
     this.iniciarAmbienteDaSala();
@@ -583,8 +596,9 @@ export class SalaScene extends GameplayScene {
     AudioManager.tocar('efeito.rangido');
     this.cameras.main.fadeOut(420, 0, 0, 0);
     this.cameras.main.once('camerafadeoutcomplete', () => {
-      const carga = { sala, entrada, tamanho: this.alice.tamanho.id };
-      if (sala === 'quarto') this.scene.start(SCENES.PHASE1, carga);
+      const carga = { sala, entrada, tamanho: this.alice.tamanho.id, fase: this.faseNumero };
+      // O quarto e a unica sala que tem cena propria — e so na fase 1.
+      if (this.faseNumero === 1 && sala === 'quarto') this.scene.start(SCENES.PHASE1, carga);
       else this.scene.start(SCENES.SALA, carga);
     });
   }
