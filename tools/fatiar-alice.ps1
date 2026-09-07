@@ -244,7 +244,25 @@ function LimparAnotacoes($img, $mascara, $x1, $y1, $x2, $y2) {
 # quadro para quadro — o cabelo voa, a saia gira, mas o tronco fica no lugar.
 # Se nao houver azul suficiente (quadro deitado, por exemplo), cai para o
 # centro de massa do desenho inteiro.
-function AncoraX($img, $mascara, $x1, $y1, $x2, $y2, $modo) {
+# VETO: pedaco do vizinho que caiu dentro desta celula.
+#
+# Um recorte retangular nao separa quadros que se entrelacam. No ultimo ataque
+# da Alice Demon a garra levantada de um passa por cima do corpo do outro — mas
+# em ALTURA diferente, entao dizer o retangulo do invasor resolve, sem nenhuma
+# heuristica adivinhando de quem e cada pixel. Diferente de `apagar`, que muda a
+# mascara da folha inteira, este veto vale so para o quadro que o declarou: o
+# mesmo pixel continua inteiro no quadro a que pertence.
+function DentroDeAlgum($rects, $x, $y) {
+  if (-not $rects) { return $false }
+  foreach ($r in $rects) {
+    if ($x -ge [int]$r[0] -and $y -ge [int]$r[1] -and $x -lt [int]$r[2] -and $y -lt [int]$r[3]) {
+      return $true
+    }
+  }
+  return $false
+}
+
+function AncoraX($img, $mascara, $x1, $y1, $x2, $y2, $modo, $vetar) {
   $w = $img.largura; $passo = $img.passo; $d = $img.dados
   if ($modo -eq 'caixa') { return [pscustomobject]@{ x = (($x1 + $x2) / 2); origem = 'caixa'; pixels = 0 } }
   $somaAzul = 0.0; $nAzul = 0
@@ -253,10 +271,19 @@ function AncoraX($img, $mascara, $x1, $y1, $x2, $y2, $modo) {
     $linha = $y * $passo; $baseM = $y * $w
     for ($x = $x1; $x -lt $x2; $x++) {
       if (-not $mascara[$baseM + $x]) { continue }
+      if (DentroDeAlgum $vetar $x $y) { continue }
       $nTudo++; $somaTudo += $x
       $i = $linha + $x * 4
       $r = [int]$d[$i + 2]; $g = [int]$d[$i + 1]; $b = [int]$d[$i]
-      if ($b -gt 90 -and $b -gt ($r + 40) -and $b -gt ($g + 15)) { $nAzul++; $somaAzul += $x }
+      if ($modo -eq 'vestido-escuro') {
+        # O vestido da Alice Demon e verde-petroleo, nao azul: no teste acima
+        # ela nao tem um pixel sequer de vestido, e a ancora caia no centro de
+        # massa, que balanca junto com o cabelo. O que separa o tecido dela da
+        # pele e do cabelo e o azul estar ACIMA do vermelho, e nao abaixo do
+        # verde.
+        if ($b -gt 40 -and $b -gt ($r + 15) -and ($b + 5) -ge $g) { $nAzul++; $somaAzul += $x }
+      }
+      elseif ($b -gt 90 -and $b -gt ($r + 40) -and $b -gt ($g + 15)) { $nAzul++; $somaAzul += $x }
     }
   }
   if ($modo -ne 'massa' -and $nAzul -ge 120) { return [pscustomobject]@{ x = ($somaAzul / $nAzul); origem = 'vestido'; pixels = $nAzul } }
@@ -265,12 +292,12 @@ function AncoraX($img, $mascara, $x1, $y1, $x2, $y2, $modo) {
 }
 
 # Caixa util do desenho dentro do bloco.
-function CaixaUtil($mascara, $w, $x1, $y1, $x2, $y2) {
+function CaixaUtil($mascara, $w, $x1, $y1, $x2, $y2, $vetar) {
   $minx = [int]::MaxValue; $maxx = -1; $miny = [int]::MaxValue; $maxy = -1
   for ($y = $y1; $y -lt $y2; $y++) {
     $baseM = $y * $w
     for ($x = $x1; $x -lt $x2; $x++) {
-      if ($mascara[$baseM + $x]) {
+      if ($mascara[$baseM + $x] -and -not (DentroDeAlgum $vetar $x $y)) {
         if ($x -lt $minx) { $minx = $x }
         if ($x -gt $maxx) { $maxx = $x }
         if ($y -lt $miny) { $miny = $y }
@@ -337,24 +364,44 @@ foreach ($folha in $cfg.folhas) {
       $apagados = LimparAnotacoes $img $mascara ([int]$linha.x1) ([int]$linha.y1) ([int]$linha.x2) ([int]$linha.y2)
       if ($apagados -gt 0) { Write-Host ("   {0}: {1} px de anotacao solta apagados" -f $linha.chave, $apagados) }
     }
-    $blocos = BlocosDeColuna $mascara $img.largura ([int]$linha.x1) ([int]$linha.y1) ([int]$linha.x2) ([int]$linha.y2) ([int]$linha.quadros)
+    # QUADROS DITOS, UM A UM
+    #
+    # A coluna vazia so separa quadro que nao encosta no vizinho, e a divisao em
+    # partes iguais so serve quando o passo e constante. Na folha da Alice Demon
+    # nao vale nem uma coisa nem outra: o passo varia de fileira para fileira, e
+    # no ataque a garra levantada de um quadro passa por cima do corpo do outro.
+    # Quando `quadrosDitos` existe, cada quadro traz a sua celula e, se precisar,
+    # os retangulos do vizinho que ele deve ignorar.
+    $celulas = New-Object 'System.Collections.ArrayList'
     $aviso = ''
-    if ($blocos.Count -ne [int]$linha.quadros) {
-      $aviso = ("esperava {0} quadros, achou {1}" -f $linha.quadros, $blocos.Count)
-      Write-Host ("   AVISO  " + $linha.chave + ": " + $aviso)
+    if ($linha.quadrosDitos) {
+      foreach ($c in $linha.quadrosDitos) {
+        [void]$celulas.Add([pscustomobject]@{ x1 = [int]$c.x1; x2 = [int]$c.x2; vetar = $c.apagar })
+      }
     }
+    else {
+      $blocos = BlocosDeColuna $mascara $img.largura ([int]$linha.x1) ([int]$linha.y1) ([int]$linha.x2) ([int]$linha.y2) ([int]$linha.quadros)
+      if ($blocos.Count -ne [int]$linha.quadros) {
+        $aviso = ("esperava {0} quadros, achou {1}" -f $linha.quadros, $blocos.Count)
+        Write-Host ("   AVISO  " + $linha.chave + ": " + $aviso)
+      }
+      foreach ($b in $blocos) {
+        [void]$celulas.Add([pscustomobject]@{ x1 = [int]$b[0]; x2 = [int]$b[1]; vetar = $null })
+      }
+    }
+
     $n = 0
-    foreach ($b in $blocos) {
-      $bx1 = [int]$b[0]; $bx2 = [int]$b[1]
-      $caixa = CaixaUtil $mascara $img.largura $bx1 ([int]$linha.y1) $bx2 ([int]$linha.y2)
+    foreach ($c in $celulas) {
+      $bx1 = $c.x1; $bx2 = $c.x2
+      $caixa = CaixaUtil $mascara $img.largura $bx1 ([int]$linha.y1) $bx2 ([int]$linha.y2) $c.vetar
       if ($null -eq $caixa) { continue }
-      $anc = AncoraX $img $mascara $bx1 ([int]$linha.y1) $bx2 ([int]$linha.y2) $linha.ancora
+      $anc = AncoraX $img $mascara $bx1 ([int]$linha.y1) $bx2 ([int]$linha.y2) $linha.ancora $c.vetar
       [void]$quadros.Add([pscustomobject]@{
         folha = $caminho; chave = $linha.chave; indice = $n
         caixa = $caixa; ancora = $anc.x; ancoraOrigem = $anc.origem
         largura = ($caixa.x2 - $caixa.x1); altura = ($caixa.y2 - $caixa.y1)
         escala = $(if ($linha.escala) { [double]$linha.escala } else { 1.0 })
-        aviso = $aviso
+        vetar = $c.vetar; aviso = $aviso
       })
       $n++
     }
@@ -432,7 +479,7 @@ foreach ($q in $quadros) {
       $sx = [int][Math]::Floor(($x - $desX) / $q.escala) + $q.caixa.x1
       $sy = [int][Math]::Floor(($y - $desY) / $q.escala) + $q.caixa.y1
       $dentro = ($x -ge $desX -and $x -lt ($desX + $lw) -and $y -ge $desY -and $y -lt ($desY + $lh))
-      if (-not $dentro -or -not $mascara[$sy * $lw0 + $sx]) {
+      if (-not $dentro -or -not $mascara[$sy * $lw0 + $sx] -or (DentroDeAlgum $q.vetar $sx $sy)) {
         $bytes[$i] = 0; $bytes[$i + 1] = 0; $bytes[$i + 2] = 0; $bytes[$i + 3] = 0
       }
     }

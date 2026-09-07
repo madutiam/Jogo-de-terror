@@ -1,0 +1,353 @@
+﻿[
+    {
+        "arquivo":  "parado-0.png",
+        "chave":  "parado",
+        "indice":  0,
+        "larguraUtil":  110,
+        "alturaUtil":  208,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-0.png",
+        "chave":  "anda",
+        "indice":  0,
+        "larguraUtil":  92,
+        "alturaUtil":  191,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-1.png",
+        "chave":  "anda",
+        "indice":  1,
+        "larguraUtil":  82,
+        "alturaUtil":  188,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-2.png",
+        "chave":  "anda",
+        "indice":  2,
+        "larguraUtil":  97,
+        "alturaUtil":  189,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-3.png",
+        "chave":  "anda",
+        "indice":  3,
+        "larguraUtil":  90,
+        "alturaUtil":  190,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-4.png",
+        "chave":  "anda",
+        "indice":  4,
+        "larguraUtil":  106,
+        "alturaUtil":  190,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-5.png",
+        "chave":  "anda",
+        "indice":  5,
+        "larguraUtil":  90,
+        "alturaUtil":  192,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-6.png",
+        "chave":  "anda",
+        "indice":  6,
+        "larguraUtil":  91,
+        "alturaUtil":  192,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "anda-7.png",
+        "chave":  "anda",
+        "indice":  7,
+        "larguraUtil":  104,
+        "alturaUtil":  190,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-0.png",
+        "chave":  "corre",
+        "indice":  0,
+        "larguraUtil":  120,
+        "alturaUtil":  186,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-1.png",
+        "chave":  "corre",
+        "indice":  1,
+        "larguraUtil":  117,
+        "alturaUtil":  187,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-2.png",
+        "chave":  "corre",
+        "indice":  2,
+        "larguraUtil":  99,
+        "alturaUtil":  188,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-3.png",
+        "chave":  "corre",
+        "indice":  3,
+        "larguraUtil":  120,
+        "alturaUtil":  188,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-4.png",
+        "chave":  "corre",
+        "indice":  4,
+        "larguraUtil":  114,
+        "alturaUtil":  185,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-5.png",
+        "chave":  "corre",
+        "indice":  5,
+        "larguraUtil":  94,
+        "alturaUtil":  188,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "corre-6.png",
+        "chave":  "corre",
+        "indice":  6,
+        "larguraUtil":  124,
+        "alturaUtil":  187,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "ataca-0.png",
+        "chave":  "ataca",
+        "indice":  0,
+        "larguraUtil":  135,
+        "alturaUtil":  191,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "ataca-1.png",
+        "chave":  "ataca",
+        "indice":  1,
+        "larguraUtil":  141,
+        "alturaUtil":  181,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "ataca-2.png",
+        "chave":  "ataca",
+        "indice":  2,
+        "larguraUtil":  147,
+        "alturaUtil":  179,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "ataca-3.png",
+        "chave":  "ataca",
+        "indice":  3,
+        "larguraUtil":  122,
+        "alturaUtil":  180,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "ataca-4.png",
+        "chave":  "ataca",
+        "indice":  4,
+        "larguraUtil":  187,
+        "alturaUtil":  187,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "ataca-5.png",
+        "chave":  "ataca",
+        "indice":  5,
+        "larguraUtil":  195,
+        "alturaUtil":  185,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "dano-0.png",
+        "chave":  "dano",
+        "indice":  0,
+        "larguraUtil":  92,
+        "alturaUtil":  182,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "dano-1.png",
+        "chave":  "dano",
+        "indice":  1,
+        "larguraUtil":  87,
+        "alturaUtil":  180,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "dano-2.png",
+        "chave":  "dano",
+        "indice":  2,
+        "larguraUtil":  91,
+        "alturaUtil":  174,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "morre-0.png",
+        "chave":  "morre",
+        "indice":  0,
+        "larguraUtil":  108,
+        "alturaUtil":  188,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "morre-1.png",
+        "chave":  "morre",
+        "indice":  1,
+        "larguraUtil":  114,
+        "alturaUtil":  148,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "morre-2.png",
+        "chave":  "morre",
+        "indice":  2,
+        "larguraUtil":  125,
+        "alturaUtil":  91,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "morre-3.png",
+        "chave":  "morre",
+        "indice":  3,
+        "larguraUtil":  179,
+        "alturaUtil":  68,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "vira-0.png",
+        "chave":  "vira",
+        "indice":  0,
+        "larguraUtil":  96,
+        "alturaUtil":  199,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "vira-1.png",
+        "chave":  "vira",
+        "indice":  1,
+        "larguraUtil":  93,
+        "alturaUtil":  200,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "vira-2.png",
+        "chave":  "vira",
+        "indice":  2,
+        "larguraUtil":  99,
+        "alturaUtil":  202,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "vira-3.png",
+        "chave":  "vira",
+        "indice":  3,
+        "larguraUtil":  96,
+        "alturaUtil":  203,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "vira-4.png",
+        "chave":  "vira",
+        "indice":  4,
+        "larguraUtil":  93,
+        "alturaUtil":  201,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "vira-5.png",
+        "chave":  "vira",
+        "indice":  5,
+        "larguraUtil":  94,
+        "alturaUtil":  202,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "vira-6.png",
+        "chave":  "vira",
+        "indice":  6,
+        "larguraUtil":  97,
+        "alturaUtil":  201,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "vira-7.png",
+        "chave":  "vira",
+        "indice":  7,
+        "larguraUtil":  101,
+        "alturaUtil":  202,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "vira-8.png",
+        "chave":  "vira",
+        "indice":  8,
+        "larguraUtil":  94,
+        "alturaUtil":  200,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "vira-9.png",
+        "chave":  "vira",
+        "indice":  9,
+        "larguraUtil":  95,
+        "alturaUtil":  201,
+        "ancoraOrigem":  "vestido",
+        "aviso":  ""
+    }
+]
