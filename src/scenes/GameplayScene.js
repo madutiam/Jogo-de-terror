@@ -934,22 +934,34 @@ export class GameplayScene extends Phaser.Scene {
     const mostrando = this.mapaMostrando;
 
     // ------------------------------------------------------------ a folha
+    //
+    // Cada comodo agora e uma FOLHA INTEIRA — pergaminho, moldura, rosa dos
+    // ventos e planta no mesmo desenho. Antes eram duas imagens empilhadas, um
+    // papel comum mais a planta por cima; a arte nova ja vem composta, e
+    // sobrepor as duas so daria moldura em cima de moldura.
+    //
+    // O `mapa-base` continua carregado: ele e o papel em branco que aparece
+    // quando um comodo foi pisado mas ainda nao tem folha desenhada.
     const alturaFaixa = 44;
-    const alturaFolha = area.altura - alturaFaixa;
+    // A linha "daqui:" ganhou faixa propria. Encostada no pe da folha ela caia
+    // em cima da flor-de-lis do rodape do pergaminho, e ficava ilegivel — a
+    // folha nova ocupa a altura toda do painel, entao nao ha sobra para tomar
+    // emprestada.
+    const alturaLinha = 24;
+    const alturaFolha = area.altura - alturaFaixa - alturaLinha;
 
-    const base = this.add.image(0, 0, 'mapa-base').setOrigin(0.5);
-    const escala = Math.min(area.largura / base.width, alturaFolha / base.height);
-    base.setScale(escala);
-    base.setPosition(area.x + area.largura / 2, area.y + alturaFolha / 2);
-    painel.por(base);
+    const chaveFolha = 'mapa/' + mostrando;
+    const temFolha = this.textures.exists(chaveFolha);
 
-    const chavePeca = 'mapa/' + mostrando;
-    if (this.textures.exists(chavePeca)) {
-      painel.por(this.add
-        .image(base.x, base.y, chavePeca)
-        .setOrigin(0.5)
-        .setScale(escala));
+    const folha = this.add
+      .image(0, 0, temFolha ? chaveFolha : 'mapa-base')
+      .setOrigin(0.5);
+    const escala = Math.min(area.largura / folha.width, alturaFolha / folha.height);
+    folha.setScale(escala);
+    folha.setPosition(area.x + area.largura / 2, area.y + alturaFolha / 2);
+    painel.por(folha);
 
+    if (temFolha) {
       // As passagens que ela ja descobriu, por cima da planta. Vem depois do
       // comodo e antes da espada: o buraco tem que cobrir a parede, e a espada
       // tem que ser vista mesmo caindo dentro dele.
@@ -958,7 +970,7 @@ export class GameplayScene extends Phaser.Scene {
         if (!SaveManager.temMarco(camada.marco)) continue;
         if (!this.textures.exists(camada.chave)) continue;
         painel.por(this.add
-          .image(base.x, base.y, camada.chave)
+          .image(folha.x, folha.y, camada.chave)
           .setOrigin(0.5)
           .setScale(escala));
       }
@@ -967,7 +979,7 @@ export class GameplayScene extends Phaser.Scene {
         painel.por(this.add
           // Abaixo do centro, e nao nele: no corredor o centro e exatamente onde
           // o lustre esta desenhado, e a espada sumia dentro dele.
-          .text(base.x, base.y + base.displayHeight * 0.16, '♠', {
+          .text(folha.x, folha.y + folha.displayHeight * 0.16, '♠', {
             fontFamily: FONTE, fontSize: Math.max(15, Math.round(26 * escala)) + 'px',
             color: '#7a1f22',
           })
@@ -979,15 +991,15 @@ export class GameplayScene extends Phaser.Scene {
           .setOrigin(0.5));
       }
     } else {
-      // Comodo pisado mas sem planta desenhada. Diz o que e, sem fingir mapa.
+      // Comodo pisado mas sem folha desenhada. Diz o que e, sem fingir mapa.
       painel.por(this.add
-        .text(base.x, base.y, MAPA_FASE1[mostrando].nome, {
+        .text(folha.x, folha.y, MAPA_FASE1[mostrando].nome, {
           fontFamily: FONTE, fontSize: Math.max(16, Math.round(26 * escala)) + 'px',
           color: '#5a4526',
         })
         .setOrigin(0.5));
       painel.por(this.add
-        .text(base.x, base.y + 40, 'a planta deste cômodo ainda não foi desenhada', {
+        .text(folha.x, folha.y + 40, 'a planta deste cômodo ainda não foi desenhada', {
           fontFamily: FONTE, fontSize: '14px', color: '#7a6a4a', fontStyle: 'italic',
         })
         .setOrigin(0.5));
@@ -1005,7 +1017,7 @@ export class GameplayScene extends Phaser.Scene {
         .map((v) => MAPA_FASE1[v.id].nome + (v.nota ? ' (' + v.nota + ')' : ''))
         .join('  ·  ');
       painel.por(this.add
-        .text(base.x, base.y + base.displayHeight / 2 - 6, 'daqui:  ' + texto, {
+        .text(folha.x, area.y + alturaFolha + 2, 'daqui:  ' + texto, {
           fontFamily: FONTE, fontSize: '13px', color: HEX.ossoApagado,
         })
         .setOrigin(0.5, 0));
@@ -1013,7 +1025,7 @@ export class GameplayScene extends Phaser.Scene {
 
     // ------------------------------------------------------------- a faixa
     let x = area.x + 6;
-    const y = area.y + alturaFolha + 18;
+    const y = area.y + alturaFolha + alturaLinha + 12;
 
     for (const id of visitadas) {
       const nome = MAPA_FASE1[id].nome;

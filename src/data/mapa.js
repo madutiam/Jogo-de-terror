@@ -47,5 +47,9 @@ export const LIGACOES_FASE1 = [
  * manter sincronizada com a arte.
  */
 export const CAMADAS_FASE1 = [
-  { marco: 'fresta', sala: 'corredor', chave: 'mapa/fresta' },
+  // A fresta saiu daqui: ela passou a vir desenhada dentro da propria folha do
+  // corredor. Nao custa a surpresa — o buraco entulhado ja esta a vista na
+  // sala, e a folha do corredor so existe depois de ela ter estado la. O que
+  // continua escondido e o DESTINO: a sala lateral so entra em LIGACOES_FASE1
+  // depois de pisada.
 ];
