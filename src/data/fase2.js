@@ -35,6 +35,19 @@ export const SALAS_FASE2 = {
     ambiente: { clipe: 'ambiente.galhos', volume: 0.34 },
 
     luzes: [],
+
+    /**
+     * O chao util comeca depois da porta e das raizes. Acima disto a arte e
+     * tronco: andar la em cima nao e explorar, e flutuar.
+     */
+    limiteFundo: 520,
+    obstaculos: [
+      // A porta com a caveira e o tronco em que ela esta encaixada.
+      { x1: 0.00, x2: 0.36, y1: 500, y2: 622 },
+      // A arvore da ponta leste, com as raizes descendo no chao.
+      { x1: 0.75, x2: 1.00, y1: 500, y2: 610 },
+    ],
+
     saidas: [
       { lado: 'leste', para: 'corrida', entrada: 'oeste' },
     ],
@@ -60,6 +73,15 @@ export const SALAS_FASE2 = {
     },
 
     luzes: [],
+
+    /**
+     * A linha de troncos caidos, o toco oco e as pedras ocupam a faixa inteira
+     * do fundo, de ponta a ponta. Nao ha o que contornar ali — entao em vez de
+     * uma fileira de obstaculos, o chao util simplesmente comeca embaixo dela.
+     * E onde o caminho de terra da arte comeca de verdade.
+     */
+    limiteFundo: 660,
+
     saidas: [
       { lado: 'oeste', para: 'chegada', entrada: 'leste' },
       { lado: 'leste', para: 'espelho', entrada: 'oeste' },
@@ -82,6 +104,18 @@ export const SALAS_FASE2 = {
     ambiente: { clipe: 'ambiente.sussurros', volume: 0.26 },
 
     luzes: [{ x: 0.52, y: 0.30, raio: 300, forca: 0.30 }],
+
+    /**
+     * A clareira e uma lente: o meio e chao limpo, e as duas beiras sao raiz,
+     * pedra e as colunas quebradas. O limite corta a faixa de tras; as duas
+     * massas laterais descem mais que ela e precisam de obstaculo proprio.
+     */
+    limiteFundo: 575,
+    obstaculos: [
+      { x1: 0.00, x2: 0.23, y1: 555, y2: 700 },
+      { x1: 0.77, x2: 1.00, y1: 555, y2: 700 },
+    ],
+
     saidas: [
       { lado: 'oeste', para: 'corrida', entrada: 'leste' },
     ],

@@ -85,7 +85,15 @@ export class SalaScene extends GameplayScene {
     // A sala manda no tamanho do mundo.
     this.larguraMundo = this.sala.largura;
     this.profundidadeMundo = this.sala.profundidade;
-    this.limiteFundo = PROFUNDIDADE.FUNDO + 34;
+
+    // ATE ONDE ELA PODE IR PARA O FUNDO
+    //
+    // Nas salas da casa a parede do fundo e uma linha reta, e 34 px depois dela
+    // bastam para os pes nao entrarem no rodape. Na floresta nao ha parede: o
+    // fundo e uma massa de troncos, raizes e pedras que desce ate onde a arte
+    // quiser, e cada tela desce ate uma altura diferente. Por isso a sala pode
+    // dizer o seu.
+    this.limiteFundo = this.dados.limiteFundo ?? (PROFUNDIDADE.FUNDO + 34);
 
     const ponto = this.pontoDeEntrada();
     this.montarJogabilidade({ x: ponto.x, y: ponto.y });
@@ -191,6 +199,7 @@ export class SalaScene extends GameplayScene {
     if (d.buraco) this.montarBuraco(d.buraco);
     if (d.relogioDeBolso) this.montarRelogioDeBolso(d.relogioDeBolso);
     if (d.saidasPorPonto) for (const p of d.saidasPorPonto) this.montarSaidaPorPonto(p);
+    if (d.obstaculos) for (const o of d.obstaculos) this.montarObstaculoDoCenario(o);
   }
 
   /**
@@ -586,6 +595,29 @@ export class SalaScene extends GameplayScene {
         x2: s.lado === 'oeste' ? oeste : this.sala.largura,
       });
     }
+  }
+
+  /**
+   * UM PEDACO DO CENARIO QUE NAO SE ATRAVESSA
+   *
+   * O tronco caido, a coluna quebrada, a massa de raizes da beira. Sao ditos em
+   * FRACAO da largura e em y do mundo, do mesmo jeito que os rastros — a arte
+   * de cada tela tem um tamanho, e fracao sobrevive a isso.
+   *
+   * Sem `alturaTopo`: `atualizarPiso` ignora obstaculo que nao tem topo, entao
+   * estes NAO sao escalaveis. E de proposito. Um tronco caido no meio da
+   * floresta e obstaculo, nao plataforma — subir nele foi exatamente o que
+   * apareceu errado na tela.
+   */
+  montarObstaculoDoCenario(o) {
+    const x1 = o.x1 * this.sala.largura;
+    const x2 = o.x2 * this.sala.largura;
+    this.criarObstaculo({
+      x: (x1 + x2) / 2,
+      y: (o.y1 + o.y2) / 2,
+      largura: x2 - x1,
+      profundidade: o.y2 - o.y1,
+    });
   }
 
   irPara(sala, entrada) {
