@@ -25,5 +25,95 @@
         "alturaUtil":  314,
         "ancoraOrigem":  "massa",
         "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-ergue-0.png",
+        "chave":  "coelho-ergue",
+        "indice":  0,
+        "larguraUtil":  170,
+        "alturaUtil":  320,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-ergue-1.png",
+        "chave":  "coelho-ergue",
+        "indice":  1,
+        "larguraUtil":  180,
+        "alturaUtil":  320,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-ergue-2.png",
+        "chave":  "coelho-ergue",
+        "indice":  2,
+        "larguraUtil":  178,
+        "alturaUtil":  323,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-ergue-3.png",
+        "chave":  "coelho-ergue",
+        "indice":  3,
+        "larguraUtil":  186,
+        "alturaUtil":  299,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-ergue-4.png",
+        "chave":  "coelho-ergue",
+        "indice":  4,
+        "larguraUtil":  174,
+        "alturaUtil":  319,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-vira-0.png",
+        "chave":  "coelho-vira",
+        "indice":  0,
+        "larguraUtil":  183,
+        "alturaUtil":  320,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-vira-1.png",
+        "chave":  "coelho-vira",
+        "indice":  1,
+        "larguraUtil":  185,
+        "alturaUtil":  320,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-vira-2.png",
+        "chave":  "coelho-vira",
+        "indice":  2,
+        "larguraUtil":  185,
+        "alturaUtil":  318,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-vira-3.png",
+        "chave":  "coelho-vira",
+        "indice":  3,
+        "larguraUtil":  194,
+        "alturaUtil":  317,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
+    },
+    {
+        "arquivo":  "coelho-vira-4.png",
+        "chave":  "coelho-vira",
+        "indice":  4,
+        "larguraUtil":  189,
+        "alturaUtil":  320,
+        "ancoraOrigem":  "massa",
+        "aviso":  ""
     }
 ]

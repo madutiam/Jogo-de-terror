@@ -56,6 +56,84 @@
         }
       ],
       "recuperarContorno": 3
+    },
+    {
+      "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/coelho relogio.png",
+      "fundo": "transparente",
+      "tolerancia": 40,
+      "linhas": [
+        {
+          "chave": "coelho-ergue",
+          "x1": 40,
+          "y1": 30,
+          "x2": 2140,
+          "y2": 690,
+          "quadros": 5,
+          "ancora": "massa",
+          "escala": 0.5079,
+          "quadrosDitos": [
+            {
+              "x1": 40,
+              "x2": 445
+            },
+            {
+              "x1": 445,
+              "x2": 876
+            },
+            {
+              "x1": 876,
+              "x2": 1297
+            },
+            {
+              "x1": 1297,
+              "x2": 1731
+            },
+            {
+              "x1": 1731,
+              "x2": 2140
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arquivo": "C:/Users/Bedetti/Documents/ms pickles/Alice terror/coelho relogio1.png",
+      "fundo": "transparente",
+      "tolerancia": 40,
+      "linhas": [
+        {
+          "chave": "coelho-vira",
+          "x1": 30,
+          "y1": 36,
+          "x2": 2160,
+          "y2": 670,
+          "quadros": 5,
+          "ancora": "massa",
+          "escala": 0.5246,
+          "quadrosDitos": [
+            {
+              "x1": 30,
+              "x2": 434
+            },
+            {
+              "x1": 434,
+              "x2": 873
+            },
+            {
+              "x1": 873,
+              "x2": 1305
+            },
+            {
+              "x1": 1305,
+              "x2": 1747
+            },
+            {
+              "x1": 1747,
+              "x2": 2160
+            }
+          ]
+        }
+      ]
     }
   ]
 }

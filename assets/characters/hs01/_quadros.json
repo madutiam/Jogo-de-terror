@@ -1,0 +1,13 @@
+{
+  "tela": [
+    273,
+    279
+  ],
+  "eixoDoCoelho": 205,
+  "alturaDoCoelho": 269,
+  "linhas": {
+    "encontro": 6,
+    "assustada": 6,
+    "recuando": 6
+  }
+}
