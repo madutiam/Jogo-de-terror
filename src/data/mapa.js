@@ -5,20 +5,21 @@
  * entra. Quem nunca pisou na sala lateral nao ve que ela existe — e nem que ha
  * uma passagem saindo do corredor para baixo.
  *
- * As posicoes sao de GRADE, nao de pixel. Elas nao precisam bater com o mapa de
- * verdade (o corredor tem 1345 e a despensa 914, e no mapa os dois ocupam uma
- * casa cada): o que importa e a topologia — quem liga em quem, e de que lado.
- * Uma planta em escala seria menos legivel e nao diria nada a mais.
+ * As posicoes sao FRACAO da base do mapa (`mapa-base.png`), e nao pixel: o
+ * papel dela e escalado para caber na aba, e uma coordenada em pixel sairia do
+ * lugar em toda tela de tamanho diferente.
  *
- * `col` cresce para o LESTE e `lin` para o SUL, na mesma leitura do jogo: a
- * despensa fica a oeste de tudo, o sotao por cima do quarto.
+ * Elas tambem fogem dos CANTOS: o papel tem rosas, o relogio, a chave e as
+ * cartas no alto e no rodape a esquerda, e um comodo caindo ali sumiria dentro
+ * do ornamento. O oeste continua a esquerda, como a rosa dos ventos dela ensina,
+ * e o sotao continua por cima do quarto.
  */
 export const MAPA_FASE1 = {
-  despensa: { nome: 'a despensa', col: 0, lin: 1 },
-  corredor: { nome: 'o corredor', col: 1, lin: 1 },
-  quarto:   { nome: 'o quarto',   col: 2, lin: 1 },
-  lateral:  { nome: 'a sala lateral', col: 1, lin: 2 },
-  sotao:    { nome: 'o sótão',    col: 2, lin: 0 },
+  despensa: { nome: 'a despensa',     fx: 0.28, fy: 0.50 },
+  corredor: { nome: 'o corredor',     fx: 0.48, fy: 0.50 },
+  quarto:   { nome: 'o quarto',       fx: 0.70, fy: 0.50 },
+  sotao:    { nome: 'o sótão',        fx: 0.70, fy: 0.25 },
+  lateral:  { nome: 'a sala lateral', fx: 0.48, fy: 0.75 },
 };
 
 /**

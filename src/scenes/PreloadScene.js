@@ -49,6 +49,9 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('fase2-chegada', 'assets/scenarios/fase2-chegada.png');
     this.load.image('fase2-corrida', 'assets/scenarios/fase2-corrida.png');
     this.load.image('fase2-espelho', 'assets/scenarios/fase2-espelho.png');
+
+    // O papel do mapa. As pecas dos comodos entram por cima dele, uma a uma.
+    this.load.image('mapa-base', 'assets/ui/mapa-base.png');
     this.load.image('fase3-tabuleiro', 'assets/scenarios/fase3-tabuleiro.png');
 
     // As salas da Fase 1, cada uma numa imagem inteira.

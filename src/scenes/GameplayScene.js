@@ -885,16 +885,30 @@ export class GameplayScene extends Phaser.Scene {
       return;
     }
 
-    const colunas = 3, linhas = 3;
-    const passoX = Math.min(230, area.largura / colunas);
-    const passoY = Math.min(120, (area.altura - 60) / linhas);
-    const ox = area.x + (area.largura - passoX * (colunas - 1)) / 2 - 70;
-    const oy = area.y + 30;
+    // O PAPEL DELA, e os comodos por cima.
+    //
+    // A base e escalada para caber na area sem cortar nada — `Math.min` dos dois
+    // lados —, e cada comodo cai numa FRACAO dela. Assim o mapa e o mesmo em
+    // qualquer tela: e o papel que manda, nao o tamanho da janela.
+    const base = this.add.image(0, 0, 'mapa-base').setOrigin(0.5);
+    const escala = Math.min(area.largura / base.width, area.altura / base.height);
+    base.setScale(escala);
+    base.setPosition(area.x + area.largura / 2, area.y + area.altura / 2);
+    painel.por(base);
 
+    const esq = base.x - (base.displayWidth / 2);
+    const topo = base.y - (base.displayHeight / 2);
     const onde = (id) => {
       const m = MAPA_FASE1[id];
-      return m ? { x: ox + m.col * passoX, y: oy + m.lin * passoY } : null;
+      if (!m) return null;
+      return {
+        x: esq + m.fx * base.displayWidth,
+        y: topo + m.fy * base.displayHeight,
+      };
     };
+
+    const larguraCaixa = Math.max(96, 150 * escala);
+    const alturaCaixa = Math.max(24, 34 * escala);
 
     // As ligacoes primeiro, para os comodos ficarem por cima delas.
     const linhasG = this.add.graphics();
@@ -902,15 +916,15 @@ export class GameplayScene extends Phaser.Scene {
       if (!visitadas.includes(l.de) || !visitadas.includes(l.para)) continue;
       const a = onde(l.de), b = onde(l.para);
       if (!a || !b) continue;
-      linhasG.lineStyle(1, CORES.dourado, l.nota ? 0.28 : 0.5);
-      linhasG.lineBetween(a.x + 70, a.y + 14, b.x + 70, b.y + 14);
+      linhasG.lineStyle(2, 0x4a3a22, l.nota ? 0.55 : 0.8);
+      linhasG.lineBetween(a.x, a.y, b.x, b.y);
       if (l.nota) {
         painel.por(this.add
-          .text((a.x + b.x) / 2 + 70, (a.y + b.y) / 2 + 14, l.nota, {
-            fontFamily: FONTE, fontSize: '12px', color: HEX.ossoMorto,
+          .text((a.x + b.x) / 2, (a.y + b.y) / 2, l.nota, {
+            fontFamily: FONTE, fontSize: '12px', color: '#5a4526',
           })
           .setOrigin(0.5)
-          .setBackgroundColor('#07080b')
+          .setBackgroundColor('#d8cba8')
           .setPadding(6, 2, 6, 2));
       }
     }
@@ -921,26 +935,23 @@ export class GameplayScene extends Phaser.Scene {
       const p = onde(id);
       const aqui = id === (this.nomeDaSala ?? 'quarto');
 
+      // Tinta sobre papel: marrom sobre creme, e nao o ouro do caderno. O mapa e
+      // um objeto DENTRO do jogo, desenhado a mao por alguem — nao mais uma tela.
       const caixa = this.add.graphics();
-      caixa.fillStyle(CORES.preto, 0.7);
-      caixa.fillRect(p.x, p.y - 2, 140, 32);
-      caixa.lineStyle(1, CORES.dourado, aqui ? 0.85 : 0.35);
-      caixa.strokeRect(p.x + 0.5, p.y - 1.5, 139, 31);
+      caixa.fillStyle(0xd8cba8, aqui ? 0.95 : 0.8);
+      caixa.fillRect(p.x - larguraCaixa / 2, p.y - alturaCaixa / 2, larguraCaixa, alturaCaixa);
+      caixa.lineStyle(aqui ? 2 : 1, 0x4a3a22, aqui ? 0.95 : 0.6);
+      caixa.strokeRect(p.x - larguraCaixa / 2, p.y - alturaCaixa / 2, larguraCaixa, alturaCaixa);
       painel.por(caixa);
 
       painel.por(this.add
-        .text(p.x + 70, p.y + 14, MAPA_FASE1[id].nome, {
-          fontFamily: FONTE, fontSize: '15px',
-          color: aqui ? HEX.dourado : HEX.ossoApagado,
+        .text(p.x, p.y, MAPA_FASE1[id].nome, {
+          fontFamily: FONTE, fontSize: Math.max(11, Math.round(15 * escala)) + 'px',
+          color: aqui ? '#2e2413' : '#5a4526',
         })
         .setOrigin(0.5));
     }
 
-    painel.por(this.add
-      .text(area.x + 6, area.y + area.altura - 26,
-        'O mapa acende sozinho: só existe o que ela já pisou.', {
-          fontFamily: FONTE, fontSize: '13px', color: HEX.ossoMorto, fontStyle: 'italic',
-        }));
   }
 
   /**
