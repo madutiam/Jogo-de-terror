@@ -27,6 +27,7 @@ import { SaveManager } from '../core/SaveManager.js';
 import { Hud } from '../ui/Hud.js';
 import { DialogBox } from '../ui/DialogBox.js';
 import { TouchControls } from '../ui/TouchControls.js';
+import { TAMANHOS, TIPOS, LADOS, OPACIDADES } from '../ui/layoutControles.js';
 import { CORES, HEX, FONTE, ESTILO, comSombra } from '../ui/theme.js';
 import { dimensoes } from '../core/tela.js';
 import { ITENS, PISTAS, ORDEM_ITENS, ORDEM_PISTAS } from '../data/inventario.js';
@@ -741,6 +742,7 @@ export class GameplayScene extends Phaser.Scene {
       { id: 'inventario', nome: 'Inventário', montar: (a, p) => this.abaInventario(a, p) },
       { id: 'diario',     nome: 'Diário',     montar: (a, p) => this.abaDiario(a, p) },
       { id: 'mapa',       nome: 'Mapa',       montar: (a, p) => this.abaMapa(a, p) },
+      { id: 'comandos',   nome: 'Comandos',   montar: (a, p) => this.abaComandos(a, p) },
       { id: 'config',     nome: 'Configurações', montar: (a, p) => this.abaConfiguracoes(a, p) },
     ], { aoFechar: () => this.aoFecharCaderno() });
 
@@ -811,6 +813,19 @@ export class GameplayScene extends Phaser.Scene {
       });
       detalhe.titulo.setText(entradas[i].nome);
       detalhe.texto.setText(entradas[i].texto);
+
+      const chave = 'item/' + entradas[i].id;
+      if (entradas[i].id && this.textures.exists(chave)) {
+        detalhe.arte.setTexture(chave).setVisible(true);
+        const fonte = this.textures.get(chave).getSourceImage();
+        const escala = Math.min(
+          detalhe.alturaArte / fonte.height,
+          (larguraDetalhe * 0.7) / fonte.width
+        );
+        detalhe.arte.setScale(escala);
+      } else {
+        detalhe.arte.setVisible(false);
+      }
     };
 
     let y = area.y + 4;
@@ -830,17 +845,30 @@ export class GameplayScene extends Phaser.Scene {
       y += 32;
     });
 
+    // A ILUSTRACAO
+    //
+    // Fica em cima do nome, centrada na coluna, e cabe na altura que sobrar. O
+    // `setDisplaySize` respeita a proporcao pelo menor lado: um desenho alto
+    // como o relogio de pendulo e um largo como os biscoitos ocupam o mesmo
+    // espaco sem nenhum dos dois esticar.
+    const alturaArte = Math.min(190, area.altura * 0.42);
+    detalhe.arte = painel.por(this.add
+      .image(xDetalhe + larguraDetalhe / 2, area.y + alturaArte / 2 + 4, '__nada__')
+      .setVisible(false));
+
     detalhe.titulo = painel.por(this.add
-      .text(xDetalhe, area.y + 4, '', comSombra({
+      .text(xDetalhe, area.y + alturaArte + 22, '', comSombra({
         fontFamily: FONTE, fontSize: '23px', color: HEX.osso,
       })));
 
     detalhe.texto = painel.por(this.add
-      .text(xDetalhe, area.y + 46, '', {
+      .text(xDetalhe, area.y + alturaArte + 62, '', {
         fontFamily: FONTE, fontSize: '16px', color: HEX.ossoApagado,
         wordWrap: { width: larguraDetalhe },
         lineSpacing: 5,
       }));
+
+    detalhe.alturaArte = alturaArte;
 
     mostrar(0);
   }
@@ -968,55 +996,152 @@ export class GameplayScene extends Phaser.Scene {
    */
   abaConfiguracoes(area, painel) {
     const cfg = SaveManager.getConfig();
+    const meia = area.largura / 2;
 
+    // ---------------------------------------------------------------- som
     painel.por(this.add
       .text(area.x + 6, area.y, 'SOM', {
         fontFamily: FONTE, fontSize: '13px', color: HEX.dourado,
       }));
 
     let y = area.y + 40;
-    const barras = [
+    for (const [rotulo, chave] of [
       ['Volume geral', 'volumeGeral'],
       ['Música', 'volumeMusica'],
       ['Efeitos', 'volumeEfeitos'],
-    ];
-    for (const [rotulo, chave] of barras) {
-      this.barraDeVolume(painel, area.x + 6, y, 280, rotulo, chave, cfg[chave]);
-      y += 62;
+    ]) {
+      this.barraDeVolume(painel, area.x + 6, y, Math.min(280, meia - 60), rotulo, chave, cfg[chave]);
+      y += 60;
     }
 
-    // Tela cheia. O texto se reescreve porque o navegador pode sair dela por
-    // conta propria — apertando ESC, por exemplo — e o rotulo mentiria.
+    // -------------------------------------------------------------- tela
+    painel.por(this.add
+      .text(area.x + 6, y + 6, 'TELA', {
+        fontFamily: FONTE, fontSize: '13px', color: HEX.dourado,
+      }));
+
     const cheia = painel.por(this.add
-      .text(area.x + 6, y + 10, '', {
+      .text(area.x + 6, y + 34, '', {
         fontFamily: FONTE, fontSize: '16px', color: HEX.ossoApagado,
       })
       .setInteractive({ useHandCursor: true }));
 
-    const pintar = () => cheia.setText(
+    // Reescreve a cada clique em vez de guardar estado: o navegador pode sair da
+    // tela cheia por conta propria, e um rotulo guardado mentiria.
+    const pintarCheia = () => cheia.setText(
       this.scale.isFullscreen ? 'Tela cheia: ligada' : 'Tela cheia: desligada'
     );
-    pintar();
-
+    pintarCheia();
     cheia.on('pointerover', () => cheia.setColor(HEX.dourado));
     cheia.on('pointerout', () => cheia.setColor(HEX.ossoApagado));
     cheia.on('pointerdown', () => {
       if (this.scale.isFullscreen) this.scale.stopFullscreen();
       else this.scale.startFullscreen();
-      this.time.delayedCall(120, pintar);
+      this.time.delayedCall(120, pintarCheia);
     });
 
+    // -------------------------------------------- controles no celular
+    const xd = area.x + meia + 20;
     painel.por(this.add
-      .text(area.x + 6, y + 38, 'O resto — tamanho e tipo dos controles no celular — fica no menu.', {
-        fontFamily: FONTE, fontSize: '13px', color: HEX.ossoMorto, fontStyle: 'italic',
-        wordWrap: { width: 300 },
+      .text(xd, area.y, 'CONTROLES NO CELULAR', {
+        fontFamily: FONTE, fontSize: '13px', color: HEX.dourado,
       }));
 
-    // Os comandos, na coluna da direita.
-    this.abaComandos(
-      { ...area, x: area.x + Math.min(400, area.largura * 0.46) },
-      painel
-    );
+    let yd = area.y + 40;
+    const linhas = [
+      ['Tamanho', 'tamanhoControles', TAMANHOS],
+      ['Tipo', 'tipoControle', TIPOS],
+      ['Lado', 'ladoControles', LADOS],
+      ['Correr', 'botaoCorrer', [
+        { id: false, nome: 'sem botão' }, { id: true, nome: 'com botão' },
+      ]],
+      ['Opacidade', 'opacidadeControles', OPACIDADES],
+    ];
+    for (const [rotulo, chave, opcoes] of linhas) {
+      this.escolhaDeToque(painel, xd, yd, rotulo, chave, opcoes);
+      yd += 44;
+    }
+
+    painel.por(this.add
+      .text(xd, yd + 10,
+        this.toque?.ativo
+          ? 'Vale na hora: os botões se refazem sozinhos.'
+          : 'Só aparece em aparelho com toque.', {
+          fontFamily: FONTE, fontSize: '13px', color: HEX.ossoMorto, fontStyle: 'italic',
+          wordWrap: { width: meia - 40 },
+        }));
+  }
+
+  /**
+   * Uma linha de escolha dos controles de toque.
+   *
+   * Mudar qualquer uma delas REFAZ os botoes na hora. Antes eu tinha deixado
+   * isso de fora do jogo dizendo que remontaria os controles debaixo do dedo de
+   * quem esta jogando — mas com o caderno aberto o jogo esta PARADO e o dedo nao
+   * esta em lugar nenhum. E ver o efeito na hora e a unica forma de escolher
+   * "medio" ou "grande" sabendo o que se escolheu.
+   */
+  escolhaDeToque(painel, x, y, rotulo, chave, opcoes) {
+    painel.por(this.add
+      .text(x, y, rotulo, {
+        fontFamily: FONTE, fontSize: '15px', color: HEX.ossoApagado,
+      }));
+
+    const itens = [];
+    let cursor = x + 110;
+
+    const pintar = () => {
+      const atual = SaveManager.getConfig()[chave];
+      itens.forEach((t, i) => {
+        const escolhido = opcoes[i].id === atual;
+        t.setColor(escolhido ? HEX.osso : HEX.ossoMorto);
+        t.setAlpha(escolhido ? 1 : 0.8);
+      });
+    };
+
+    opcoes.forEach((opcao, i) => {
+      const t = painel.por(this.add
+        .text(cursor, y, opcao.nome, {
+          fontFamily: FONTE, fontSize: '15px', color: HEX.ossoMorto,
+        })
+        .setInteractive({ useHandCursor: true }));
+
+      t.on('pointerover', () => t.setColor(HEX.dourado));
+      t.on('pointerout', pintar);
+      t.on('pointerdown', () => {
+        SaveManager.setConfig({ [chave]: opcao.id });
+        AudioManager.tocar('efeito.item');
+        pintar();
+        this.remontarToque();
+      });
+
+      itens.push(t);
+      cursor += t.width + 16;
+    });
+
+    pintar();
+  }
+
+  /**
+   * Refaz os controles de toque com a configuracao nova.
+   *
+   * Eles ficam ESCONDIDOS ao nascer porque o caderno esta aberto por cima; quem
+   * os mostra de novo e o `aoFecharCaderno`. Sem isso os botoes apareceriam por
+   * baixo da pagina, piscando a cada escolha.
+   */
+  remontarToque() {
+    if (!this.toque) return;
+
+    const forcado = this.toque.ativo;
+    this.toque.destroy();
+    this.toque = new TouchControls(this, this.input_, {
+      forcar: forcado,
+      alvo: () => ({
+        x: this.alice.x - this.cameras.main.scrollX,
+        y: this.alice.y - this.cameras.main.scrollY,
+      }),
+    });
+    this.toque.esconder();
   }
 
   /**

@@ -52,6 +52,16 @@ export class PreloadScene extends Phaser.Scene {
 
     // O papel do mapa. As pecas dos comodos entram por cima dele, uma a uma.
     this.load.image('mapa-base', 'assets/ui/mapa-base.png');
+
+    // Os icones do inventario e do diario. A chave e o proprio id do item, para
+    // nao existir uma tabela de traducao entre save e desenho.
+    for (const id of [
+      'biscoitos', 'relogio-de-bolso', 'xicara-quebrada', 'cadeira-virada',
+      'marca-de-arrasto', 'tufo-de-pelo', 'potes-tres', 'relogio-0317',
+      'relogio-0318', 'espelho-rachado',
+    ]) {
+      this.load.image('item/' + id, 'assets/ui/itens/' + id + '.png');
+    }
     this.load.image('fase3-tabuleiro', 'assets/scenarios/fase3-tabuleiro.png');
 
     // As salas da Fase 1, cada uma numa imagem inteira.
