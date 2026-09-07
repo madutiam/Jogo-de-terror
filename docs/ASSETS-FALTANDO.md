@@ -1,8 +1,7 @@
 # Assets que faltam — ALICE TERROR
 
-Lista viva. Revisada em 06/09/2026, depois da entrega do Atlas lateral, da folha
-grande/pequena, do top-down com as peças de xadrez, dos movimentos da Alice
-Demon, dos 5 objetos e dos biscoitos.
+Lista viva. Revisada em **07/09/2026**, depois da entrega dos movimentos da
+Alice Demon, da captura, das folhas da HIGHSFIELD 01 e do relógio limpo.
 
 Regra do projeto: quando falta uma pose, o jogo **não inventa**. Usa o frame
 existente mais próximo, sem deformar nada, e registra o pedido. Para ver o que
@@ -39,22 +38,34 @@ nada é apagado.
 
 ### Alice — vista lateral (Fases 1 e 2)
 
+> **Entregues desde então:** correndo de perfil (6 por lado), andando de frente,
+> levando dano de perfil, ofegante, e o conjunto inteiro da Alice pequena. As
+> linhas abaixo que pediam essas poses saíram da lista.
+
 | Prio | Animação | Por que precisa | Frames |
 |---|---|---|---|
-| 🔴 | **CORRENDO** de perfil, D e E | A Fase 2 é uma perseguição. Existe só na folha top-down, num tamanho menor | 6 por lado |
-| 🔴 | **ANDANDO DE FRENTE** (vindo para a câmera) | O jogo tem profundidade: ela anda para a frente o tempo todo. Hoje só existe a parada de frente | 4–6 |
-| 🟡 | **LEVANDO DANO** de perfil | Existe só na top-down. Dá para segurar com o primeiro quadro de CAINDO | 2 por lado |
-| 🟡 | **OFEGANTE** depois da perseguição | O áudio já existe (`alice.ofegante`), a pose não | 2–4 |
+| 🟡 | **CORRENDO de frente** (vindo para a câmera) | Hoje cai no ciclo de andar de frente, mais rápido | 4–6 |
 
 ### Alice — vista de costas (ela se afasta da câmera)
 
-Já existem: parada + ciclo de caminhada (5 quadros). Faltam:
+Já existem: parada, caminhada, corrida, pulo e pegar item de costas. Falta só o
+conjunto da **pequena de costas** — hoje ela cai no ciclo de costas do tamanho
+normal, encolhido.
 
-| Prio | Animação | Frames |
+---
+
+## FASE 2 — o que ainda não existe em lugar nenhum
+
+| Prio | O quê | Por quê |
 |---|---|---|
-| 🟡 | **PULANDO** de costas | 3–5 |
-| 🟡 | **CORRENDO** de costas | 6 |
-| 🟡 | **PEGANDO ITEM** de costas | 4 |
+| 🔴 | **A porta de saída da floresta** (§20) | Hoje só há a porta de pedra da casa, que é da Fase 1. A chave da fase precisa abrir alguma coisa |
+| 🟠 | **Os quadros da HIGHSFIELD 03** (§17) | O espelho. Só se ela quiser desenhada em quadros compostos, como a HS02 e a captura — dá para montar com o que existe |
+
+**Já entregue e só esperando recorte:** a folha
+`Objetos relógio de bolso, espelho avulso, pedaço de roupa, rastros, comida
+podre.png`, na pasta mãe. Tem o espelho (inteiro, moldura e vidro em camada
+separada), o pedaço de roupa com a marca de espada, e as quatro comidas podres.
+Nada disso precisa ser pedido de novo — precisa ser fatiado.
 
 ### Coelho
 

@@ -40,10 +40,15 @@ da máquina — esse abre no celular, desde que ele esteja no mesmo Wi-Fi.
 
 ## O que ainda não está aqui
 
-Está tudo em [docs/ASSETS-FALTANDO.md](docs/ASSETS-FALTANDO.md). Resumo: a
-mecânica dos biscoitos, o parkour completo, a Fase 2, a Fase 3 e as cinemáticas
-dependem de poses que ainda não existem nos arquivos — e a regra do projeto é
-**pedir o asset, nunca inventar**.
+Está tudo em [docs/ASSETS-FALTANDO.md](docs/ASSETS-FALTANDO.md), e o estado
+completo em [docs/ESTADO-DO-PROJETO.md](docs/ESTADO-DO-PROJETO.md).
+
+Resumo em 07/09/2026: a **Fase 1 está inteira** (cinco salas, os biscoitos, o
+parkour, o mecanismo, o caderno com mapa) e a **Fase 2 se atravessa** — as três
+telas da floresta, com colisão. Faltam os desafios dela (§14 a §21), a
+HIGHSFIELD 03, e a Fase 3.
+
+A regra do projeto continua: **pedir o asset, nunca inventar**.
 
 ---
 
