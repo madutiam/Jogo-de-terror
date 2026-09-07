@@ -958,10 +958,34 @@ export class GameplayScene extends Phaser.Scene {
     }
     painel.por(linhasG);
 
+    // As pecas DESENHADAS primeiro: elas vem na mesma folha da base, ja no
+    // lugar, entao e so empilhar por cima com a mesma escala e o mesmo centro.
+    for (const id of Object.keys(MAPA_FASE1)) {
+      if (!visitadas.includes(id)) continue;
+      if (!this.textures.exists('mapa/' + id)) continue;
+      painel.por(this.add
+        .image(base.x, base.y, 'mapa/' + id)
+        .setOrigin(0.5)
+        .setScale(escala));
+    }
+
     for (const id of Object.keys(MAPA_FASE1)) {
       if (!visitadas.includes(id)) continue;
       const p = onde(id);
       const aqui = id === (this.nomeDaSala ?? 'quarto');
+
+      // Comodo com peca desenhada nao ganha caixa: so a marca de onde ela esta.
+      if (this.textures.exists('mapa/' + id)) {
+        if (aqui) {
+          painel.por(this.add
+            .text(p.x, p.y, '♠', {
+              fontFamily: FONTE, fontSize: Math.max(14, Math.round(22 * escala)) + 'px',
+              color: '#7a1f22',
+            })
+            .setOrigin(0.5));
+        }
+        continue;
+      }
 
       // Tinta sobre papel: marrom sobre creme, e nao o ouro do caderno. O mapa e
       // um objeto DENTRO do jogo, desenhado a mao por alguem — nao mais uma tela.
