@@ -958,6 +958,11 @@ export class GameplayScene extends Phaser.Scene {
             fontFamily: FONTE, fontSize: Math.max(15, Math.round(26 * escala)) + 'px',
             color: '#7a1f22',
           })
+          // O contorno claro nao e enfeite: no sotao a espada cai bem na boca do
+          // buraco, que e preta, e vinho sobre preto some. O pergaminho e claro
+          // em todas as outras plantas, entao um fio cor de papel salva os dois
+          // casos sem precisar de uma posicao especial por comodo.
+          .setStroke('#e8dcc0', Math.max(2, Math.round(3 * escala)))
           .setOrigin(0.5));
       }
     } else {
