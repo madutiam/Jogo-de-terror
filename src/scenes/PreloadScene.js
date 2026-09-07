@@ -4,6 +4,7 @@
  */
 
 import { SCENES } from '../core/constants.js';
+import { MORTE_DEMON } from '../data/morteDemon.js';
 import { dimensoes, escalaParaCaber } from '../core/tela.js';
 import { CORES, HEX, FONTE } from '../ui/theme.js';
 import { AUDIO_ARQUIVOS } from '../data/audio.js';
@@ -25,6 +26,15 @@ export class PreloadScene extends Phaser.Scene {
     // quadros de encolher.
     carregarQuadrosDaAlice(this);
     this.load.image('alice-demon', 'assets/characters/alice-demon.png');
+
+    // A CAPTURA: os 18 quadros em que a Alice Demon alcanca a Alice e a mata.
+    // Nao entram na folha da Alice porque cada quadro tem as DUAS nela — nao
+    // da para ancorar no vestido de uma so, e as duas se tocam. E uma cena, e
+    // e desenhada como cena.
+    for (let i = 0; i < MORTE_DEMON.quadros; i++) {
+      this.load.image('morte-demon/' + i,
+        'assets/characters/morte-demon/captura-' + i + '.png');
+    }
     this.load.image('coelho', 'assets/characters/coelho.png');
     this.load.image('coelho-morto', 'assets/characters/coelho-morto.png');
 

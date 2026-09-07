@@ -17,6 +17,7 @@ import {
   SCENES,
   VIDAS_INICIAIS,
   PROFUNDIDADE,
+  ALICE_ALTURA,
   escalaPorProfundidade,
   profundidadeDeDesenho,
 } from '../core/constants.js';
@@ -24,6 +25,7 @@ import { Alice } from '../core/Alice.js';
 import { InputManager } from '../core/InputManager.js';
 import { AudioManager } from '../core/AudioManager.js';
 import { SaveManager } from '../core/SaveManager.js';
+import { MORTE_DEMON } from '../data/morteDemon.js';
 import { Hud } from '../ui/Hud.js';
 import { DialogBox } from '../ui/DialogBox.js';
 import { TouchControls } from '../ui/TouchControls.js';
@@ -478,9 +480,77 @@ export class GameplayScene extends Phaser.Scene {
     // ja sobrevivia ao congelamento hoje.
     const ms = this.alice.desabar(GameplayScene.MS_DESABANDO);
 
-    this.time.delayedCall(ms, () => {
-      this.cameras.main.fadeOut(700, 0, 0, 0);
-      this.cameras.main.once('camerafadeoutcomplete', () => this.renascer());
+    this.time.delayedCall(ms, () => this.apagarERenascer());
+  }
+
+  /**
+   * MORRER AGARRADA — a captura pela Alice Demon
+   *
+   * A outra morte do jogo. Cair no buraco do sotao e desabar sozinha; ser pega
+   * e uma cena com as duas, e por isso ela nao passa pela animacao da Alice:
+   * durante os dezoito quadros o sprite dela e a sombra somem, e quem esta na
+   * tela e o desenho da cena, assentado no ponto onde a perseguicao terminou.
+   *
+   * Ver src/data/morteDemon.js para o alinhamento e a escala.
+   */
+  morrerAgarrada() {
+    if (this.emCinematica) return;
+    this.entrarEmCinematica();
+
+    const amb = AudioManager.ambienteAtual;
+    this.ambienteAntesDaMorte =
+      amb ? { id: amb.__id, volume: amb.__volumeBase } : null;
+    AudioManager.silenciar({ fadeMs: 300 });
+
+    // O grito e guardado para poder ser CORTADO. O arquivo tem quase seis
+    // segundos e nao esta fatiado no catalogo: solto, ele atravessaria a tela
+    // preta e ainda estaria tocando com o jogador ja andando de novo.
+    this.gritoDaMorte = AudioManager.tocar('efeito.grito');
+
+    const a = this.alice;
+    a.visual.setVisible(false);
+    a.sombra.setVisible(false);
+
+    const escala = escalaPorProfundidade(a.y) * (ALICE_ALTURA / MORTE_DEMON.alturaDaAlice);
+    this.cenaDaMorte = this.add
+      .image(a.x, a.y, 'morte-demon/0')
+      .setOrigin(MORTE_DEMON.ancora.x, MORTE_DEMON.ancora.y)
+      .setScale(escala)
+      .setDepth(profundidadeDeDesenho(a.y) + 0.05);
+
+    let i = 0;
+    this.quadrosDaMorte = this.time.addEvent({
+      delay: MORTE_DEMON.msPorQuadro,
+      repeat: MORTE_DEMON.quadros - 2,
+      callback: () => {
+        i += 1;
+        this.cenaDaMorte?.setTexture('morte-demon/' + i);
+      },
+    });
+
+    const total = MORTE_DEMON.msPorQuadro * (MORTE_DEMON.quadros - 1)
+                + MORTE_DEMON.msSegurando;
+    this.time.delayedCall(total, () => this.apagarERenascer());
+  }
+
+  /**
+   * O preto e a volta. As duas mortes terminam aqui.
+   *
+   * A limpeza acontece com a tela JA apagada: desfazer a cena da captura antes
+   * disso devolveria a Alice em pe por um instante, em cima do proprio corpo.
+   */
+  apagarERenascer() {
+    this.cameras.main.fadeOut(700, 0, 0, 0);
+    this.cameras.main.once('camerafadeoutcomplete', () => {
+      this.gritoDaMorte?.stop();
+      this.gritoDaMorte = null;
+      this.quadrosDaMorte?.remove();
+      this.quadrosDaMorte = null;
+      this.cenaDaMorte?.destroy();
+      this.cenaDaMorte = null;
+      this.alice.visual.setVisible(true);
+      this.alice.sombra.setVisible(true);
+      this.renascer();
     });
   }
 
