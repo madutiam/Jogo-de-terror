@@ -113,8 +113,14 @@ export class Highsfield01Scene extends Phaser.Scene {
       .setAlpha(0)
       .setDepth(450);
 
+    // O RELOGIO INTEIRO, e nao o quebrado.
+    //
+    // Aqui estava `relogio-bolso-aberto`, que e o relogio do FIM da fase 1: o
+    // vidro rachado, o mostrador coberto de sangue. Esta cena se passa antes de
+    // qualquer coisa ter acontecido — o Coelho esta vivo e com o relogio dele
+    // na mao. O close entregava o fim do jogo em cima de uma cena tranquila.
     this.close = this.add
-      .image(meioX, meioY, 'relogio-bolso-aberto')
+      .image(meioX, meioY, 'relogio-bolso-limpo')
       .setAlpha(0)
       .setDepth(500);
     this.close.setScale(Math.min(1, (altura * 0.72) / this.close.height));

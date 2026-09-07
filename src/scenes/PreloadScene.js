@@ -93,6 +93,9 @@ export class PreloadScene extends Phaser.Scene {
     // O relogio de bolso do Coelho: o item que fecha a Fase 1 (roteiro, 9 e 11).
     this.load.image('relogio-bolso', 'assets/objects/relogio/relogio-bolso-0.png');
     this.load.image('relogio-bolso-aberto', 'assets/objects/relogio/relogio-bolso-aberto-0.png');
+    // O MESMO relogio, antes: sem sangue, sem rachadura, o vidro inteiro. E o
+    // que a HIGHSFIELD 01 mostra — ela se passa antes de tudo acontecer.
+    this.load.image('relogio-bolso-limpo', 'assets/objects/relogio/relogio-bolso-limpo-0.png');
 
     // A HIGHSFIELD 02 vem DESENHADA, quadro a quadro: arco, porta, Alice e o
     // que esta atras, tudo junto em cada um. Duas versoes do mesmo movimento —
