@@ -38,7 +38,25 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('coelho', 'assets/characters/coelho.png');
     this.load.image('coelho-morto', 'assets/characters/coelho-morto.png');
 
-    // As tres poses do Coelho para a HIGHSFIELD 01, e os nove closes de rosto.
+    // A HIGHSFIELD 01 com os DOIS no mesmo desenho: o encontro, o susto e o
+    // recuo. Nao entram na folha de nenhum dos dois porque cada quadro tem os
+    // dois — e o mesmo caso da captura da fase 2.
+    for (const linha of ['encontro', 'assustada', 'recuando']) {
+      for (let i = 0; i < 6; i++) {
+        this.load.image('hs01/' + linha + '-' + i,
+          'assets/characters/hs01/' + linha + '-' + i + '.png');
+      }
+    }
+    // E o Coelho sozinho, para os planos em que so ele esta no quadro:
+    // erguendo o relogio e virando para ela.
+    for (const linha of ['ergue', 'vira']) {
+      for (let i = 0; i < 5; i++) {
+        this.load.image('coelho/' + linha + '-' + i,
+          'assets/characters/coelho/coelho-' + linha + '-' + i + '.png');
+      }
+    }
+
+    // As tres poses antigas do Coelho, e os nove closes de rosto.
     for (const pose of ['relogio', 'alice', 'estranha']) {
       this.load.image('coelho/' + pose, 'assets/characters/coelho/coelho-' + pose + '-0.png');
       for (let i = 0; i < 3; i++) {
