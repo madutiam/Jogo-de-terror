@@ -56,7 +56,7 @@ export class PreloadScene extends Phaser.Scene {
     // As pecas dos comodos. Cada uma e uma folha do MESMO tamanho da base, com
     // o comodo ja no lugar e transparente no resto — entao empilhar e o unico
     // trabalho. Falta a maioria; quem nao tiver peca cai na caixa desenhada.
-    for (const id of ['quarto', 'corredor', 'despensa']) {
+    for (const id of ['quarto', 'corredor', 'despensa', 'lateral']) {
       this.load.image('mapa/' + id, 'assets/ui/mapa-' + id + '.png');
     }
 
