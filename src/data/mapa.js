@@ -47,6 +47,12 @@ export const LIGACOES_FASE1 = [
  * manter sincronizada com a arte.
  */
 export const CAMADAS_FASE1 = [
+  // A escada nao existe no quarto ate o mecanismo da sala lateral ser
+  // resolvido: ela CAI do forro nesse momento. Mostrar ela antes disso nao
+  // seria adiantar o enigma — seria mentir, desenhando no mapa uma coisa que
+  // nao esta na sala.
+  { marco: 'escada', sala: 'quarto', chave: 'mapa/escada' },
+
   // A fresta saiu daqui: ela passou a vir desenhada dentro da propria folha do
   // corredor. Nao custa a surpresa — o buraco entulhado ja esta a vista na
   // sala, e a folha do corredor so existe depois de ela ter estado la. O que
