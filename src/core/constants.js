@@ -216,6 +216,9 @@ export const ALICE_COMER_MS = 980;
  * subindo mostra os primeiros, caindo mostra os ultimos.
  *
  * `falta` e o pedido registrado em MissingAssets quando caimos num substituto.
+ *
+ * `segurar: true` e para gesto que NAO se desfaz sozinho: o ultimo quadro fica
+ * na tela ate alguem limpar `alice.gesto`. So a morte usa isso.
  */
 export const ALICE_ANIM = {
   normal: {
@@ -247,6 +250,23 @@ export const ALICE_ANIM = {
 
     tomboDir: { linha: 'cai-dir', ms: 130, umaVez: true },
     tomboEsq: { linha: 'cai-esq', ms: 130, umaVez: true },
+
+    /**
+     * A MORTE
+     *
+     * Nao ha desenho novo aqui. `grande-cai` ja estava fatiada e sem uso
+     * nenhum: sao os mesmos cinco quadros em que ela dobra os joelhos, cai e
+     * fica de bruços — o quinto e ela se levantando, e por isso a lista para
+     * no quarto. Morrer e a queda sem o levantar.
+     *
+     * De frente, e nao de perfil, por dois motivos: `congelar()` ja vira a
+     * Alice para a camera quando a cinematica comeca, entao o perfil daria um
+     * giro no meio do desabamento; e `olhandoPara` fica preso no valor inicial
+     * para quem so andou no eixo vertical, o que faria ela morrer virada para
+     * o lado errado justamente no unico momento em que a tela para para
+     * mostra-la.
+     */
+    morre: { linha: 'grande-cai', quadros: [0, 1, 2, 3], segurar: true },
 
     ofegante: { linha: 'ofegante', ms: 260 },
 
@@ -291,6 +311,9 @@ export const ALICE_ANIM = {
 
     tomboDir: { linha: 'pequena-cai-dir', ms: 130, umaVez: true },
     tomboEsq: { linha: 'pequena-cai-esq', ms: 130, umaVez: true },
+
+    /** A mesma queda, no tamanho pequeno: `pequena-cai`, tambem sem uso ate agora. */
+    morre: { linha: 'pequena-cai', quadros: [0, 1, 2, 3], segurar: true },
 
     ofegante: { linha: 'pequena-ofegante', ms: 300 },
 

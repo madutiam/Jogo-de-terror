@@ -446,6 +446,16 @@ export class GameplayScene extends Phaser.Scene {
     if (restantes <= 0) this.morrer();
   }
 
+  /**
+   * Quanto tempo a Alice leva desabando antes de a tela comecar a apagar.
+   *
+   * Ate aqui a morte era um corte seco: o fadeOut comecava no MESMO frame em
+   * que a terceira espada apagava, e nao havia um milissegundo em que se visse
+   * o que aconteceu. Agora a queda acontece por inteiro na luz, e o preto so
+   * comeca depois que o corpo encosta no chao.
+   */
+  static MS_DESABANDO = 560;
+
   morrer() {
     this.entrarEmCinematica();
 
@@ -462,8 +472,16 @@ export class GameplayScene extends Phaser.Scene {
 
     AudioManager.silenciar({ fadeMs: 300 });
 
-    this.cameras.main.fadeOut(700, 0, 0, 0);
-    this.cameras.main.once('camerafadeoutcomplete', () => this.renascer());
+    // O desabamento roda POR CIMA da cinematica de proposito. `avancarGesto` e
+    // testado antes da checagem de `controlavel` e anda pelo relogio da cena,
+    // que a cinematica nao para — e o mesmo caminho pelo qual o gesto de dano
+    // ja sobrevivia ao congelamento hoje.
+    const ms = this.alice.desabar(GameplayScene.MS_DESABANDO);
+
+    this.time.delayedCall(ms, () => {
+      this.cameras.main.fadeOut(700, 0, 0, 0);
+      this.cameras.main.once('camerafadeoutcomplete', () => this.renascer());
+    });
   }
 
   /** Volta ao checkpoint. Nunca obriga a refazer a investigacao (regra 10). */
@@ -1140,7 +1158,14 @@ export class GameplayScene extends Phaser.Scene {
       return;
     }
     if (this.pausado) return;
-    if (this.input_?.consumirInventario()) { this.alternarInventario(); return; }
+    // O caderno e leitura, e por isso passa por cima do bloqueio de input em
+    // dialogo. Mas com ele aberto o `update` para aqui — e durante a MORTE isso
+    // congelaria a Alice num quadro qualquer da queda enquanto o relogio da
+    // cena escurece a tela por baixo da pagina.
+    if (this.input_?.consumirInventario() && !this.emCinematica) {
+      this.alternarInventario();
+      return;
+    }
 
     this.atualizarPiso();
     this.alice?.controlar(this.input_, tempo);

@@ -325,9 +325,65 @@ export class Alice extends Phaser.Physics.Arcade.Sprite {
 
     if (t < 1) return true;
 
+    // Gesto SEGURO: o ultimo quadro fica na tela ate alguem limpar
+    // `this.gesto`. Sem isto, no frame em que o gesto acaba `controlar` cai no
+    // ramo de `!controlavel`, que chama `atualizarEstado` e repinta a Alice EM
+    // PE em cima do corpo caido — com a tela ainda escurecendo. Quem limpa e o
+    // `colocarEm` do renascimento, que ja zera o gesto.
+    if (g.segurar) {
+      if (!g.avisou) {
+        g.avisou = true;
+        if (g.aoTerminar) g.aoTerminar();
+      }
+      return true;
+    }
+
     this.gesto = null;
     if (g.aoTerminar) g.aoTerminar();
     return false;
+  }
+
+  /**
+   * O DESABAMENTO
+   *
+   * A queda ja estava desenhada e fatiada — `grande-cai` e `pequena-cai` nao
+   * eram usadas por entrada nenhuma de ALICE_ANIM. Morrer e essa queda sem o
+   * quadro em que ela se levanta, segurada de bruços ate a tela apagar.
+   *
+   * O primeiro quadro e pintado AQUI, e nao no proximo `controlar`, porque
+   * `congelar()` acabou de trocar a textura para a parada de frente: sem isto
+   * ela apareceria em pe por um quadro antes de comecar a cair.
+   *
+   * @param {() => void} [aoTerminar] chamado quando o corpo encosta no chao
+   * @returns {number} quanto dura o desabamento, em ms
+   */
+  desabar(ms, aoTerminar) {
+    const anim = this.animacoes.morre;
+    if (!anim) {
+      pedirAsset('Alice', 'morte ' + this.tamanho.id,
+                 'Alice ' + this.tamanho.id + ' desabando e ficando caida',
+                 'corte direto para o preto');
+      aoTerminar?.();
+      return 0;
+    }
+
+    this.controlavel = false;
+    this.body.setAcceleration(0, 0);
+    this.body.setVelocity(0, 0);
+    this.pararPassos();
+
+    this.gesto = {
+      anim,
+      total: this.totalDe(anim),
+      inicio: this.scene.time.now,
+      duracao: ms,
+      invertido: false,
+      segurar: true,
+      aoTerminar: aoTerminar || null,
+    };
+    this.usarQuadro(quadro(anim.linha, anim.quadros[0]), anim.espelhar);
+
+    return ms;
   }
 
   /** Toca a animacao de pegar item, na direcao em que ela esta olhando. */
