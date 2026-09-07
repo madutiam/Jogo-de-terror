@@ -668,6 +668,50 @@ export class GameplayScene extends Phaser.Scene {
     this.painelPausa.add([fundo, titulo, ...itens]);
   }
 
+  // ----------------------------------------------------------- mapa: avisos
+
+  /**
+   * O MAPA MUDOU — e so isso.
+   *
+   * Uma linha discreta, embaixo, que some sozinha. Ela NAO diz o que abriu nem
+   * para onde ir: dizer "a escada apareceu" seria a seta que o §43 proibe. Diz
+   * que vale a pena olhar, e quem olha descobre sozinho.
+   *
+   * So aparece na primeira vez de cada peca — voltar ao corredor pela quinta vez
+   * nao avisa nada, senao o aviso vira ruido e o jogador para de le-lo.
+   */
+  avisarMapa(texto = 'o mapa mudou') {
+    this.aviso?.destroy();
+
+    this.aviso = this.add
+      .text(this.tela.largura / 2, this.tela.altura - 76, texto, {
+        fontFamily: FONTE, fontSize: '14px', color: HEX.dourado,
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(1300)
+      .setAlpha(0);
+
+    this.tweens.add({
+      targets: this.aviso,
+      alpha: 0.7,
+      duration: 800,
+      yoyo: true,
+      hold: 2600,
+      onComplete: () => { this.aviso?.destroy(); this.aviso = null; },
+    });
+  }
+
+  /** Registra uma sala no mapa e avisa, se for a primeira vez. */
+  descobrirSala(id) {
+    if (SaveManager.registrarSala(id)) this.time.delayedCall(1400, () => this.avisarMapa());
+  }
+
+  /** O mesmo para uma passagem — a fresta, a escada, a porta. */
+  descobrirMarco(id) {
+    if (SaveManager.registrarMarco(id)) this.time.delayedCall(900, () => this.avisarMapa());
+  }
+
   // ------------------------------------------------------------------ abas
 
   /**

@@ -53,6 +53,15 @@ const PROGRESSO_PADRAO = {
    */
   salas: [],
 
+  /**
+   * Passagens que o mapa ja conhece.
+   *
+   * Separadas das SALAS porque nao sao lugares: sao ligacoes que so existem
+   * depois de uma conquista. A fresta so entra quando ela ATRAVESSA — ver o
+   * buraco nao basta —, e a escada so quando o mecanismo a derruba.
+   */
+  marcos: [],
+
   /** Pistas ja encontradas, por id. As tres fases compartilham esta lista. */
   pistas: [],
   /** Itens no bolso da Alice (relogio, chave, pedaco de roupa...). */
@@ -99,7 +108,7 @@ export const SaveManager = {
   // ---- progresso ----
 
   getProgresso() {
-    return { ...progresso, pistas: [...progresso.pistas], itens: [...progresso.itens], salas: [...progresso.salas] };
+    return { ...progresso, pistas: [...progresso.pistas], itens: [...progresso.itens], salas: [...progresso.salas], marcos: [...progresso.marcos] };
   },
 
   /** Salva o ponto atual. So deve ser chamado depois de uma conquista real. */
@@ -131,6 +140,18 @@ export const SaveManager = {
     return progresso.salas.includes(id);
   },
 
+  /** Marca uma passagem do mapa. Devolve true so na primeira vez. */
+  registrarMarco(id) {
+    if (!id || progresso.marcos.includes(id)) return false;
+    progresso = { ...progresso, marcos: [...progresso.marcos, id] };
+    gravar(CHAVE_PROGRESSO, progresso);
+    return true;
+  },
+
+  temMarco(id) {
+    return progresso.marcos.includes(id);
+  },
+
   registrarItem(id) {
     if (progresso.itens.includes(id)) return false;
     progresso = { ...progresso, itens: [...progresso.itens, id] };
@@ -148,7 +169,7 @@ export const SaveManager = {
   },
 
   apagarProgresso() {
-    progresso = { ...PROGRESSO_PADRAO, pistas: [], itens: [], salas: [] };
+    progresso = { ...PROGRESSO_PADRAO, pistas: [], itens: [], salas: [], marcos: [] };
     gravar(CHAVE_PROGRESSO, progresso);
   },
 };

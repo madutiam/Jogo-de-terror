@@ -125,6 +125,8 @@ export class Phase1Scene extends GameplayScene {
     this.tela = dimensoes(this);
     // Com o relogio no bolso, a porta de pedra cede (roteiro, secao 11).
     this.portaCedeu = SaveManager.temItem('relogio-de-bolso');
+    // A porta so entra no mapa quando cede. Antes disso ela e parede.
+    if (this.portaCedeu) SaveManager.registrarMarco('porta');
     this.cameras.main.setBackgroundColor(CORES.preto);
 
     // ---- sala ----
@@ -157,7 +159,7 @@ export class Phase1Scene extends GameplayScene {
     this.montarRastros(RASTROS_DO_QUARTO);
 
     // ---- audio (regra 34: ambiente e passos, sem musica por cima) ----
-    SaveManager.registrarSala('quarto');
+    this.descobrirSala('quarto');
 
     AudioManager.pararMusica(400);
     AudioManager.tocarAmbiente('ambiente.silencio', 2600);

@@ -89,7 +89,7 @@ export class SalaScene extends GameplayScene {
 
     // O mapa se acende a partir daqui: um comodo so existe nele depois de
     // pisado.
-    SaveManager.registrarSala(this.nomeDaSala);
+    this.descobrirSala(this.nomeDaSala);
 
     AudioManager.pararMusica(400);
     this.iniciarAmbienteDaSala();
@@ -325,7 +325,12 @@ export class SalaScene extends GameplayScene {
         }
         this.dialogo.mostrar(p.textoPequena, {
           rotulo: 'Alice',
-          aoFechar: () => this.irPara(p.para, p.entrada),
+          aoFechar: () => {
+            // O mapa so conhece a fresta depois de ela PASSAR. Ver o buraco nao
+            // conta: enquanto ela nao couber, do outro lado nao existe nada.
+            this.descobrirMarco('fresta');
+            this.irPara(p.para, p.entrada);
+          },
         });
       },
     });
@@ -354,6 +359,9 @@ export class SalaScene extends GameplayScene {
 
     this.puzzle = new MecanismoDeRelogio(this, () => {
       SaveManager.registrarItem('mecanismo');
+      // A escada nasce agora — antes disto, o sotao nao tem como ser alcancado
+      // e o mapa nao pode insinuar que existe.
+      this.descobrirMarco('escada');
       this.desenhoDoMecanismo.setTexture('peca/mecanismo-3');
       this.iluminacaoDoMecanismo();
       this.marcarCheckpoint(this.alice.x, this.alice.y, 'mecanismo');
