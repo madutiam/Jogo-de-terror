@@ -952,7 +952,9 @@ export class GameplayScene extends Phaser.Scene {
 
       if (mostrando === aquiAgora) {
         painel.por(this.add
-          .text(base.x, base.y + base.displayHeight * 0.02, '♠', {
+          // Abaixo do centro, e nao nele: no corredor o centro e exatamente onde
+          // o lustre esta desenhado, e a espada sumia dentro dele.
+          .text(base.x, base.y + base.displayHeight * 0.16, '♠', {
             fontFamily: FONTE, fontSize: Math.max(15, Math.round(26 * escala)) + 'px',
             color: '#7a1f22',
           })
