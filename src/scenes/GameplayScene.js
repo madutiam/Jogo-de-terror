@@ -902,8 +902,21 @@ export class GameplayScene extends Phaser.Scene {
    * lados foram pisados — senao o mapa entregaria que existe algo do outro lado
    * da fresta, que e a descoberta que o §7 guarda.
    */
+  /**
+   * O MAPA — UM COMODO POR VEZ
+   *
+   * As plantas sao desenhadas a mao, e o que elas tem de bom e o DETALHE: no
+   * quarto da para ver o relogio de parede, o quadro do coelho, o espelho
+   * encostado. Espremer as cinco numa folha so transformaria isso em mancha —
+   * entao cada uma ocupa a pagina inteira, e a faixa de baixo troca entre elas.
+   *
+   * A topologia nao se perde: embaixo da planta fica escrito o que sai dali,
+   * e para onde. Quem so pisou o quarto le "a oeste, o corredor" e mais nada;
+   * a fresta e a escada so entram depois de existirem.
+   */
   abaMapa(area, painel) {
-    const visitadas = SaveManager.getProgresso().salas;
+    const p = SaveManager.getProgresso();
+    const visitadas = p.salas.filter((id) => MAPA_FASE1[id]);
 
     if (!visitadas.length) {
       painel.por(this.add
@@ -913,313 +926,107 @@ export class GameplayScene extends Phaser.Scene {
       return;
     }
 
-    // O PAPEL DELA, e os comodos por cima.
-    //
-    // A base e escalada para caber na area sem cortar nada — `Math.min` dos dois
-    // lados —, e cada comodo cai numa FRACAO dela. Assim o mapa e o mesmo em
-    // qualquer tela: e o papel que manda, nao o tamanho da janela.
+    const aquiAgora = this.nomeDaSala ?? 'quarto';
+    // Abre no comodo em que ela esta; depois obedece a ultima escolha.
+    if (!visitadas.includes(this.mapaMostrando)) {
+      this.mapaMostrando = visitadas.includes(aquiAgora) ? aquiAgora : visitadas[0];
+    }
+    const mostrando = this.mapaMostrando;
+
+    // ------------------------------------------------------------ a folha
+    const alturaFaixa = 44;
+    const alturaFolha = area.altura - alturaFaixa;
+
     const base = this.add.image(0, 0, 'mapa-base').setOrigin(0.5);
-    const escala = Math.min(area.largura / base.width, area.altura / base.height);
+    const escala = Math.min(area.largura / base.width, alturaFolha / base.height);
     base.setScale(escala);
-    base.setPosition(area.x + area.largura / 2, area.y + area.altura / 2);
+    base.setPosition(area.x + area.largura / 2, area.y + alturaFolha / 2);
     painel.por(base);
 
-    const esq = base.x - (base.displayWidth / 2);
-    const topo = base.y - (base.displayHeight / 2);
-    const onde = (id) => {
-      const m = MAPA_FASE1[id];
-      if (!m) return null;
-      return {
-        x: esq + m.fx * base.displayWidth,
-        y: topo + m.fy * base.displayHeight,
-      };
-    };
-
-    const larguraCaixa = Math.max(96, 150 * escala);
-    const alturaCaixa = Math.max(24, 34 * escala);
-
-    // As ligacoes primeiro, para os comodos ficarem por cima delas.
-    const linhasG = this.add.graphics();
-    for (const l of LIGACOES_FASE1) {
-      if (!visitadas.includes(l.de) || !visitadas.includes(l.para)) continue;
-      const a = onde(l.de), b = onde(l.para);
-      if (!a || !b) continue;
-      linhasG.lineStyle(2, 0x4a3a22, l.nota ? 0.55 : 0.8);
-      linhasG.lineBetween(a.x, a.y, b.x, b.y);
-      if (l.nota) {
-        painel.por(this.add
-          .text((a.x + b.x) / 2, (a.y + b.y) / 2, l.nota, {
-            fontFamily: FONTE, fontSize: '12px', color: '#5a4526',
-          })
-          .setOrigin(0.5)
-          .setBackgroundColor('#d8cba8')
-          .setPadding(6, 2, 6, 2));
-      }
-    }
-    painel.por(linhasG);
-
-    // As pecas DESENHADAS primeiro: elas vem na mesma folha da base, ja no
-    // lugar, entao e so empilhar por cima com a mesma escala e o mesmo centro.
-    for (const id of Object.keys(MAPA_FASE1)) {
-      if (!visitadas.includes(id)) continue;
-      if (!this.textures.exists('mapa/' + id)) continue;
+    const chavePeca = 'mapa/' + mostrando;
+    if (this.textures.exists(chavePeca)) {
       painel.por(this.add
-        .image(base.x, base.y, 'mapa/' + id)
+        .image(base.x, base.y, chavePeca)
         .setOrigin(0.5)
         .setScale(escala));
-    }
 
-    for (const id of Object.keys(MAPA_FASE1)) {
-      if (!visitadas.includes(id)) continue;
-      const p = onde(id);
-      const aqui = id === (this.nomeDaSala ?? 'quarto');
-
-      // Comodo com peca desenhada nao ganha caixa: so a marca de onde ela esta.
-      if (this.textures.exists('mapa/' + id)) {
-        if (aqui) {
-          painel.por(this.add
-            .text(p.x, p.y, '♠', {
-              fontFamily: FONTE, fontSize: Math.max(14, Math.round(22 * escala)) + 'px',
-              color: '#7a1f22',
-            })
-            .setOrigin(0.5));
-        }
-        continue;
+      if (mostrando === aquiAgora) {
+        painel.por(this.add
+          .text(base.x, base.y + base.displayHeight * 0.02, '♠', {
+            fontFamily: FONTE, fontSize: Math.max(15, Math.round(26 * escala)) + 'px',
+            color: '#7a1f22',
+          })
+          .setOrigin(0.5));
       }
-
-      // Tinta sobre papel: marrom sobre creme, e nao o ouro do caderno. O mapa e
-      // um objeto DENTRO do jogo, desenhado a mao por alguem — nao mais uma tela.
-      const caixa = this.add.graphics();
-      caixa.fillStyle(0xd8cba8, aqui ? 0.95 : 0.8);
-      caixa.fillRect(p.x - larguraCaixa / 2, p.y - alturaCaixa / 2, larguraCaixa, alturaCaixa);
-      caixa.lineStyle(aqui ? 2 : 1, 0x4a3a22, aqui ? 0.95 : 0.6);
-      caixa.strokeRect(p.x - larguraCaixa / 2, p.y - alturaCaixa / 2, larguraCaixa, alturaCaixa);
-      painel.por(caixa);
-
+    } else {
+      // Comodo pisado mas sem planta desenhada. Diz o que e, sem fingir mapa.
       painel.por(this.add
-        .text(p.x, p.y, MAPA_FASE1[id].nome, {
-          fontFamily: FONTE, fontSize: Math.max(11, Math.round(15 * escala)) + 'px',
-          color: aqui ? '#2e2413' : '#5a4526',
+        .text(base.x, base.y, MAPA_FASE1[mostrando].nome, {
+          fontFamily: FONTE, fontSize: Math.max(16, Math.round(26 * escala)) + 'px',
+          color: '#5a4526',
+        })
+        .setOrigin(0.5));
+      painel.por(this.add
+        .text(base.x, base.y + 40, 'a planta deste cômodo ainda não foi desenhada', {
+          fontFamily: FONTE, fontSize: '14px', color: '#7a6a4a', fontStyle: 'italic',
         })
         .setOrigin(0.5));
     }
 
-  }
+    // O que sai daqui. E a topologia que a folha unica dava de graca — aqui ela
+    // vira texto, e so mostra vizinho JA pisado.
+    const saidas = LIGACOES_FASE1
+      .filter((l) => l.de === mostrando || l.para === mostrando)
+      .map((l) => ({ id: l.de === mostrando ? l.para : l.de, nota: l.nota }))
+      .filter((v) => visitadas.includes(v.id));
 
-  /**
-   * AS CONFIGURACOES, SEM SAIR DO JOGO
-   *
-   * O que da para mexer no meio de uma partida: som e tela cheia. Vem com os
-   * comandos ao lado porque e a mesma pergunta — "como eu mexo nisso" — e quem
-   * abre o caderno no meio da fase costuma querer uma das duas.
-   *
-   * O que NAO vem: tamanho, tipo, lado e opacidade dos controles de toque. Eles
-   * mudam o layout inteiro dos botoes, e trocar isso com o jogo em andamento
-   * exigiria remontar os controles por baixo do dedo de quem esta jogando.
-   * Ficam no menu, que e onde se prepara antes de entrar.
-   */
-  abaConfiguracoes(area, painel) {
-    const cfg = SaveManager.getConfig();
-    const meia = area.largura / 2;
-
-    // ---------------------------------------------------------------- som
-    painel.por(this.add
-      .text(area.x + 6, area.y, 'SOM', {
-        fontFamily: FONTE, fontSize: '13px', color: HEX.dourado,
-      }));
-
-    let y = area.y + 40;
-    for (const [rotulo, chave] of [
-      ['Volume geral', 'volumeGeral'],
-      ['Música', 'volumeMusica'],
-      ['Efeitos', 'volumeEfeitos'],
-    ]) {
-      this.barraDeVolume(painel, area.x + 6, y, Math.min(280, meia - 60), rotulo, chave, cfg[chave]);
-      y += 60;
-    }
-
-    // -------------------------------------------------------------- tela
-    painel.por(this.add
-      .text(area.x + 6, y + 6, 'TELA', {
-        fontFamily: FONTE, fontSize: '13px', color: HEX.dourado,
-      }));
-
-    const cheia = painel.por(this.add
-      .text(area.x + 6, y + 34, '', {
-        fontFamily: FONTE, fontSize: '16px', color: HEX.ossoApagado,
-      })
-      .setInteractive({ useHandCursor: true }));
-
-    // Reescreve a cada clique em vez de guardar estado: o navegador pode sair da
-    // tela cheia por conta propria, e um rotulo guardado mentiria.
-    const pintarCheia = () => cheia.setText(
-      this.scale.isFullscreen ? 'Tela cheia: ligada' : 'Tela cheia: desligada'
-    );
-    pintarCheia();
-    cheia.on('pointerover', () => cheia.setColor(HEX.dourado));
-    cheia.on('pointerout', () => cheia.setColor(HEX.ossoApagado));
-    cheia.on('pointerdown', () => {
-      if (this.scale.isFullscreen) this.scale.stopFullscreen();
-      else this.scale.startFullscreen();
-      this.time.delayedCall(120, pintarCheia);
-    });
-
-    // -------------------------------------------- controles no celular
-    const xd = area.x + meia + 20;
-    painel.por(this.add
-      .text(xd, area.y, 'CONTROLES NO CELULAR', {
-        fontFamily: FONTE, fontSize: '13px', color: HEX.dourado,
-      }));
-
-    let yd = area.y + 40;
-    const linhas = [
-      ['Tamanho', 'tamanhoControles', TAMANHOS],
-      ['Tipo', 'tipoControle', TIPOS],
-      ['Lado', 'ladoControles', LADOS],
-      ['Correr', 'botaoCorrer', [
-        { id: false, nome: 'sem botão' }, { id: true, nome: 'com botão' },
-      ]],
-      ['Opacidade', 'opacidadeControles', OPACIDADES],
-    ];
-    for (const [rotulo, chave, opcoes] of linhas) {
-      this.escolhaDeToque(painel, xd, yd, rotulo, chave, opcoes);
-      yd += 44;
-    }
-
-    painel.por(this.add
-      .text(xd, yd + 10,
-        this.toque?.ativo
-          ? 'Vale na hora: os botões se refazem sozinhos.'
-          : 'Só aparece em aparelho com toque.', {
-          fontFamily: FONTE, fontSize: '13px', color: HEX.ossoMorto, fontStyle: 'italic',
-          wordWrap: { width: meia - 40 },
-        }));
-  }
-
-  /**
-   * Uma linha de escolha dos controles de toque.
-   *
-   * Mudar qualquer uma delas REFAZ os botoes na hora. Antes eu tinha deixado
-   * isso de fora do jogo dizendo que remontaria os controles debaixo do dedo de
-   * quem esta jogando — mas com o caderno aberto o jogo esta PARADO e o dedo nao
-   * esta em lugar nenhum. E ver o efeito na hora e a unica forma de escolher
-   * "medio" ou "grande" sabendo o que se escolheu.
-   */
-  escolhaDeToque(painel, x, y, rotulo, chave, opcoes) {
-    painel.por(this.add
-      .text(x, y, rotulo, {
-        fontFamily: FONTE, fontSize: '15px', color: HEX.ossoApagado,
-      }));
-
-    const itens = [];
-    let cursor = x + 110;
-
-    const pintar = () => {
-      const atual = SaveManager.getConfig()[chave];
-      itens.forEach((t, i) => {
-        const escolhido = opcoes[i].id === atual;
-        t.setColor(escolhido ? HEX.osso : HEX.ossoMorto);
-        t.setAlpha(escolhido ? 1 : 0.8);
-      });
-    };
-
-    opcoes.forEach((opcao, i) => {
-      const t = painel.por(this.add
-        .text(cursor, y, opcao.nome, {
-          fontFamily: FONTE, fontSize: '15px', color: HEX.ossoMorto,
+    if (saidas.length) {
+      const texto = saidas
+        .map((v) => MAPA_FASE1[v.id].nome + (v.nota ? ' (' + v.nota + ')' : ''))
+        .join('  ·  ');
+      painel.por(this.add
+        .text(base.x, base.y + base.displayHeight / 2 - 6, 'daqui:  ' + texto, {
+          fontFamily: FONTE, fontSize: '13px', color: HEX.ossoApagado,
         })
+        .setOrigin(0.5, 0));
+    }
+
+    // ------------------------------------------------------------- a faixa
+    let x = area.x + 6;
+    const y = area.y + alturaFolha + 18;
+
+    for (const id of visitadas) {
+      const nome = MAPA_FASE1[id].nome;
+      const aberto = id === mostrando;
+
+      const t = painel.por(this.add
+        .text(x, y, nome, comSombra({
+          fontFamily: FONTE, fontSize: '16px',
+          color: aberto ? HEX.dourado : HEX.ossoMorto,
+        }))
         .setInteractive({ useHandCursor: true }));
 
-      t.on('pointerover', () => t.setColor(HEX.dourado));
-      t.on('pointerout', pintar);
+      t.on('pointerover', () => { if (!aberto) t.setColor(HEX.osso); });
+      t.on('pointerout', () => t.setColor(aberto ? HEX.dourado : HEX.ossoMorto));
       t.on('pointerdown', () => {
-        SaveManager.setConfig({ [chave]: opcao.id });
-        AudioManager.tocar('efeito.item');
-        pintar();
-        this.remontarToque();
+        this.mapaMostrando = id;
+        // Remontar a aba inteira e mais simples e mais seguro que remendar o
+        // que ja esta na tela — e ela e barata: sao duas imagens e um texto.
+        painel.atual = null;
+        painel.trocarPara('mapa');
       });
 
-      itens.push(t);
-      cursor += t.width + 16;
-    });
+      // Onde ela esta agora ganha a espada, mesmo com outro comodo aberto.
+      if (id === aquiAgora) {
+        painel.por(this.add
+          .text(x + t.width + 6, y + 2, '♠', {
+            fontFamily: FONTE, fontSize: '12px', color: HEX.sangue,
+          }));
+        x += 16;
+      }
 
-    pintar();
-  }
-
-  /**
-   * Refaz os controles de toque com a configuracao nova.
-   *
-   * Eles ficam ESCONDIDOS ao nascer porque o caderno esta aberto por cima; quem
-   * os mostra de novo e o `aoFecharCaderno`. Sem isso os botoes apareceriam por
-   * baixo da pagina, piscando a cada escolha.
-   */
-  remontarToque() {
-    if (!this.toque) return;
-
-    const forcado = this.toque.ativo;
-    this.toque.destroy();
-    this.toque = new TouchControls(this, this.input_, {
-      forcar: forcado,
-      alvo: () => ({
-        x: this.alice.x - this.cameras.main.scrollX,
-        y: this.alice.y - this.cameras.main.scrollY,
-      }),
-    });
-    this.toque.esconder();
-  }
-
-  /**
-   * Uma barra de volume dentro do caderno.
-   *
-   * O ponteiro chega em coordenada de jogo, entao a conta e direta. Cada mexida
-   * grava e aplica na hora: o jogador precisa OUVIR o que esta escolhendo, e
-   * sem isso ele estaria arrastando no escuro.
-   */
-  barraDeVolume(painel, x, y, comprimento, rotulo, chave, valorInicial) {
-    painel.por(this.add
-      .text(x, y - 22, rotulo, {
-        fontFamily: FONTE, fontSize: '16px', color: HEX.ossoApagado,
-      }));
-
-    const numero = painel.por(this.add
-      .text(x + comprimento, y - 22, '', {
-        fontFamily: FONTE, fontSize: '14px', color: HEX.ossoApagado,
-      })
-      .setOrigin(1, 0));
-
-    const trilho = painel.por(this.add.graphics());
-    trilho.fillStyle(CORES.ossoMorto, 0.8);
-    trilho.fillRect(x, y + 6, comprimento, 2);
-
-    const cheio = painel.por(this.add.graphics());
-    const punho = painel.por(this.add.circle(x, y + 7, 7, CORES.osso, 0.9));
-
-    const desenhar = (v) => {
-      cheio.clear();
-      cheio.fillStyle(CORES.dourado, 0.7);
-      cheio.fillRect(x, y + 6, comprimento * v, 2);
-      punho.setPosition(x + comprimento * v, y + 7);
-      numero.setText(Math.round(v * 100) + '%');
-    };
-    desenhar(valorInicial);
-
-    const area = painel.por(this.add
-      .rectangle(x + comprimento / 2, y + 7, comprimento + 34, 34, 0x000000, 0)
-      .setInteractive({ useHandCursor: true }));
-
-    const aplicar = (ponteiro) => {
-      const v = Phaser.Math.Clamp((ponteiro.x - x) / comprimento, 0, 1);
-      desenhar(v);
-      SaveManager.setConfig({ [chave]: v });
-      AudioManager.aplicarVolumes();
-    };
-
-    area.on('pointerdown', (ponteiro) => { this.arrastando = chave; aplicar(ponteiro); });
-    area.on('pointermove', (ponteiro) => {
-      if (this.arrastando === chave && ponteiro.isDown) aplicar(ponteiro);
-    });
-    area.on('pointerup', () => { this.arrastando = null; });
-    area.on('pointerout', () => { this.arrastando = null; });
+      x += t.width + 30;
+    }
   }
 
   /**
