@@ -31,7 +31,7 @@ import { TAMANHOS, TIPOS, LADOS, OPACIDADES } from '../ui/layoutControles.js';
 import { CORES, HEX, FONTE, ESTILO, comSombra } from '../ui/theme.js';
 import { dimensoes } from '../core/tela.js';
 import { ITENS, PISTAS, ORDEM_ITENS, ORDEM_PISTAS } from '../data/inventario.js';
-import { MAPA_FASE1, LIGACOES_FASE1 } from '../data/mapa.js';
+import { MAPA_FASE1, LIGACOES_FASE1, CAMADAS_FASE1 } from '../data/mapa.js';
 import { PainelDeAbas } from '../ui/PainelDeAbas.js';
 
 /**
@@ -949,6 +949,19 @@ export class GameplayScene extends Phaser.Scene {
         .image(base.x, base.y, chavePeca)
         .setOrigin(0.5)
         .setScale(escala));
+
+      // As passagens que ela ja descobriu, por cima da planta. Vem depois do
+      // comodo e antes da espada: o buraco tem que cobrir a parede, e a espada
+      // tem que ser vista mesmo caindo dentro dele.
+      for (const camada of CAMADAS_FASE1) {
+        if (camada.sala !== mostrando) continue;
+        if (!SaveManager.temMarco(camada.marco)) continue;
+        if (!this.textures.exists(camada.chave)) continue;
+        painel.por(this.add
+          .image(base.x, base.y, camada.chave)
+          .setOrigin(0.5)
+          .setScale(escala));
+      }
 
       if (mostrando === aquiAgora) {
         painel.por(this.add

@@ -33,3 +33,19 @@ export const LIGACOES_FASE1 = [
   { de: 'corredor', para: 'lateral', nota: 'só a Alice pequena' },
   { de: 'quarto',   para: 'sotao',   nota: 'a escada' },
 ];
+
+/**
+ * AS CAMADAS DE PASSAGEM
+ *
+ * Uma planta e o comodo como ele e; estas sao as descobertas que se somam a
+ * ele. A fresta so aparece na planta do corredor depois que a Alice PASSOU por
+ * ela — enquanto ela nao coube, do outro lado nao existe nada, e um buraco
+ * desenhado ali entregaria de graca o que a secao 7 guarda.
+ *
+ * Cada camada e um PNG do tamanho da folha, com o desenho ja no lugar certo:
+ * assim o encaixe e uma sobreposicao, sem uma tabela de coordenadas para
+ * manter sincronizada com a arte.
+ */
+export const CAMADAS_FASE1 = [
+  { marco: 'fresta', sala: 'corredor', chave: 'mapa/fresta' },
+];
