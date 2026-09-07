@@ -491,6 +491,16 @@ export class GameplayScene extends Phaser.Scene {
    * durante os dezoito quadros o sprite dela e a sombra somem, e quem esta na
    * tela e o desenho da cena, assentado no ponto onde a perseguicao terminou.
    *
+   * E UM CORTE DE CAMERA, e nao a continuacao do plano.
+   *
+   * O desenho tem uma direcao so: a Demon vem pela esquerda e a Alice foge
+   * para a direita. E a direcao natural da fase, que anda para o leste — mas
+   * quem for pego voltando para o oeste veria a cena espelhada em relacao ao
+   * que acabou de acontecer. Espelhar nao e opcao (o desenho e desenhado, nao
+   * refletido), entao a saida escolhida foi a outra: a camera CORTA. Ela solta
+   * a Alice, salta para enquadrar a cena e fica parada ate o fim. Assim a
+   * orientacao fixa le como decisao de plano, e nao como erro de continuidade.
+   *
    * Ver src/data/morteDemon.js para o alinhamento e a escala.
    */
   morrerAgarrada() {
@@ -517,6 +527,15 @@ export class GameplayScene extends Phaser.Scene {
       .setOrigin(MORTE_DEMON.ancora.x, MORTE_DEMON.ancora.y)
       .setScale(escala)
       .setDepth(profundidadeDeDesenho(a.y) + 0.05);
+
+    // O CORTE. Sem `startFollow` a camera continuaria onde a perseguicao a
+    // deixou, com a cena entrando de lado; sem o salto, ela derivaria ate la e
+    // o corte viraria um travelling.
+    const cam = this.cameras.main;
+    this.cameraCortada = true;
+    cam.stopFollow();
+    cam.setDeadzone(0, 0);
+    cam.centerOn(this.cenaDaMorte.x, this.cenaDaMorte.y - this.cenaDaMorte.displayHeight * 0.35);
 
     let i = 0;
     this.quadrosDaMorte = this.time.addEvent({
@@ -550,6 +569,15 @@ export class GameplayScene extends Phaser.Scene {
       this.cenaDaMorte = null;
       this.alice.visual.setVisible(true);
       this.alice.sombra.setVisible(true);
+
+      // Devolve a camera. Ela so foi solta pelo corte da captura; a morte
+      // comum nunca mexe nisto, e por isso o `if`.
+      if (this.cameraCortada) {
+        this.cameraCortada = false;
+        this.cameras.main.setDeadzone(220, 70);
+        this.cameras.main.startFollow(this.alice, true, 0.14, 0.14, 0, 110);
+      }
+
       this.renascer();
     });
   }
