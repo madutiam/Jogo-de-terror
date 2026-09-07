@@ -142,6 +142,53 @@ function PreencherPelaCaixa($mascara, $pareceFundo, $w, $h, $x1, $y1, $x2, $y2) 
   Escoar $mascara $pareceFundo $w $h $pilha
 }
 
+# A SILHUETA PELA DISTANCIA, E NAO PELA COR
+#
+# Na folha do Coelho a LINHA do desenho tem a mesma cor do fundo — medido: o
+# fundo e (3,3,3) e o contorno dele usa (3,3,2), (2,2,2) e (0,0,0). Nenhuma
+# tolerancia separa as duas coisas: o preenchimento pela borda come o contorno
+# inteiro e, por onde ele encosta, vaza para as sombras escuras do casaco. O
+# recorte saia com buracos por dentro da roupa.
+#
+# A cor nao resolve, mas a DISTANCIA resolve. Aqui a mascara e refeita do zero
+# dentro da caixa: e desenho todo pixel que esteja a `raio` pixels de um pixel
+# COLORIDO. O contorno volta inteiro, porque ele e justamente o que encosta na
+# cor; o fundo aberto fica de fora, porque esta longe de qualquer cor.
+#
+# O QUE ISTO PERDE: bolsao de fundo cercado pelo desenho por todos os lados —
+# um buraco de verdade no meio da figura — some junto, porque ninguem o
+# distingue do fundo de fora. Nas tres poses do Coelho nao existe nenhum. Foi
+# tentado antes crescer a mascara do preenchimento em vez de refaze-la, e o
+# resultado era pior: o crescimento fechava o vao estreito entre a orelha e o
+# braco levantado, e o bolsao ficava gravado como uma cunha preta colada nele.
+function ContornoPelaCor($mascara, $pareceFundo, $w, $h, $x1, $y1, $x2, $y2, $raio) {
+  for ($y = $y1; $y -lt $y2; $y++) {
+    $linha = $y * $w
+    for ($x = $x1; $x -lt $x2; $x++) {
+      $p = $linha + $x
+      $mascara[$p] = if ($pareceFundo[$p]) { 0 } else { 1 }
+    }
+  }
+
+  for ($passo = 0; $passo -lt $raio; $passo++) {
+    $volta = New-Object 'System.Collections.Generic.List[int]'
+    for ($y = $y1; $y -lt $y2; $y++) {
+      $linha = $y * $w
+      for ($x = $x1; $x -lt $x2; $x++) {
+        $p = $linha + $x
+        if ($mascara[$p]) { continue }
+        if (($x -gt $x1 -and $mascara[$p - 1]) -or
+            ($x -lt $x2 - 1 -and $mascara[$p + 1]) -or
+            ($y -gt $y1 -and $mascara[$p - $w]) -or
+            ($y -lt $y2 - 1 -and $mascara[$p + $w])) {
+          [void]$volta.Add($p)
+        }
+      }
+    }
+    foreach ($p in $volta) { $mascara[$p] = 1 }
+  }
+}
+
 # --------------------------------------------------------- achar os quadros
 
 # Blocos de colunas com conteudo dentro da caixa. Se sair mais bloco que o
@@ -335,6 +382,14 @@ foreach ($folha in $cfg.folhas) {
     if ($folha.fundo -ne 'transparente') {
       PreencherPelaCaixa $mascara $pareceFundo $img.largura $img.altura `
         ([int]$linha.x1) ([int]$linha.y1) ([int]$linha.x2) ([int]$linha.y2)
+
+      $raio = if ($null -ne $linha.recuperarContorno) { [int]$linha.recuperarContorno }
+              elseif ($null -ne $folha.recuperarContorno) { [int]$folha.recuperarContorno }
+              else { 0 }
+      if ($raio -gt 0) {
+        ContornoPelaCor $mascara $pareceFundo $img.largura $img.altura `
+          ([int]$linha.x1) ([int]$linha.y1) ([int]$linha.x2) ([int]$linha.y2) $raio
+      }
     }
     # REGIOES DE LEGENDA, APAGADAS NA MAO
     #

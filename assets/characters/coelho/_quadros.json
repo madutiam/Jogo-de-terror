@@ -3,8 +3,8 @@
         "arquivo":  "coelho-relogio-0.png",
         "chave":  "coelho-relogio",
         "indice":  0,
-        "larguraUtil":  205,
-        "alturaUtil":  314,
+        "larguraUtil":  211,
+        "alturaUtil":  320,
         "ancoraOrigem":  "massa",
         "aviso":  ""
     },
@@ -12,8 +12,8 @@
         "arquivo":  "coelho-alice-0.png",
         "chave":  "coelho-alice",
         "indice":  0,
-        "larguraUtil":  173,
-        "alturaUtil":  312,
+        "larguraUtil":  179,
+        "alturaUtil":  318,
         "ancoraOrigem":  "massa",
         "aviso":  ""
     },
@@ -21,8 +21,8 @@
         "arquivo":  "coelho-estranha-0.png",
         "chave":  "coelho-estranha",
         "indice":  0,
-        "larguraUtil":  260,
-        "alturaUtil":  329,
+        "larguraUtil":  200,
+        "alturaUtil":  314,
         "ancoraOrigem":  "massa",
         "aviso":  ""
     }
