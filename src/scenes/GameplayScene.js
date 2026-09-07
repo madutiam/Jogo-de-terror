@@ -741,7 +741,7 @@ export class GameplayScene extends Phaser.Scene {
       { id: 'inventario', nome: 'Inventário', montar: (a, p) => this.abaInventario(a, p) },
       { id: 'diario',     nome: 'Diário',     montar: (a, p) => this.abaDiario(a, p) },
       { id: 'mapa',       nome: 'Mapa',       montar: (a, p) => this.abaMapa(a, p) },
-      { id: 'comandos',   nome: 'Comandos',   montar: (a, p) => this.abaComandos(a, p) },
+      { id: 'config',     nome: 'Configurações', montar: (a, p) => this.abaConfiguracoes(a, p) },
     ], { aoFechar: () => this.aoFecharCaderno() });
 
     this.caderno.abrir(idInicial);
@@ -941,6 +941,125 @@ export class GameplayScene extends Phaser.Scene {
         'O mapa acende sozinho: só existe o que ela já pisou.', {
           fontFamily: FONTE, fontSize: '13px', color: HEX.ossoMorto, fontStyle: 'italic',
         }));
+  }
+
+  /**
+   * AS CONFIGURACOES, SEM SAIR DO JOGO
+   *
+   * O que da para mexer no meio de uma partida: som e tela cheia. Vem com os
+   * comandos ao lado porque e a mesma pergunta — "como eu mexo nisso" — e quem
+   * abre o caderno no meio da fase costuma querer uma das duas.
+   *
+   * O que NAO vem: tamanho, tipo, lado e opacidade dos controles de toque. Eles
+   * mudam o layout inteiro dos botoes, e trocar isso com o jogo em andamento
+   * exigiria remontar os controles por baixo do dedo de quem esta jogando.
+   * Ficam no menu, que e onde se prepara antes de entrar.
+   */
+  abaConfiguracoes(area, painel) {
+    const cfg = SaveManager.getConfig();
+
+    painel.por(this.add
+      .text(area.x + 6, area.y, 'SOM', {
+        fontFamily: FONTE, fontSize: '13px', color: HEX.dourado,
+      }));
+
+    let y = area.y + 40;
+    const barras = [
+      ['Volume geral', 'volumeGeral'],
+      ['Música', 'volumeMusica'],
+      ['Efeitos', 'volumeEfeitos'],
+    ];
+    for (const [rotulo, chave] of barras) {
+      this.barraDeVolume(painel, area.x + 6, y, 280, rotulo, chave, cfg[chave]);
+      y += 62;
+    }
+
+    // Tela cheia. O texto se reescreve porque o navegador pode sair dela por
+    // conta propria — apertando ESC, por exemplo — e o rotulo mentiria.
+    const cheia = painel.por(this.add
+      .text(area.x + 6, y + 10, '', {
+        fontFamily: FONTE, fontSize: '16px', color: HEX.ossoApagado,
+      })
+      .setInteractive({ useHandCursor: true }));
+
+    const pintar = () => cheia.setText(
+      this.scale.isFullscreen ? 'Tela cheia: ligada' : 'Tela cheia: desligada'
+    );
+    pintar();
+
+    cheia.on('pointerover', () => cheia.setColor(HEX.dourado));
+    cheia.on('pointerout', () => cheia.setColor(HEX.ossoApagado));
+    cheia.on('pointerdown', () => {
+      if (this.scale.isFullscreen) this.scale.stopFullscreen();
+      else this.scale.startFullscreen();
+      this.time.delayedCall(120, pintar);
+    });
+
+    painel.por(this.add
+      .text(area.x + 6, y + 38, 'O resto — tamanho e tipo dos controles no celular — fica no menu.', {
+        fontFamily: FONTE, fontSize: '13px', color: HEX.ossoMorto, fontStyle: 'italic',
+        wordWrap: { width: 300 },
+      }));
+
+    // Os comandos, na coluna da direita.
+    this.abaComandos(
+      { ...area, x: area.x + Math.min(400, area.largura * 0.46) },
+      painel
+    );
+  }
+
+  /**
+   * Uma barra de volume dentro do caderno.
+   *
+   * O ponteiro chega em coordenada de jogo, entao a conta e direta. Cada mexida
+   * grava e aplica na hora: o jogador precisa OUVIR o que esta escolhendo, e
+   * sem isso ele estaria arrastando no escuro.
+   */
+  barraDeVolume(painel, x, y, comprimento, rotulo, chave, valorInicial) {
+    painel.por(this.add
+      .text(x, y - 22, rotulo, {
+        fontFamily: FONTE, fontSize: '16px', color: HEX.ossoApagado,
+      }));
+
+    const numero = painel.por(this.add
+      .text(x + comprimento, y - 22, '', {
+        fontFamily: FONTE, fontSize: '14px', color: HEX.ossoApagado,
+      })
+      .setOrigin(1, 0));
+
+    const trilho = painel.por(this.add.graphics());
+    trilho.fillStyle(CORES.ossoMorto, 0.8);
+    trilho.fillRect(x, y + 6, comprimento, 2);
+
+    const cheio = painel.por(this.add.graphics());
+    const punho = painel.por(this.add.circle(x, y + 7, 7, CORES.osso, 0.9));
+
+    const desenhar = (v) => {
+      cheio.clear();
+      cheio.fillStyle(CORES.dourado, 0.7);
+      cheio.fillRect(x, y + 6, comprimento * v, 2);
+      punho.setPosition(x + comprimento * v, y + 7);
+      numero.setText(Math.round(v * 100) + '%');
+    };
+    desenhar(valorInicial);
+
+    const area = painel.por(this.add
+      .rectangle(x + comprimento / 2, y + 7, comprimento + 34, 34, 0x000000, 0)
+      .setInteractive({ useHandCursor: true }));
+
+    const aplicar = (ponteiro) => {
+      const v = Phaser.Math.Clamp((ponteiro.x - x) / comprimento, 0, 1);
+      desenhar(v);
+      SaveManager.setConfig({ [chave]: v });
+      AudioManager.aplicarVolumes();
+    };
+
+    area.on('pointerdown', (ponteiro) => { this.arrastando = chave; aplicar(ponteiro); });
+    area.on('pointermove', (ponteiro) => {
+      if (this.arrastando === chave && ponteiro.isDown) aplicar(ponteiro);
+    });
+    area.on('pointerup', () => { this.arrastando = null; });
+    area.on('pointerout', () => { this.arrastando = null; });
   }
 
   /**
